@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+    http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
+
+	<bean id="dialogFactory" class="com.horstmann.violet.framework.dialog.DialogFactory" depends-on="themeManager">
+		<constructor-arg value="INTERNAL" />
+	</bean>
+	
+	<bean id="versionChecker" class="com.horstmann.violet.framework.util.VersionChecker">
+		<property name="dialogFactory" ref="dialogFactory" />
+	</bean>
+
+	<bean id="fileChooserService" class="com.horstmann.violet.framework.file.chooser.JFileChooserService" depends-on="themeManager">
+		<constructor-arg ref="userPreferencesService" />
+		<constructor-arg ref="fileNamingService" />
+		<constructor-arg ref="dialogFactory" />
+	</bean>
+	
+	<bean id="userPreferencesDao" class="com.horstmann.violet.framework.preference.DefaultUserPreferencesDao" />
+
+</beans>
