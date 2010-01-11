@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Toolkit;
 import java.awt.event.MouseWheelListener;
@@ -33,8 +34,6 @@ import java.beans.BeanInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -43,6 +42,7 @@ import javax.swing.SwingUtilities;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.horstmann.violet.application.help.AboutDialog;
 import com.horstmann.violet.application.menu.MenuFactory;
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.node.AbstractNode;
@@ -53,11 +53,9 @@ import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.file.chooser.IFileOpener;
-import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.preference.IFile;
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
-import com.horstmann.violet.framework.resources.ResourceFactory;
+import com.horstmann.violet.framework.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.swingextension.MenuUtils;
@@ -72,6 +70,7 @@ import com.horstmann.violet.framework.workspace.Workspace;
  * 
  * @author Alexandre de Pellegrin
  */
+@ResourceBundleBean(resourceReference = AboutDialog.class)
 public class MainFrame extends JFrame
 {
     /**
@@ -82,6 +81,7 @@ public class MainFrame extends JFrame
     public MainFrame()
     {
         SpringDependencyInjector.getInjector().inject(this);
+        ResourceBundleInjector.getInjector().inject(this);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.dialogFactory.setDialogOwner(this);
         decorateFrame();
@@ -107,10 +107,8 @@ public class MainFrame extends JFrame
      */
     private void decorateFrame()
     {
-        ResourceBundle resources = ResourceBundle.getBundle(ResourceBundleConstant.ABOUT_STRINGS, Locale.getDefault());
-        setTitle(resources.getString("app.name"));
-        ResourceFactory resourceFactory = new ResourceFactory(resources);
-        setIconImage(resourceFactory.createImage("app.icon"));
+        setTitle(this.applicationName);
+        setIconImage(this.applicationIcon);
     }
 
     /**
@@ -365,6 +363,12 @@ public class MainFrame extends JFrame
      */
     @SpringBean
     private IFileChooserService fileChooserService;
+    
+    @ResourceBundleBean(key="app.name")
+    private String applicationName;
+    
+    @ResourceBundleBean(key="app.icon")
+    private Image applicationIcon;
 
     /**
      * All disgram workspaces

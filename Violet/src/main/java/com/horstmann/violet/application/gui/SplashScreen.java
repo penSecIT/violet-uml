@@ -26,15 +26,16 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
+import com.horstmann.violet.application.help.AboutDialog;
+import com.horstmann.violet.application.menu.MenuFactory;
+import com.horstmann.violet.framework.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
 
 /**
  * Violet's splash screen
@@ -42,6 +43,7 @@ import com.horstmann.violet.framework.resources.ResourceBundleConstant;
  * @author Alexandre de Pellegrin
  * 
  */
+@ResourceBundleBean(resourceReference = AboutDialog.class)
 public class SplashScreen extends JWindow
 {
 
@@ -59,9 +61,8 @@ public class SplashScreen extends JWindow
 
     private void prepare()
     {
-        ResourceBundle bundle = ResourceBundle.getBundle(ResourceBundleConstant.ABOUT_STRINGS, Locale.getDefault());
-        String imagePath = bundle.getString("dialog.about.image");
-        JLabel l = new JLabel(new ImageIcon(getClass().getResource(imagePath)));
+    	ResourceBundleInjector.getInjector().inject(this);
+        JLabel l = new JLabel(this.image);
         getContentPane().add(l, BorderLayout.CENTER);
         pack();
 
@@ -116,4 +117,7 @@ public class SplashScreen extends JWindow
         splashThread.start();
     }
 
+    @ResourceBundleBean(key="dialog.about.image")
+    private ImageIcon image;
+    
 }

@@ -33,8 +33,6 @@ import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,7 +47,8 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
+import com.horstmann.violet.framework.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.swingextension.VerticalAutoScrollPane;
 
 /**
@@ -61,8 +60,8 @@ public class AboutDialog extends JDialog
     public AboutDialog(JFrame parent)
     {
         super(parent);
-        String dialogTitle = resourceBundle.getString("dialog.title");
-        this.setTitle(dialogTitle);
+        ResourceBundleInjector.getInjector().inject(this);
+        this.setTitle(this.dialogTitle);
         this.setLocationRelativeTo(null);
         this.setModal(true);
         this.setResizable(false);
@@ -94,8 +93,7 @@ public class AboutDialog extends JDialog
         c.weightx = 1;
         c.gridx = 1;
         c.gridy = 0;
-        String closeButtonLabel = resourceBundle.getString("dialog.button.label");
-        JButton closeButton = new JButton(closeButtonLabel);
+        JButton closeButton = new JButton(this.closeButtonLabel);
         closeButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -121,8 +119,6 @@ public class AboutDialog extends JDialog
         if (this.systemInfoPanel == null)
         {
             JTable table = new JTable();
-            String tableSysInfoCol1 = resourceBundle.getString("systeminfo.col1");
-            String tableSysInfoCol2 = resourceBundle.getString("systeminfo.col2");
             AboutTableModel tableModel = new AboutTableModel(new String[]
             {
                     tableSysInfoCol1,
@@ -154,8 +150,7 @@ public class AboutDialog extends JDialog
             this.systemInfoPanel = new JPanel(new BorderLayout());
             this.systemInfoPanel.add(pane);
         }
-        String buttonShowVersionLabel = resourceBundle.getString("dialog.button.show_version");
-        this.nextButton.setText(buttonShowVersionLabel);
+        this.nextButton.setText(this.showVersionButtonLabel);
         removeActionListener(this.nextButton);
         this.nextButton.addActionListener(new ActionListener()
         {
@@ -173,12 +168,11 @@ public class AboutDialog extends JDialog
     {
         if (this.authorsPanel == null)
         {
-            ImageIcon violetBanner = new ImageIcon(getClass().getResource(resourceBundle.getString("authors.banner")));
-            JLabel image = new JLabel(violetBanner);
+            JLabel image = new JLabel(this.violetBanner);
             JTextPane tp = new JTextPane();
             try
             {
-                URL url = getClass().getResource(resourceBundle.getString("authors.file"));
+                URL url = getClass().getResource(this.authorsFilePath);
                 tp.setPage(url);
             }
             catch (Exception e)
@@ -196,7 +190,7 @@ public class AboutDialog extends JDialog
             this.authorsPanel.add(image, BorderLayout.NORTH);
             this.authorsPanel.add(authorsScrollPane, BorderLayout.CENTER);
         }
-        this.nextButton.setText(resourceBundle.getString("dialog.button.show_license"));
+        this.nextButton.setText(this.showLicenceButtonLabel);
         removeActionListener(this.nextButton);
         this.nextButton.addActionListener(new ActionListener()
         {
@@ -222,7 +216,7 @@ public class AboutDialog extends JDialog
 
             try
             {
-                URL url = getClass().getResource(resourceBundle.getString("license.file"));
+                URL url = getClass().getResource(this.licenceFilePath);
                 tp.setPage(url);
             }
             catch (Exception e)
@@ -234,7 +228,7 @@ public class AboutDialog extends JDialog
             this.licensePanel.add(js);
 
         }
-        this.nextButton.setText(resourceBundle.getString("dialog.button.show_systeminfo"));
+        this.nextButton.setText(this.showSystemInfoButtonLabel);
         removeActionListener(this.nextButton);
         this.nextButton.addActionListener(new ActionListener()
         {
@@ -252,9 +246,8 @@ public class AboutDialog extends JDialog
     {
         if (this.versionPanel == null)
         {
-            String imagePath = resourceBundle.getString("dialog.about.image");
-            JLabel image = new JLabel(new ImageIcon(getClass().getResource(imagePath)));
-            JLabel text = new JLabel(resourceBundle.getString("app.version.text"));
+            JLabel image = new JLabel(this.image);
+            JLabel text = new JLabel(this.versionText);
             text.setBorder(new EmptyBorder(0, 0, 0, 4));
             this.versionPanel = new JPanel();
             this.versionPanel.setLayout(new GridBagLayout());
@@ -271,7 +264,7 @@ public class AboutDialog extends JDialog
             c.gridy = 1;
             this.versionPanel.add(text, c);
         }
-        this.nextButton.setText(resourceBundle.getString("dialog.button.show_authors"));
+        this.nextButton.setText(this.showAuthorsButtonLabel);
         removeActionListener(this.nextButton);
         this.nextButton.addActionListener(new ActionListener()
         {
@@ -343,8 +336,6 @@ public class AboutDialog extends JDialog
         private List<String[]> data = new ArrayList<String[]>();
     }
 
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle(ResourceBundleConstant.ABOUT_STRINGS, Locale.getDefault());
-
     private JPanel versionPanel;
 
     private JPanel authorsPanel;
@@ -356,5 +347,45 @@ public class AboutDialog extends JDialog
     private VerticalAutoScrollPane authorsScrollPane;
 
     private JButton nextButton = new JButton();
+    
+    @ResourceBundleBean(key="dialog.title")
+    private String dialogTitle;
+    
+    @ResourceBundleBean(key="dialog.button.label")
+    private String closeButtonLabel;
+    
+    @ResourceBundleBean(key="systeminfo.col1")
+    private String tableSysInfoCol1;
+    
+    @ResourceBundleBean(key="systeminfo.col2")
+    private String tableSysInfoCol2;
+    
+    @ResourceBundleBean(key="dialog.button.show_version")
+    private String showVersionButtonLabel;
+    
+    @ResourceBundleBean(key="authors.banner")
+    private ImageIcon violetBanner;
+    
+    @ResourceBundleBean(key="authors.file")
+    private String authorsFilePath;
+    
+    @ResourceBundleBean(key="dialog.button.show_license")
+    private String showLicenceButtonLabel;
+    
+    @ResourceBundleBean(key="license.file")
+    private String licenceFilePath;
+    
+    @ResourceBundleBean(key="dialog.button.show_systeminfo")
+    private String showSystemInfoButtonLabel;
+    
+    @ResourceBundleBean(key="dialog.about.image")
+    private ImageIcon image;
+    
+    @ResourceBundleBean(key="app.version.text")
+    private String versionText;
+    
+    @ResourceBundleBean(key="dialog.button.show_authors")
+    private String showAuthorsButtonLabel;
+
 
 }

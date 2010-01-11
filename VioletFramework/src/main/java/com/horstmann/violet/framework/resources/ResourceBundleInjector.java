@@ -58,7 +58,8 @@ public class ResourceBundleInjector
     public void inject(Object o)
     {
         ResourceBundle classResourceBundle = getPropertyFile(o);
-        ResourceFactory classResourceFactory = new ResourceFactory(classResourceBundle, o.getClass());
+        Class<?> referencedClass = getReferencedClass(o);
+        ResourceFactory classResourceFactory = new ResourceFactory(classResourceBundle, referencedClass);
         // Injects on constructors
         for (Constructor<?> aConstructor : o.getClass().getDeclaredConstructors())
         {
@@ -113,6 +114,18 @@ public class ResourceBundleInjector
      */
     private ResourceBundle getPropertyFile(Object o)
     {
+        Class<?> referencedClass = getReferencedClass(o);
+        return ResourceBundle.getBundle(referencedClass.getName(), Locale.getDefault());
+    }
+
+    /**
+     * Gets the referenced class
+     * 
+     * @param o object which need injection
+     * @return the corresponding class or the class declared in ResourceBundleBean.resourceReference()
+     */
+    private Class<?> getReferencedClass(Object o)
+    {
         for (Annotation annotation : o.getClass().getAnnotations())
         {
             Class<? extends Annotation> annotationType = annotation.annotationType();
@@ -122,13 +135,13 @@ public class ResourceBundleInjector
                 Class ref = propertyAnnotation.resourceReference();
                 if (!Object.class.equals(ref))
                 {
-                    return ResourceBundle.getBundle(ref.getName(), Locale.getDefault());
+                    return ref;
                 }
             }
         }
-        return ResourceBundle.getBundle(o.getClass().getName(), Locale.getDefault());
+        return o.getClass();
     }
-
+    
     /**
      * Injects values
      * 
