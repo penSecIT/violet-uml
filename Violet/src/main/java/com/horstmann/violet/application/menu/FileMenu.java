@@ -43,6 +43,7 @@ import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
+import com.horstmann.violet.framework.file.chooser.IFileOpener;
 import com.horstmann.violet.framework.file.chooser.IFileSaver;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
@@ -380,8 +381,13 @@ public class FileMenu extends JMenu
             {
                 try
                 {
-                    IFile unknownFile = null;
-                    IGraphFile graphFile = new GraphFile(unknownFile);
+                	IFileOpener fileOpener = fileChooserService.getFileOpener();
+                    if (fileOpener == null) {
+                        // Action cancelled by user
+                    	return;
+                    }
+                    IFile selectedFile = fileOpener.getFileDefinition();
+                    IGraphFile graphFile = new GraphFile(selectedFile);
                     IWorkspace workspace = new Workspace(graphFile);
                     mainFrame.addTabbedPane(workspace);
                     userPreferencesService.addOpenedFile(graphFile);
