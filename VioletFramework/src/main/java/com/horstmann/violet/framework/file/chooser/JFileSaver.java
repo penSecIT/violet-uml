@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.preference.IFile;
 /**
  * Standard Java FileSaver implementation
  * 

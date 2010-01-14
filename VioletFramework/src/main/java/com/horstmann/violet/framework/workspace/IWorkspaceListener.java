@@ -21,7 +21,7 @@
 
 package com.horstmann.violet.framework.workspace;
 
-import com.horstmann.violet.framework.preference.IFile;
+import com.horstmann.violet.framework.file.IFile;
 
 /**
  * Interface that represents a listener to the diagram workspace. For exemple, allow Eclipse Plugin to detect Graph panel events

@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.jnlp.FileContents;
 
-import com.horstmann.violet.framework.preference.IFile;
+import com.horstmann.violet.framework.file.IFile;
 
 public class JNLPFileOpener implements IFileOpener
 {

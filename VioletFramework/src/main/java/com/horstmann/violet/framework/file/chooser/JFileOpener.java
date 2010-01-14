@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.preference.IFile;
 
 public class JFileOpener implements IFileOpener
 {

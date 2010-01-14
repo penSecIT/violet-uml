@@ -28,11 +28,11 @@ import java.util.Vector;
 
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.Id;
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.IGraphFileListener;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.PluginRegistry;
-import com.horstmann.violet.framework.preference.IFile;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.workspace.editorpart.EditorPart;

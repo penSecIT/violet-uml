@@ -3,7 +3,6 @@ package com.horstmann.violet.framework.file;
 import java.io.File;
 import java.io.IOException;
 
-import com.horstmann.violet.framework.preference.IFile;
 
 /**
  * Represents a file on the local hard disk

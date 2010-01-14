@@ -23,8 +23,8 @@ package com.horstmann.violet.framework.file.chooser;
 
 import java.io.IOException;
 
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
-import com.horstmann.violet.framework.preference.IFile;
 
 
 /**

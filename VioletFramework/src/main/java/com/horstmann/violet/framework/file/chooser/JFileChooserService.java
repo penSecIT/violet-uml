@@ -31,10 +31,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
-import com.horstmann.violet.framework.preference.IFile;
 import com.horstmann.violet.framework.preference.UserPreferencesService;
 import com.horstmann.violet.framework.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;

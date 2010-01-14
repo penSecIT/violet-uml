@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import javax.jnlp.FileContents;
 
-import com.horstmann.violet.framework.preference.IFile;
+import com.horstmann.violet.framework.file.IFile;
 
 public class JNLPFileSaver implements IFileSaver
 {

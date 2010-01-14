@@ -1,9 +1,8 @@
 package com.horstmann.violet.framework.preference;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+
+import com.horstmann.violet.framework.file.IFile;
 
 /**
  * This class allows to wrap a file definition (composed by <br/>
@@ -48,18 +47,13 @@ public class PreferredFile implements IFile
      */
     public PreferredFile(String userPreferenceString) throws IOException
     {
-        StringTokenizer tokenizer = new StringTokenizer(userPreferenceString, PreferencesConstant.PATH_SEPARATOR.toString());
-        if (tokenizer.countTokens() != 2)
+        String[] strings = userPreferenceString.split(PreferencesConstant.PATH_SEPARATOR.toString());
+        if (strings.length != 2)
         {
             throw new IOException("Unable to parse file path from user preferences");
         }
-        List<String> result = new ArrayList<String>();
-        while (tokenizer.hasMoreTokens())
-        {
-            result.add(tokenizer.nextToken());
-        }
-        this.directory = result.get(0);
-        this.filename = result.get(1);
+        this.directory = strings[0];
+        this.filename = strings[1];
     }
 
     /*

@@ -2,10 +2,9 @@ package com.horstmann.violet.framework.preference;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.theme.VistaBlueTheme;
 
 
@@ -51,10 +50,9 @@ public class UserPreferencesService
     {
         List<PreferredFile> recentFiles = new ArrayList<PreferredFile>();
         String recent = this.dao.get(PreferencesConstant.RECENT_FILES, "").trim();
-        StringTokenizer tokenizer = new StringTokenizer(recent, PreferencesConstant.FILE_SEPARATOR.toString());
-        while (tokenizer.hasMoreTokens())
+        String[] strings = recent.split(PreferencesConstant.FILE_SEPARATOR.toString());
+        for (String anEntry : strings)
         {
-            String anEntry = tokenizer.nextToken();
             try
             {
                 PreferredFile aRecentFile  = new PreferredFile(anEntry);
@@ -110,12 +108,12 @@ public class UserPreferencesService
     public List<IFile> getOpenedFilesDuringLastSession()
     {
         String list = this.dao.get(PreferencesConstant.OPENED_FILES_ON_WORKSPACE, "");
-        StringTokenizer tokenizer = new StringTokenizer(list, PreferencesConstant.FILE_SEPARATOR.toString());
+        String[] strings = list.split(PreferencesConstant.FILE_SEPARATOR.toString());
         List<PreferredFile> result = new ArrayList<PreferredFile>();
-        while (tokenizer.hasMoreTokens())
+        for (String anEntry : strings)
         {
             try {
-                PreferredFile aFile = new PreferredFile(tokenizer.nextToken());
+				PreferredFile aFile = new PreferredFile(anEntry);
                 result.add(aFile);
             } catch (IOException a) {
                 // We should purge list from unparsable entries

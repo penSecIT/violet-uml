@@ -30,9 +30,9 @@ import javax.jnlp.FileSaveService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 
+import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
-import com.horstmann.violet.framework.preference.IFile;
 
 /**
  * This class provides a FileService for Java Web Start. Note that file saving is strange under Web Start. You first save the data,

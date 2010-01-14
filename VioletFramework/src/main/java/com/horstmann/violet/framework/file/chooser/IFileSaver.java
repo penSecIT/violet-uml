@@ -24,7 +24,7 @@ package com.horstmann.violet.framework.file.chooser;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.horstmann.violet.framework.preference.IFile;
+import com.horstmann.violet.framework.file.IFile;
 
 /**
  * A FileSaverHandler object handles the stream and name of the file that the user selected for saving.

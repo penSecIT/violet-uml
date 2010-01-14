@@ -23,7 +23,7 @@ package com.horstmann.violet.product.diagram.common;
 
 import java.net.URL;
 
-import com.horstmann.violet.framework.preference.IFile;
+import com.horstmann.violet.framework.file.IFile;
 
 /**
  * This class is a link to a physical file. It is used to perform links between diagrams. Tested successfully in applet mode
