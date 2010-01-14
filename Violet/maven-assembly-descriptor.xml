@@ -1,0 +1,24 @@
+<assembly>
+  <id>jar-with-dependencies-and-extra-files</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory></outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+  <!-- fileSets>
+    <fileSet>
+      <includes>
+        <include>build.properties</include>
+        <include>plugin.xml</include>
+        <include>META-INF/eclipse_plugin_icon.png</include>
+      </includes>
+    </fileSet>
+  </fileSets-->  
+</assembly>
