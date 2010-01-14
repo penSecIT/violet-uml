@@ -28,7 +28,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import com.horstmann.violet.framework.gui.theme.AbstractTheme;
+import com.horstmann.violet.framework.theme.AbstractTheme;
+
 
 /**
  * Eclipse theme used when the software run as an embedded plugin

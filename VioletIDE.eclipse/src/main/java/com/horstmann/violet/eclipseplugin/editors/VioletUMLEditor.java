@@ -44,12 +44,11 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ResourceTransfer;
 
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
-import com.horstmann.violet.framework.diagram.GraphService;
-import com.horstmann.violet.framework.diagram.Graph;
-import com.horstmann.violet.framework.gui.DiagramPanel;
-import com.horstmann.violet.framework.gui.DiagramPanelListener;
-import com.horstmann.violet.framework.gui.theme.Theme;
-import com.horstmann.violet.framework.gui.theme.ThemeManager;
+import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.theme.ITheme;
+import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.framework.workspace.WorkspacePanel;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 
 /**
@@ -160,7 +159,7 @@ public class VioletUMLEditor extends EditorPart
         parent.setLayout(gridLayout);
 
         EclipseColorPicker eclipseColorPicker = new EclipseColorPicker(getSite().getShell().getDisplay());
-        Theme eclipseTheme = new EclipseTheme(eclipseColorPicker);
+        ITheme eclipseTheme = new EclipseTheme(eclipseColorPicker);
 		ThemeManager.getInstance().switchToTheme(eclipseTheme);
 
         new DiagramComposite(parent, this.getUMLDiagramPanel());
@@ -183,9 +182,9 @@ public class VioletUMLEditor extends EditorPart
      */
     public DiagramPanel getUMLDiagramPanel()
     {
-        if (this.UMLDiagramPanel == null)
+        if (this.UMLWorkspace == null)
         {
-            Graph aGraph = null;
+            IGraph aGraph = null;
             if (this.UMLFile != null)
             {
                 try
@@ -210,8 +209,8 @@ public class VioletUMLEditor extends EditorPart
                 aGraph = new ClassDiagramGraph();
             }
 
-            this.UMLDiagramPanel = new DiagramPanel(aGraph);
-            this.UMLDiagramPanel.addListener(new DiagramPanelListener()
+            this.UMLWorkspace = new DiagramPanel(aGraph);
+            this.UMLWorkspace.addListener(new DiagramPanelListener()
             {
                 public void mustOpenfile(URL url)
                 {
@@ -243,13 +242,13 @@ public class VioletUMLEditor extends EditorPart
 
             });
         }
-        return this.UMLDiagramPanel;
+        return this.UMLWorkspace;
     }
     
     public static final String ID = "com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor";
 
     /** UML diagram swing panel */
-    private DiagramPanel UMLDiagramPanel;
+    private IWorkspace UMLWorkspace;
 
     /** UML file edited */
     private IFile UMLFile;
