@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.resources;
 
+import java.awt.Image;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -164,6 +165,11 @@ public class ResourceBundleInjector
         if (fieldType.equals(ImageIcon.class))
         {
             ImageIcon value = resourceFactory.createIcon(propertyPrefix);
+            field.set(concernedObject, value);
+        }
+        if (fieldType.equals(Image.class))
+        {
+            Image value = resourceFactory.createImage(propertyPrefix);
             field.set(concernedObject, value);
         }
         if (fieldType.equals(JButton.class))
