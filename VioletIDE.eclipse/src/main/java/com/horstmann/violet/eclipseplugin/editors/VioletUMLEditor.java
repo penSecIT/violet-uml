@@ -45,9 +45,14 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
 import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.file.IGraphFile;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.spring.SpringDependencyInjector;
+import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.theme.ITheme;
 import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.framework.workspace.Workspace;
 import com.horstmann.violet.framework.workspace.WorkspacePanel;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 
@@ -108,9 +113,7 @@ public class VioletUMLEditor extends EditorPart
      */
     public void init(IEditorSite site, IEditorInput input) throws PartInitException
     {
-        // Initialize dialog manager
-        DialogManager.createSingleton();
-
+        SpringDependencyInjector.getInjector().inject(this);
         setInput(input);
         setSite(site);
         // Retreive file input
@@ -180,36 +183,22 @@ public class VioletUMLEditor extends EditorPart
      * 
      * @return
      */
-    public DiagramPanel getUMLDiagramPanel()
+    public IWorkspace getUMLDiagramPanel()
     {
         if (this.UMLWorkspace == null)
         {
-            IGraph aGraph = null;
+            IGraphFile aGraphFile = null;
             if (this.UMLFile != null)
             {
-                try
-                {
-                    aGraph = GraphService.readGraph(this.UMLFile.getContents());
-                }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (CoreException e)
-                {
-                    e.printStackTrace();
-                }
+                // TODO : implement an Eclipse filePersistenceService
+            	IGraph read = this.filePersistenceService.read(this.UMLFile.getContents());
             }
             if (this.UMLFile == null)
             {
                 aGraph = new ClassDiagramGraph();
             }
 
-            this.UMLWorkspace = new DiagramPanel(aGraph);
+            this.UMLWorkspace = new Workspace(aGraph);
             this.UMLWorkspace.addListener(new DiagramPanelListener()
             {
                 public void mustOpenfile(URL url)
@@ -249,6 +238,13 @@ public class VioletUMLEditor extends EditorPart
 
     /** UML diagram swing panel */
     private IWorkspace UMLWorkspace;
+    
+    @SpringBean
+    private DialogManager dialogManager;
+    
+    @SpringBean
+    private IFilePersistenceService filePersistenceService;
+
 
     /** UML file edited */
     private IFile UMLFile;
