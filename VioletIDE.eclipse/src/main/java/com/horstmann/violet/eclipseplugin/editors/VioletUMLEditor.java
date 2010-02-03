@@ -22,6 +22,7 @@
 package com.horstmann.violet.eclipseplugin.editors;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +46,7 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
 import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
@@ -76,11 +78,13 @@ public class VioletUMLEditor extends EditorPart
         {
             try
             {
-                Graph g = this.getUMLDiagramPanel().view.getGraphPanel(this.getUMLDiagramPanel()).getGraph();
-                ByteBuffer buffer = GraphService.serializeGraph(g);
-                ByteArrayInputStream bis = new ByteArrayInputStream(buffer.array());
+                IGraph g = this.getUMLDiagramPanel().getGraphFile().getGraph();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                this.filePersistenceService.write(g, bos);
+                byte[] byteArray = bos.toByteArray(); 
+                ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
                 this.UMLFile.setContents(bis, true, true, monitor);
-                this.getUMLDiagramPanel().setSaveNeeded(false);
+                this.getUMLDiagramPanel().isSaveNeeded()setSaveNeeded(false);
                 firePropertyChange(EditorPart.PROP_DIRTY);
             }
             catch (FileNotFoundException e)
