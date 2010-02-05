@@ -44,6 +44,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.ResourceTransfer;
 
+import com.horstmann.violet.eclipseplugin.file.EclipseFileChooserService;
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.file.GraphFile;
@@ -74,34 +75,9 @@ public class VioletUMLEditor extends EditorPart
      */
     public void doSave(IProgressMonitor monitor)
     {
-        if (this.UMLFile != null)
-        {
-            try
-            {
-                IGraph g = this.getUMLDiagramPanel().getGraphFile().getGraph();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                this.filePersistenceService.write(g, bos);
-                byte[] byteArray = bos.toByteArray(); 
-                ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
-                this.UMLFile.setContents(bis, true, true, monitor);
-                this.getUMLDiagramPanel().isSaveNeeded()setSaveNeeded(false);
-                firePropertyChange(EditorPart.PROP_DIRTY);
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IOException e)
-            {
-                // TODO Gestion des logs
-                e.printStackTrace();
-            }
-            catch (CoreException e)
-            {
-                // TODO Gestion des logs
-                e.printStackTrace();
-            }
-        }
+    	this.fileChooserService.changeProgressMonitor(monitor);
+    	this.getUMLDiagramPanel().getGraphFile().save();
+    	firePropertyChange(EditorPart.PROP_DIRTY);
     }
 
     /**
@@ -124,9 +100,10 @@ public class VioletUMLEditor extends EditorPart
         if (input instanceof IFileEditorInput)
         {
             IFileEditorInput fe = (IFileEditorInput) input;
-            this.UMLFile = fe.getFile();
+            IFile file = fe.getFile();
+            this.fileChooserService.setEclipseFile(file);
             // Update part editor title
-            this.setPartName(this.UMLFile.getName());
+            this.setPartName(file.getName());
         }
 
     }
@@ -247,10 +224,8 @@ public class VioletUMLEditor extends EditorPart
     private DialogManager dialogManager;
     
     @SpringBean
-    private IFilePersistenceService filePersistenceService;
+    private EclipseFileChooserService fileChooserService;
 
 
-    /** UML file edited */
-    private IFile UMLFile;
 
 }
