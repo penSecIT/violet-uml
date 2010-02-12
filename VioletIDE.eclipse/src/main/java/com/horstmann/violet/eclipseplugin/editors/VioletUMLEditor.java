@@ -21,15 +21,12 @@
 
 package com.horstmann.violet.eclipseplugin.editors;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.Component;
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
-import java.nio.ByteBuffer;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -46,18 +43,16 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 import com.horstmann.violet.eclipseplugin.file.EclipseFileChooserService;
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
-import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
-import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.file.LocalFile;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.theme.ITheme;
 import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.framework.workspace.IWorkspaceListener;
 import com.horstmann.violet.framework.workspace.Workspace;
-import com.horstmann.violet.framework.workspace.WorkspacePanel;
-import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 
 /**
  * Main Editor Part
@@ -73,16 +68,18 @@ public class VioletUMLEditor extends EditorPart
     /**
      * Performs saving
      */
+	@Override
     public void doSave(IProgressMonitor monitor)
     {
-    	this.fileChooserService.changeProgressMonitor(monitor);
-    	this.getUMLDiagramPanel().getGraphFile().save();
-    	firePropertyChange(EditorPart.PROP_DIRTY);
+		this.fileChooserService.changeProgressMonitor(monitor);
+		this.getUMLDiagramPanel().getGraphFile().save();
+		firePropertyChange(EditorPart.PROP_DIRTY);
     }
 
     /**
      * @see org.eclipse.ui.ISaveablePart#doSaveAs()
      */
+	@Override
     public void doSaveAs()
     {
         // Nothing to do here. Files are always created with the wizard
@@ -91,6 +88,7 @@ public class VioletUMLEditor extends EditorPart
     /**
      * Initializes editor
      */
+	@Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException
     {
         SpringDependencyInjector.getInjector().inject(this);
@@ -111,6 +109,7 @@ public class VioletUMLEditor extends EditorPart
     /**
      * @see org.eclipse.ui.ISaveablePart#isDirty()
      */
+	@Override
     public boolean isDirty()
     {
         return this.getUMLDiagramPanel().isSaveNeeded();
@@ -119,6 +118,7 @@ public class VioletUMLEditor extends EditorPart
     /**
      * @see org.eclipse.ui.IWorkbenchPart#setFocus()
      */
+	@Override
     public void setFocus()
     {
         // Nothing to do here.
@@ -127,6 +127,7 @@ public class VioletUMLEditor extends EditorPart
     /**
      * 'Save As' is disabled
      */
+	@Override
     public boolean isSaveAsAllowed()
     {
         return false;
@@ -135,6 +136,7 @@ public class VioletUMLEditor extends EditorPart
     /**
      * Builds editor with embedded JPanels
      */
+	@Override
     public void createPartControl(Composite parent)
     {
         // Set parent layout
@@ -146,7 +148,9 @@ public class VioletUMLEditor extends EditorPart
         ITheme eclipseTheme = new EclipseTheme(eclipseColorPicker);
 		ThemeManager.getInstance().switchToTheme(eclipseTheme);
 
-        new DiagramComposite(parent, this.getUMLDiagramPanel());
+        IWorkspace workspacePanel = this.getUMLDiagramPanel();
+        Component awtComponent = workspacePanel.getAWTComponent();
+		new DiagramComposite(parent, workspacePanel);
 
         int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK;
         Transfer[] types = new Transfer[]
@@ -155,7 +159,7 @@ public class VioletUMLEditor extends EditorPart
         };
         DropTarget target = new DropTarget(parent, operations);
         target.setTransfer(types);
-        target.addDropListener(new FileDropTargetListener(this.getUMLDiagramPanel().view.getGraphPanel(this.getUMLDiagramPanel())));
+        target.addDropListener(new FileDropTargetListener(workspacePanel.getEditorPart()));
 
     }
 
@@ -168,49 +172,48 @@ public class VioletUMLEditor extends EditorPart
     {
         if (this.UMLWorkspace == null)
         {
-            IGraphFile aGraphFile = null;
-            if (this.UMLFile != null)
-            {
-                // TODO : implement an Eclipse filePersistenceService
-            	IGraph read = this.filePersistenceService.read(this.UMLFile.getContents());
-            }
-            if (this.UMLFile == null)
-            {
-                aGraph = new ClassDiagramGraph();
-            }
-
-            this.UMLWorkspace = new Workspace(aGraph);
-            this.UMLWorkspace.addListener(new DiagramPanelListener()
-            {
-                public void mustOpenfile(URL url)
-                {
-                    IEditorSite site = getEditorSite();
-                    Display d = site.getShell().getDisplay();
-                    EclipseUtils.openUMLDiagram(url, d);
-                }
-
-                public void graphCouldBeSaved()
-                {
-                    IEditorSite site = getEditorSite();
-                    if (site != null)
-                    {
-                        Display d = site.getShell().getDisplay();
-                        d.asyncExec(new Runnable()
+            try {
+            	IGraphFile graphFile = new GraphFile(fileChooserService.getFileOpener().getFileDefinition());
+                this.UMLWorkspace = new Workspace(graphFile);
+                this.UMLWorkspace.addListener(new IWorkspaceListener() {
+    				@Override
+    				public void titleChanged(String newTitle) {
+    				}
+    				
+    				@Override
+    				public void mustOpenfile(com.horstmann.violet.framework.file.IFile file) {
+    					try {
+    						IEditorSite site = getEditorSite();
+    						Display d = site.getShell().getDisplay();
+    						LocalFile localFile = new LocalFile(file);
+    						File javaFile = localFile.toFile();
+    						URI uri = javaFile.toURI();
+    						URL url = uri.toURL();
+    						EclipseUtils.openUMLDiagram(url, d);
+    					} catch (Exception e) {
+    						throw new RuntimeException(e);
+    					}
+    				}
+    				
+    				@Override
+    				public void graphCouldBeSaved() {
+    					IEditorSite site = getEditorSite();
+                        if (site != null)
                         {
-                            public void run()
+                            Display d = site.getShell().getDisplay();
+                            d.asyncExec(new Runnable()
                             {
-                                firePropertyChange(EditorPart.PROP_DIRTY);
-                            }
-                        });
-                    }
-                }
-
-                public void titleChanged(String newTitle)
-                {
-                    // Nothing to do in eclipse
-                }
-
-            });
+                                public void run()
+                                {
+                                    firePropertyChange(EditorPart.PROP_DIRTY);
+                                }
+                            });
+                        }
+    				}
+    			});
+            } catch (Exception e) {
+            	throw new RuntimeException(e);
+            }
         }
         return this.UMLWorkspace;
     }
@@ -221,11 +224,6 @@ public class VioletUMLEditor extends EditorPart
     private IWorkspace UMLWorkspace;
     
     @SpringBean
-    private DialogManager dialogManager;
-    
-    @SpringBean
     private EclipseFileChooserService fileChooserService;
-
-
 
 }

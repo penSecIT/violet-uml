@@ -21,11 +21,11 @@
 
 package com.horstmann.violet.eclipseplugin.editors;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.eclipse.swt.SWT;
@@ -35,9 +35,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import com.horstmann.violet.framework.gui.DiagramPanel;
-import com.horstmann.violet.framework.gui.GraphPanel;
-import com.horstmann.violet.framework.gui.sidebar.ISideBar;
+import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.framework.workspace.WorkspacePanel;
+import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.framework.workspace.sidebar.ISideBar;
 
 /**
  * Main Eclipse plugin GUI component
@@ -52,19 +53,19 @@ public class DiagramComposite extends Composite
      * Default construcctor
      * 
      * @param parent component
-     * @param UMLDiagramPanel swing panel
+     * @param workspacePanel swing panel
      */
-    public DiagramComposite(final Composite parent, DiagramPanel UMLDiagramPanel)
+    public DiagramComposite(final Composite parent, IWorkspace workspacePanel)
     {
         super(parent, SWT.EMBEDDED | SWT.BORDER);
 
-        this.UMLDiagramPanel = UMLDiagramPanel;
-        this.fixLayoutProblem(this.UMLDiagramPanel);
-        this.initializePanel(this.UMLDiagramPanel, parent);
+        this.workspacePanel = workspacePanel;
+        this.fixLayoutProblem(this.workspacePanel);
+        this.initializePanel(this.workspacePanel, parent);
         this.frame = SWT_AWT.new_Frame(this);
 
         this.frame.setVisible(true);
-        this.frame.add(UMLDiagramPanel);
+        this.frame.add(workspacePanel.getAWTComponent());
         this.frame.pack();
 
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
@@ -77,20 +78,17 @@ public class DiagramComposite extends Composite
      * 
      * @return
      */
-    private void initializePanel(DiagramPanel diagramPanel, final Composite parent)
+    private void initializePanel(IWorkspace diagramPanel, final Composite parent)
     {
-        final GraphPanel graphPanel = diagramPanel.view.getGraphPanel(diagramPanel);
-
+        final IEditorPart editorPart = diagramPanel.getEditorPart();
         final ISideBar sideBar = diagramPanel.getSideBar();
-
         this.addListener(SWT.KeyUp, new Listener()
         {
-
             public void handleEvent(Event event)
             {
                 if (event.keyCode == SWT.DEL)
                 {
-                    graphPanel.removeSelected();
+                	editorPart.removeSelected();
                 }
             }
 
@@ -102,11 +100,11 @@ public class DiagramComposite extends Composite
             {
                 if (event.count > 0)
                 {
-                    sideBar.getSideToolPanel().selectPreviousButton();
+                    sideBar.getGraphToolsBar().selectPreviousTool();
                 }
                 if (event.count < 0)
                 {
-                    sideBar.getSideToolPanel().selectNextButton();
+                	sideBar.getGraphToolsBar().selectNextTool();
                 }
             }
         });
@@ -126,10 +124,11 @@ public class DiagramComposite extends Composite
      * 
      * @param diagramPanel
      */
-    private void fixLayoutProblem(DiagramPanel diagramPanel)
+    private void fixLayoutProblem(IWorkspace diagramPanel)
     {
-        final JComponent sideBar = (JComponent) diagramPanel.getSideBar();
-        final JScrollPane scrollPane = diagramPanel.view.getScrollableGraphPanel(diagramPanel);
+        final Component sideBar = diagramPanel.getSideBar().getAWTComponent();
+        WorkspacePanel workspacePanel = (WorkspacePanel) diagramPanel.getAWTComponent();
+        final JScrollPane scrollPane = workspacePanel.getScrollableEditorPart();
         sideBar.addComponentListener(new ComponentAdapter()
         {
             public void componentResized(ComponentEvent e)
@@ -143,7 +142,7 @@ public class DiagramComposite extends Composite
     /**
      * UML diagram panel
      */
-    private DiagramPanel UMLDiagramPanel;
+    private IWorkspace workspacePanel;
 
     /**
      * Diagram Panel
