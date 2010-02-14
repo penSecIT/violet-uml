@@ -79,25 +79,7 @@ public interface IGraph
      */
     public abstract void removeNode(INode n);
 
-
-    /**
-     * Adds a child node
-     * 
-     * @param index the position at which to add the child
-     * @param parentNode the parent node
-     * @param childNode the child node to add
-     */
-    public abstract void attachChildNode(int index, INode parentNode, INode childNode);
-
-    /**
-     * Detachea a child node
-     * 
-     * @param index the position at which to add the child
-     * @param parentNode the parent node
-     * @param childNode the child node to add
-     */
-    public abstract void detachChildNode(int index, INode parentNode, INode childNode);
-
+ 
     /**
      * Adds an edge to the graph that joins the nodes containing the given points. If the points aren't both inside nodes, then no
      * edge is added.
@@ -119,11 +101,6 @@ public interface IGraph
      */
     public abstract void connect(IEdge e, INode start, INode end);
 
-
-    /**
-     * Kept for compatibility.
-     */
-    public abstract void connect(IEdge e, INode aStart, Point2D sPoint, INode anEnd, Point2D ePoint);
 
 
     /**
@@ -208,19 +185,9 @@ public interface IGraph
 
     public abstract void changeNodeOrEdgeProperty(PropertyChangeEvent e);
 
-    public abstract void fireNodeAdded(INode n, Point2D location);
-
-    public abstract void fireNodeRemoved(INode n);
-
     public abstract void fireChildAttached(int index, INode p, INode c);
 
     public abstract void fireChildDetached(int index, INode p, INode c);
-
-    public abstract void fireEdgeAdded(IEdge e, Point2D startPoint, Point2D endPoint);
-
-    public abstract void fireEdgeRemoved(IEdge e);
-
-    public abstract void fireNodeMoved(INode node, double dx, double dy);
 
     public abstract void firePropertyChangeOnNodeOrEdge(PropertyChangeEvent event);
 

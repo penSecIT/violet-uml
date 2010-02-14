@@ -240,14 +240,14 @@ public class FileMenu extends JMenu
                     try
                     {
                         ExtensionFilter exportFilter = fileNamingService.getImageExtensionFilter();
-                        IFileSaver fileSaver = fileChooserService.getFileSaver(null, null, exportFilter);
+                        IFileSaver fileSaver = fileChooserService.getFileSaver(exportFilter);
                         OutputStream out = fileSaver.getOutputStream();
                         if (out != null)
                         {
                             String filename = fileSaver.getFileDefinition().getFilename();
                             String extension = exportFilter.getExtension();
-                            if (filename.toLowerCase().endsWith(extension.toUpperCase())) {
-                                String format = extension;
+                            if (filename.toLowerCase().endsWith(extension.toLowerCase())) {
+                                String format = extension.replace(".", "");
                                 workspace.getGraphFile().exportImage(out, format);
                             }
                         }

@@ -332,7 +332,7 @@ public class GraphFile implements IGraphFile
             });
             JOptionPane optionPane = new JOptionPane();
             optionPane.setMessage(message);
-            DialogFactory.getInstance().showDialog(optionPane, this.exportImageDialogTitle, true);
+            this.dialogFactory.showDialog(optionPane, this.exportImageDialogTitle, true);
             return;
         }
         try
@@ -401,6 +401,9 @@ public class GraphFile implements IGraphFile
 
     @SpringBean
     private IFilePersistenceService filePersistenceService;
+    
+    @SpringBean
+    private DialogFactory dialogFactory;
 
     private List<IGraphFileListener> listeners = new ArrayList<IGraphFileListener>();
 

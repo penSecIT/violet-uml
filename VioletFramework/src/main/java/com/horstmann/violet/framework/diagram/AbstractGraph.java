@@ -94,27 +94,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         existingNode.translate(dest.getX(), dest.getY());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#attachChildNode(int, com.horstmann.violet.framework.diagram.Node,
-     *      com.horstmann.violet.framework.diagram.Node)
-     */
-    public void attachChildNode(int index, INode parentNode, INode childNode)
-    {
-        parentNode.addChild(index, childNode);
-        fireChildAttached(index, parentNode, childNode);
-    }
 
-    /**
-     * @see com.horstmann.violet.framework.diagram.IGraph#detachChildNode(int, com.horstmann.violet.framework.diagram.node.INode,
-     *      com.horstmann.violet.framework.diagram.node.INode)
-     */
-    public void detachChildNode(int index, INode parentNode, INode childNode)
-    {
-        parentNode.removeChild(childNode);
-        fireChildDetached(index, parentNode, childNode);
-    }
 
     /*
      * (non-Javadoc)
@@ -473,17 +453,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         edges.add(e);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#connect(com.horstmann.violet.framework.diagram.Edge,
-     *      com.horstmann.violet.framework.diagram.Node, java.awt.geom.Point2D, com.horstmann.violet.framework.diagram.Node,
-     *      java.awt.geom.Point2D)
-     */
-    public void connect(IEdge e, INode aStart, Point2D sPoint, INode anEnd, Point2D ePoint)
-    {
-        connect(e, aStart, anEnd);
-    }
 
     /*
      * (non-Javadoc)

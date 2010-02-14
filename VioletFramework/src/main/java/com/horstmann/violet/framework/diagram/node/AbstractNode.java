@@ -134,8 +134,6 @@ public abstract class AbstractNode implements INode
 
         location.x += dx;
         location.y += dy;
-
-        if (graph != null && graph.getNodes().contains(this)) graph.fireNodeMoved(this, dx, dy);
     }
 
     /*
