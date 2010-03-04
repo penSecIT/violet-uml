@@ -151,7 +151,7 @@ public interface IGraph
      * 
      * @param g2 the graphics context
      */
-    public abstract void draw(Graphics2D g2, IGrid g);
+    public abstract void draw(Graphics2D g2);
 
     /**
      * Computes the layout of the graph. If you override this method, you must first call <code>super.layout</code>.

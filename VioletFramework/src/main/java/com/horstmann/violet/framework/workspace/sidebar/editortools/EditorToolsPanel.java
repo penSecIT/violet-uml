@@ -121,8 +121,8 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
         this.workspace = workspace;
         this.undoRedoBehavior = new UndoRedoBehavior(workspace.getEditorPart());
         this.cutCopyPasteBehavior = new CutCopyPasteBehavior(workspace.getEditorPart());
-        workspace.getEditorPart().addBehavior(undoRedoBehavior);
-        workspace.getEditorPart().addBehavior(cutCopyPasteBehavior);
+        workspace.getEditorPart().getBehaviorManager().addBehavior(undoRedoBehavior);
+        workspace.getEditorPart().getBehaviorManager().addBehavior(cutCopyPasteBehavior);
     }
 
     /*

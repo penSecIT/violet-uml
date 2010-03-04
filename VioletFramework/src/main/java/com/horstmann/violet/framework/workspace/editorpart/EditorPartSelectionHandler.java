@@ -1,9 +1,3 @@
-/*
- * Projet     : 
- * Package    : com.horstmann.violet.framework.gui
- * Auteur     : a.depellegrin
- * Cr�� le    : 8 mars 2007
- */
 package com.horstmann.violet.framework.workspace.editorpart;
 
 import java.util.ArrayList;
@@ -13,7 +7,7 @@ import java.util.List;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
 
-public class EditorPartSelectionHandler
+public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
 {
 
     public void setSelectedElement(INode node)
@@ -29,18 +23,24 @@ public class EditorPartSelectionHandler
         this.selectedEdges.clear();
         addSelectedElement(edge);
     }
-    
-    public void updateSelectedElements(INode[] nodes) {
-        for (int i = 0; i < nodes.length; i++) {
-            if (isElementAlreadySelected(nodes[i])) {
+
+    public void updateSelectedElements(INode[] nodes)
+    {
+        for (int i = 0; i < nodes.length; i++)
+        {
+            if (isElementAlreadySelected(nodes[i]))
+            {
                 addSelectedElement(nodes[i]);
             }
         }
     }
 
-    public void updateSelectedElements(IEdge[] edges) {
-        for (int i = 0; i < edges.length; i++) {
-            if (isElementAlreadySelected(edges[i])) {
+    public void updateSelectedElements(IEdge[] edges)
+    {
+        for (int i = 0; i < edges.length; i++)
+        {
+            if (isElementAlreadySelected(edges[i]))
+            {
                 addSelectedElement(edges[i]);
             }
         }

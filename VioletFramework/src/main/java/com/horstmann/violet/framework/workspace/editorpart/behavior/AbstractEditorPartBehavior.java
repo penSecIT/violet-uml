@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.workspace.editorpart.behavior;
 
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
@@ -118,6 +119,13 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
     
     @Override
     public void onElementsDropped(List<INode> concernedNodes, List<IEdge> concernedEdges)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void onPaint(Graphics2D g2)
     {
         // TODO Auto-generated method stub
         

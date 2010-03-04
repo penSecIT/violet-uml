@@ -165,7 +165,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      * 
      * @see com.horstmann.violet.framework.diagram.IGraph#draw(java.awt.Graphics2D, com.horstmann.violet.framework.diagram.Grid)
      */
-    public void draw(Graphics2D g2, IGrid g)
+    public void draw(Graphics2D g2)
     {
         List<INode> specialNodes = new ArrayList<INode>();
         
@@ -299,10 +299,11 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         nodesToBeRemoved.clear();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#layout(java.awt.Graphics2D, com.horstmann.violet.framework.diagram.Grid)
+
+    /**
+     * Prepare graph elements before painting
+     * @param g2
+     * @param gr
      */
     public void layout(Graphics2D g2, IGrid gr)
     {

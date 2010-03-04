@@ -30,8 +30,6 @@ import java.io.OutputStream;
 
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.util.ClipboardPipe;
-import com.horstmann.violet.framework.workspace.editorpart.EmptyGrid;
-import com.horstmann.violet.framework.workspace.editorpart.PlainGrid;
 
 public class FileExportService
 {
@@ -55,7 +53,7 @@ public class FileExportService
         g2.fill(new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth() + 1, bounds.getHeight() + 1));
         g2.setColor(Color.BLACK);
         g2.setBackground(Color.WHITE);
-        graph.draw(g2, new EmptyGrid());
+        graph.draw(g2);
         return image;
     }
 

@@ -37,6 +37,11 @@ import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.workspace.editorpart.EditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByClickBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByLassoBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.SwingRepaintingBehavior;
 import com.horstmann.violet.framework.workspace.sidebar.ISideBar;
 import com.horstmann.violet.framework.workspace.sidebar.SideBar;
 import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
@@ -135,6 +140,11 @@ public class Workspace implements IWorkspace
         if (this.graphEditor == null)
         {
             this.graphEditor = new EditorPart(this.graphFile.getGraph());
+            IEditorPartBehaviorManager behaviorManager = this.graphEditor.getBehaviorManager();
+            behaviorManager.addBehavior(new SelectByLassoBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new SelectByClickBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
         }
         return this.graphEditor;
     }

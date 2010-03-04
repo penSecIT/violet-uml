@@ -21,18 +21,14 @@
 
 package com.horstmann.violet.framework.workspace.editorpart;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
@@ -48,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.horstmann.violet.framework.diagram.GraphModificationListener;
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -57,9 +54,7 @@ import com.horstmann.violet.framework.propertyeditor.ICustomPropertyEditor;
 import com.horstmann.violet.framework.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.util.GrabberUtils;
 import com.horstmann.violet.framework.workspace.Workspace;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
 import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.product.diagram.common.DiagramLink;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
@@ -80,7 +75,9 @@ public class EditorPart extends JPanel implements IEditorPart
         SpringDependencyInjector.getInjector().inject(this);
         this.graph = aGraph;
         this.zoom = 1;
-        setBackground(Color.WHITE);
+        this.grid = new PlainGrid(this);
+        
+
         addMouseListener(new MouseAdapter()
         {
 
@@ -148,7 +145,6 @@ public class EditorPart extends JPanel implements IEditorPart
                 lastMousePoint = mousePoint;
                 mouseDownPoint = mousePoint;
                 behaviorManager.fireOnMousePressed(event);
-                repaint();
             }
 
             public void mouseReleased(MouseEvent event)
@@ -164,13 +160,12 @@ public class EditorPart extends JPanel implements IEditorPart
                         selectionHandler.setSelectedElement(newEdge);
                     }
                 }
-                if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_MOVE)) {
+                if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_MOVE))
+                {
                     behaviorManager.fireOnElementsDropped(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
                 }
                 dragMode = EditorPartMouseDragModeEnum.DRAG_NONE;
                 behaviorManager.fireOnMouseReleased(event);
-                revalidate();
-                repaint();
             }
         });
 
@@ -210,8 +205,7 @@ public class EditorPart extends JPanel implements IEditorPart
                     double y1 = mouseDownPoint.getY();
                     double x2 = mousePoint.getX();
                     double y2 = mousePoint.getY();
-                    Rectangle2D.Double lasso = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math
-                            .abs(y1 - y2));
+                    Rectangle2D.Double lasso = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
                     Iterator<INode> iter = graph.getNodes().iterator();
                     while (iter.hasNext())
                     {
@@ -229,7 +223,59 @@ public class EditorPart extends JPanel implements IEditorPart
                 }
                 behaviorManager.fireOnMouseDragged(event);
                 lastMousePoint = mousePoint;
-                repaint();
+            }
+        });
+
+
+        aGraph.addGraphModificationListener(new GraphModificationListener()
+        {
+
+            @Override
+            public void propertyChangedOnNodeOrEdge(IGraph g, PropertyChangeEvent event)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void nodeRemoved(IGraph g, INode n)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void nodeMoved(IGraph g, INode n, double dx, double dy)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void nodeAdded(IGraph g, INode n, Point2D location)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void edgeRemoved(IGraph g, IEdge e)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void edgeAdded(IGraph g, IEdge e, Point2D startPoint, Point2D endPoint)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void childDetached(IGraph g, int index, INode p, INode c)
+            {
+                EditorPart.this.repaint();
+            }
+
+            @Override
+            public void childAttached(IGraph g, int index, INode p, INode c)
+            {
+                EditorPart.this.repaint();
             }
         });
     }
@@ -247,7 +293,8 @@ public class EditorPart extends JPanel implements IEditorPart
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.gui.IEditorPart#setSelectedTool(com.horstmann.violet.framework.gui.sidebar.graphtools.GraphTool)
+     * @see com.horstmann.violet.framework.gui.IEditorPart#setSelectedTool(com.horstmann
+     * .violet.framework.gui.sidebar.graphtools.GraphTool)
      */
     public void setSelectedTool(GraphTool tool)
     {
@@ -284,7 +331,6 @@ public class EditorPart extends JPanel implements IEditorPart
                 }
 
                 graph.changeNodeOrEdgeProperty(event);
-                graph.layout((Graphics2D) getGraphics(), grid);
                 repaint();
             }
         });
@@ -295,17 +341,21 @@ public class EditorPart extends JPanel implements IEditorPart
         {
             public void propertyChange(PropertyChangeEvent event)
             {
-                if ((event.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) && event.getNewValue() != null
-                        && event.getNewValue() != JOptionPane.UNINITIALIZED_VALUE)
+                if ((event.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) && event.getNewValue() != null && event.getNewValue() != JOptionPane.UNINITIALIZED_VALUE)
                 {
                     if (sheet.isEditable())
                     {
-                        // This manages optionPane submits through a property listener because, as dialog display could be delegated
-                        // (to Eclipse for example), host system can work in other threads
-                        if (edited instanceof INode) {
+                        // This manages optionPane submits through a property
+                        // listener because, as dialog display could be
+                        // delegated
+                        // (to Eclipse for example), host system can work in
+                        // other threads
+                        if (edited instanceof INode)
+                        {
                             behaviorManager.fireAfterEditingNode((INode) edited);
                         }
-                        if (edited instanceof IEdge) {
+                        if (edited instanceof IEdge)
+                        {
                             behaviorManager.fireAfterEditingEdge((IEdge) edited);
                         }
                     }
@@ -315,10 +365,12 @@ public class EditorPart extends JPanel implements IEditorPart
 
         if (sheet.isEditable())
         {
-            if (edited instanceof INode) {
+            if (edited instanceof INode)
+            {
                 this.behaviorManager.fireBeforeEditingNode((INode) edited);
             }
-            if (edited instanceof IEdge) {
+            if (edited instanceof IEdge)
+            {
                 this.behaviorManager.fireBeforeEditingEdge((IEdge) edited);
             }
             optionPane.setMessage(sheet.getAWTComponent());
@@ -345,19 +397,18 @@ public class EditorPart extends JPanel implements IEditorPart
         try
         {
             graph.removeNodesAndEdges(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
-            graph.layout((Graphics2D) getGraphics(), grid);
         }
         finally
         {
+            this.selectionHandler.clearSelection();
             this.behaviorManager.fireAfterRemovingSelectedElements();
         }
-
-        selectionHandler.clearSelection();
-        repaint();
     }
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.gui.IEditorPart#selectAnotherGraphElement(int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.horstmann.violet.framework.gui.IEditorPart#selectAnotherGraphElement (int)
      */
     public void selectAnotherGraphElement(int distanceFromCurrentElement)
     {
@@ -433,8 +484,9 @@ public class EditorPart extends JPanel implements IEditorPart
 
     /**
      * Adds a new at a precise location
+     * 
      * @param newNode to be added
-     * @param location 
+     * @param location
      * @return true if the node has been added
      */
     private boolean addNodeAtPoint(INode newNode, Point2D location)
@@ -446,7 +498,6 @@ public class EditorPart extends JPanel implements IEditorPart
             if (graph.addNode(newNode, location))
             {
                 newNode.incrementRevision();
-                graph.layout((Graphics2D) getGraphics(), grid);
             }
         }
         finally
@@ -458,6 +509,7 @@ public class EditorPart extends JPanel implements IEditorPart
 
     /**
      * Adds an edge at a specific location
+     * 
      * @param newEdge
      * @param startPoint
      * @param endPoint
@@ -474,7 +526,6 @@ public class EditorPart extends JPanel implements IEditorPart
                 if (graph.addEdgeAtPoints(newEdge, startPoint, endPoint))
                 {
                     newEdge.incrementRevision();
-                    graph.layout((Graphics2D) getGraphics(), grid);
                 }
             }
             finally
@@ -485,20 +536,20 @@ public class EditorPart extends JPanel implements IEditorPart
         return isAdded;
     }
 
-    public List<INode> getSelectedNodes() {
+    public List<INode> getSelectedNodes()
+    {
         return selectionHandler.getSelectedNodes();
     }
 
-    public void clearSelection() {
+    public void clearSelection()
+    {
         selectionHandler.clearSelection();
     }
-    
-    public void selectElement(INode node) {
+
+    public void selectElement(INode node)
+    {
         selectionHandler.addSelectedElement(node);
     }
-    
-
-
 
     /*
      * Used by the scrollpane to evaluate if scrollbars are needed
@@ -523,38 +574,57 @@ public class EditorPart extends JPanel implements IEditorPart
             zoom *= FACTOR;
         for (int i = 1; i <= -steps; i++)
             zoom /= FACTOR;
-        revalidate();
         repaint();
     }
 
+    @Override
+    public double getZoomFactor()
+    {
+        return this.zoom;
+    }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPart#getGrid()
      */
-    public IGrid getGrid() {
+    public IGrid getGrid()
+    {
         return this.grid;
     }
-    
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPart#growDrawingArea()
+
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seecom.horstmann.violet.framework.workspace.editorpart.IEditorPart# growDrawingArea()
      */
-    public void growDrawingArea() {
+    public void growDrawingArea()
+    {
         IGraph g = getGraph();
         Rectangle2D bounds = g.getClipBounds();
         bounds.add(getBounds());
         g.setBounds(new Double(0, 0, GROW_SCALE_FACTOR * bounds.getWidth(), GROW_SCALE_FACTOR * bounds.getHeight()));
         repaint();
     }
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPart#clipDrawingArea()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seecom.horstmann.violet.framework.workspace.editorpart.IEditorPart# clipDrawingArea()
      */
-    public void clipDrawingArea() {
+    public void clipDrawingArea()
+    {
         IGraph g = getGraph();
         g.setBounds(null);
         repaint();
+    }
+
+    @Override
+    public EditorPartMouseDragModeEnum getDragingMode()
+    {
+        return this.dragMode;
     }
 
     public Component getAWTComponent()
@@ -572,80 +642,23 @@ public class EditorPart extends JPanel implements IEditorPart
         EditorPart.super.doLayout();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
-    public void paintComponent(Graphics g)
+    @Override
+    public IEditorPartSelectionHandler getSelectionHandler()
     {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.scale(zoom, zoom);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if (grid.isVisible()) grid.paint(g2);
-        graph.draw(g2, grid);
-        List<INode> nodes = selectionHandler.getSelectedNodes();
-        for (INode n : nodes)
-        {
-            if (graph.getNodes().contains(n))
-            {
-                Rectangle2D grabberBounds = n.getBounds();
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMinX(), grabberBounds.getMinY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMinX(), grabberBounds.getMaxY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMaxX(), grabberBounds.getMinY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMaxX(), grabberBounds.getMaxY());
-            }
-        }
-        List<IEdge> edges = selectionHandler.getSelectedEdges();
-        for (IEdge e : edges)
-        {
-            if (graph.getEdges().contains(e))
-            {
-                Line2D line = e.getConnectionPoints();
-                GrabberUtils.drawGrabber(g2, line.getX1(), line.getY1());
-                GrabberUtils.drawGrabber(g2, line.getX2(), line.getY2());
-            }
-        }
-
-        if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_RUBBERBAND))
-        {
-            Color oldColor = g2.getColor();
-            g2.setColor(PURPLE);
-            g2.draw(new Line2D.Double(mouseDownPoint, lastMousePoint));
-            g2.setColor(oldColor);
-        }
-        else if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_LASSO))
-        {
-            Color oldColor = g2.getColor();
-            g2.setColor(PURPLE);
-            double x1 = mouseDownPoint.getX();
-            double y1 = mouseDownPoint.getY();
-            double x2 = lastMousePoint.getX();
-            double y2 = lastMousePoint.getY();
-            Rectangle2D.Double lasso = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1
-                    - y2));
-            g2.draw(lasso);
-            g2.setColor(oldColor);
-        }
+        return this.selectionHandler;
     }
     
-
-    
-
-    public void addBehavior(IEditorPartBehavior newBehavior) {
-        this.behaviorManager.addBehavior(newBehavior);
+    @Override
+    public IEditorPartBehaviorManager getBehaviorManager()
+    {
+        return this.behaviorManager;
     }
-    
-    public List<IEditorPartBehavior> getBehaviors() {
-        return this.behaviorManager.getBehaviors();
-    }
-    
+
     private ResourceBundle resourceBundle = ResourceBundle.getBundle(ResourceBundleConstant.OTHER_STRINGS, Locale.getDefault());
 
     private IGraph graph;
-
-    private IGrid grid = new PlainGrid(this);
+    
+    private IGrid grid;
 
     private Workspace diagramPanel;
 
@@ -659,23 +672,18 @@ public class EditorPart extends JPanel implements IEditorPart
 
     private EditorPartMouseDragModeEnum dragMode = EditorPartMouseDragModeEnum.DRAG_NONE;
 
-    private EditorPartSelectionHandler selectionHandler = new EditorPartSelectionHandler();
-
-
+    private IEditorPartSelectionHandler selectionHandler = new EditorPartSelectionHandler();
 
     private static final int CONNECT_THRESHOLD = 8;
 
-    private static final Color PURPLE = new Color(0.7f, 0.4f, 0.7f);
-    
     /**
      * Scale factor used to grow drawing area
      */
     private static final double GROW_SCALE_FACTOR = Math.sqrt(2);
 
-    
     @SpringBean(name = "dialogFactory")
     private DialogFactory dialogFactory;
-    
-    private EditorPartBehaviorManager behaviorManager = new EditorPartBehaviorManager();
+
+    private IEditorPartBehaviorManager behaviorManager = new EditorPartBehaviorManager();
 
 }

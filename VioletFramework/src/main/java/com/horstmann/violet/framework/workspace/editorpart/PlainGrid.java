@@ -54,6 +54,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#setVisible(boolean)
      */
+    @Override
     public void setVisible(boolean isVisible)
     {
         this.isVisible = isVisible;
@@ -62,6 +63,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#isVisible()
      */
+    @Override
     public boolean isVisible()
     {
         return this.isVisible;
@@ -70,6 +72,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#changeGridSize(int)
      */
+    @Override
     public void changeGridSize(int steps)
     {
         final double FACTOR = Math.sqrt(Math.sqrt(2));
@@ -105,9 +108,7 @@ public class PlainGrid implements IGrid
                 / scaleY, graphBounds.getMaxY()));
     }
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.diagram.IGrid#paint(java.awt.Graphics2D)
-     */
+    @Override
     public void paint(Graphics2D g2)
     {
         if (snappingWidth == 0 || snappingHeight == 0) return;
@@ -126,6 +127,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#snap(java.awt.geom.Point2D)
      */
+    @Override
     public Point2D snap(Point2D p)
     {
         double x;
@@ -141,6 +143,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#snap(java.awt.geom.Rectangle2D)
      */
+    @Override
     public Rectangle2D snap(Rectangle2D r)
     {
         double x;
@@ -175,6 +178,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#getSnappingWidth()
      */
+    @Override
     public double getSnappingWidth()
     {
         return snappingWidth;
@@ -183,6 +187,7 @@ public class PlainGrid implements IGrid
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.diagram.IGrid#getSnappingHeight()
      */
+    @Override
     public double getSnappingHeight()
     {
         return snappingHeight;

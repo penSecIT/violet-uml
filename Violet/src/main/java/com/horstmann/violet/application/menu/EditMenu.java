@@ -176,7 +176,7 @@ public class EditMenu extends JMenu
         if (!isThereAnyWorkspaceDisplayed()) {
             return null;
         }
-        for (IEditorPartBehavior behavior : activeEditorPart.getBehaviors()) {
+        for (IEditorPartBehavior behavior : activeEditorPart.getBehaviorManager().getBehaviors()) {
             if (behavior instanceof UndoRedoBehavior) {
                 return (UndoRedoBehavior) behavior;
             }
@@ -192,7 +192,7 @@ public class EditMenu extends JMenu
         if (!isThereAnyWorkspaceDisplayed()) {
             return null;
         }
-        for (IEditorPartBehavior behavior : getActiveEditorPart().getBehaviors()) {
+        for (IEditorPartBehavior behavior : getActiveEditorPart().getBehaviorManager().getBehaviors()) {
             if (behavior instanceof CutCopyPasteBehavior) {
                 return (CutCopyPasteBehavior) behavior;
             }

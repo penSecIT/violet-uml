@@ -72,19 +72,29 @@ public interface IEditorPart
     public abstract void changeZoom(int steps);
     
     /**
+     * @return current zoom factor
+     */
+    public double getZoomFactor();
+    
+    /**
      * @return the grid used to keep elements aligned
      */
     public IGrid getGrid();
     
     /**
+     * @return current mouse dragging mode
+     */
+    public EditorPartMouseDragModeEnum getDragingMode();
+    
+    /**
      * Grows drawing area
      */
-    public abstract void growDrawingArea();
+    public void growDrawingArea();
     
     /**
      * Clips drawing area
      */
-    public abstract void clipDrawingArea();
+    public void clipDrawingArea();
 
     /**
      * @return the awt object displaying this editor part
@@ -92,14 +102,14 @@ public interface IEditorPart
     public Component getAWTComponent();
     
     /**
-     * Adds a new behavior to this editor
-     * @param behavior
+     * @return object that manages nodes and edges selection
      */
-    public void addBehavior(IEditorPartBehavior behavior);
+    public IEditorPartSelectionHandler getSelectionHandler();
     
     /**
-     * @return installed behaviors
+     * @return manager used to declare new editor behaviors and how to send events between behaviors
      */
-    public List<IEditorPartBehavior> getBehaviors();
+    public IEditorPartBehaviorManager getBehaviorManager();
+    
 
 }

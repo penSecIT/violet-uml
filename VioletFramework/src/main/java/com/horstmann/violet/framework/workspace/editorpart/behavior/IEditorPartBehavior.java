@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.workspace.editorpart.behavior;
 
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
@@ -43,6 +44,6 @@ public interface IEditorPartBehavior
     
     public void afterAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint);
     
-    
+    public void onPaint(Graphics2D g2);
     
 }

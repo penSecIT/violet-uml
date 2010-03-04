@@ -203,7 +203,7 @@ public class PrintPanel extends JPanel
                 g2.translate((float) -bounds.getX(), (float) -bounds.getY());
                 g2.setColor(Color.BLACK);
                 g2.setBackground(Color.WHITE);
-                graph.draw(g2, null);
+                graph.draw(g2);
             }
         };
 
@@ -286,7 +286,7 @@ public class PrintPanel extends JPanel
 
             g2.scale((float) scaleGraph, (float) scaleGraph);
             g2.translate((float) -bounds.getX(), (float) -bounds.getY());
-            graph.draw(g2, null);
+            graph.draw(g2);
 
             g2.setTransform(oldTransform);
             // draw page outlines (ignoring margins)

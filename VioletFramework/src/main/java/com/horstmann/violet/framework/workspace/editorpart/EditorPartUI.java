@@ -1,0 +1,53 @@
+package com.horstmann.violet.framework.workspace.editorpart;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.JComponent;
+import javax.swing.plaf.PanelUI;
+
+import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
+
+public class EditorPartUI extends PanelUI
+{
+    
+    @Override
+    public void installUI(JComponent c)
+    {
+        super.installUI(c);
+        c.setBackground(Color.WHITE);
+    }
+
+    
+    @Override
+    public void paint(Graphics g, JComponent c)
+    {
+        IEditorPart editor = (IEditorPart) c;
+        IGraph graph = editor.getGraph();
+        double zoom = editor.getZoomFactor();
+        IGrid grid = editor.getGrid();
+        super.paint(g, c);
+        Graphics2D g2 = (Graphics2D) g;
+        grid.paint(g2);
+        g2.scale(zoom, zoom);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graph.draw(g2);
+        for (IEditorPartBehavior paintableBehaviour : editor.getBehaviorManager().getBehaviors()) {
+            paintableBehaviour.onPaint(g2);
+        }
+//        EditorPartMouseDragModeEnum dragMode = editor.getDragingMode();
+//        if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_RUBBERBAND))
+//        {
+//            Color oldColor = g2.getColor();
+//            g2.setColor(PURPLE);
+//            g2.draw(new Line2D.Double(mouseDownPoint, lastMousePoint));
+//            g2.setColor(oldColor);
+//        }
+    }
+
+
+    
+}
