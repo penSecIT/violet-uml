@@ -37,6 +37,7 @@ import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.workspace.editorpart.EditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.AddEdgeBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.AddNodeBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
@@ -145,6 +146,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new SelectByLassoBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SelectByClickBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new AddNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new AddEdgeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new DragSelectedBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));

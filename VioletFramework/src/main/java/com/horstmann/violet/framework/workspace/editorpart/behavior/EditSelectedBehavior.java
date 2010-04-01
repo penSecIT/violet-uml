@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.workspace.editorpart.behavior;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -73,7 +74,9 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
                 }
 
                 EditSelectedBehavior.this.graph.changeNodeOrEdgeProperty(event);
-                EditSelectedBehavior.this.editorPart.getAWTComponent().repaint();
+                Component awtComponent = EditSelectedBehavior.this.editorPart.getAWTComponent();
+                awtComponent.doLayout();
+                awtComponent.repaint();
             }
         });
 

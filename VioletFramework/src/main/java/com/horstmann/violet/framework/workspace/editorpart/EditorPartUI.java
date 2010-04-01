@@ -22,6 +22,8 @@ public class EditorPartUI extends PanelUI
     }
 
     
+    
+    
     @Override
     public void paint(Graphics g, JComponent c)
     {

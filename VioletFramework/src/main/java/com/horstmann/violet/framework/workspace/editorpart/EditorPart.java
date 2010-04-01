@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.framework.workspace.editorpart;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -304,6 +305,7 @@ public class EditorPart extends JPanel implements IEditorPart
      */
     public void paintComponent(Graphics g)
     {
+        setBackground(Color.WHITE);
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(zoom, zoom);

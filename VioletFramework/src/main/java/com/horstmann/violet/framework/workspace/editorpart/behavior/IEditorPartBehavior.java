@@ -3,7 +3,6 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
