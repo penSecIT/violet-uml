@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
+import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
 
 public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
 {
@@ -137,6 +138,18 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
         return Collections.unmodifiableList(selectedEdges);
     }
 
+    @Override
+    public GraphTool getSelectedTool()
+    {
+        return this.selectedTool;
+    }
+
+    @Override
+    public void setSelectedTool(GraphTool graphTool)
+    {
+        this.selectedTool = graphTool;
+    }
+    
     private <T> T getLastElement(List<T> list)
     {
         int size = list.size();
@@ -148,10 +161,11 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
     }
 
     private List<INode> selectedNodes = new ArrayList<INode>();
-
     private List<IEdge> selectedEdges = new ArrayList<IEdge>();
-
+    
     private boolean isNodeSelectedAtLeast = false;
     private boolean isEdgeSelectedAtLeast = false;
+    
+    private GraphTool selectedTool;
 
 }

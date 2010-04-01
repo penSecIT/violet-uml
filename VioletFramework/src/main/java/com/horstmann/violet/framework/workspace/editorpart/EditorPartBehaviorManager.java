@@ -51,20 +51,6 @@ public class EditorPartBehaviorManager implements IEditorPartBehaviorManager
     }
     
     /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager#fireOnElementsDragged(java.util.List, java.util.List)
-     */
-    public void fireOnElementsDragged(List<INode> concernedNodes, List<IEdge> concernedEdges) {
-        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.onElementsDragged(concernedNodes, concernedEdges);
-    }
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager#fireOnElementsDropped(java.util.List, java.util.List)
-     */
-    public void fireOnElementsDropped(List<INode> concernedNodes, List<IEdge> concernedEdges) {
-        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.onElementsDropped(concernedNodes, concernedEdges);
-    }
-    
-    /* (non-Javadoc)
      * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager#fireBeforeEditingNode(com.horstmann.violet.framework.diagram.node.INode)
      */
     public void fireBeforeEditingNode(INode node) {

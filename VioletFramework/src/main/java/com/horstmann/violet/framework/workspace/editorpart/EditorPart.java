@@ -23,41 +23,25 @@ package com.horstmann.violet.framework.workspace.editorpart;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.InputEvent;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.horstmann.violet.framework.diagram.GraphModificationListener;
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.dialog.DialogFactory;
-import com.horstmann.violet.framework.propertyeditor.CustomPropertyEditor;
-import com.horstmann.violet.framework.propertyeditor.ICustomPropertyEditor;
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.workspace.Workspace;
-import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
-import com.horstmann.violet.product.diagram.common.DiagramLink;
-import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
 
 /**
  * Graph editor
@@ -83,88 +67,11 @@ public class EditorPart extends JPanel implements IEditorPart
 
             public void mousePressed(MouseEvent event)
             {
-                requestFocus();
-                final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-                boolean isCtrl = (event.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0;
-                INode targetNode = graph.findNode(mousePoint);
-                IEdge targetEdge = graph.findEdge(mousePoint);
-                boolean isButton1Clicked = (event.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
-                if (event.getClickCount() > 1 || isButton1Clicked)
-                {
-                    if (targetEdge != null)
-                    {
-                        selectionHandler.setSelectedElement(targetEdge);
-                        editSelected();
-                    }
-                    else if (targetNode != null)
-                    {
-                        selectionHandler.setSelectedElement(targetNode);
-                        editSelected();
-                    }
-                }
-                if (event.getClickCount() == 1 && GraphTool.SELECTION_TOOL.equals(selectedTool)) // select
-                {
-                    if (targetEdge != null)
-                    {
-                        selectionHandler.setSelectedElement(targetEdge);
-                    }
-                    else if (targetNode != null)
-                    {
-                        if (isCtrl) selectionHandler.addSelectedElement(targetNode);
-                        else if (!selectionHandler.isElementAlreadySelected(targetNode)) selectionHandler.setSelectedElement(targetNode);
-                        dragMode = EditorPartMouseDragModeEnum.DRAG_MOVE;
-                    }
-                    else
-                    {
-                        if (!isCtrl) selectionHandler.clearSelection();
-                        dragMode = EditorPartMouseDragModeEnum.DRAG_LASSO;
-                    }
-                }
-                if (event.getClickCount() == 1 && !GraphTool.SELECTION_TOOL.equals(selectedTool) && INode.class.isInstance(selectedTool.getNodeOrEdge()))
-                {
-                    INode prototype = (INode) selectedTool.getNodeOrEdge();
-                    INode newNode = (INode) prototype.clone(); // FileExportService.cloneNode(prototype);
-                    boolean added = addNodeAtPoint(newNode, mousePoint);
-                    if (added)
-                    {
-                        selectionHandler.setSelectedElement(newNode);
-                        dragMode = EditorPartMouseDragModeEnum.DRAG_MOVE;
-                    }
-                    else if (targetNode != null)
-                    {
-                        if (isCtrl) selectionHandler.addSelectedElement(targetNode);
-                        else if (!selectionHandler.isElementAlreadySelected(targetNode)) selectionHandler.setSelectedElement(targetNode);
-                        dragMode = EditorPartMouseDragModeEnum.DRAG_MOVE;
-                    }
-                }
-                if (event.getClickCount() == 1 && !GraphTool.SELECTION_TOOL.equals(selectedTool) && IEdge.class.isInstance(selectedTool.getNodeOrEdge()))
-                {
-                    if (targetNode != null) dragMode = EditorPartMouseDragModeEnum.DRAG_RUBBERBAND;
-                }
-
-                lastMousePoint = mousePoint;
-                mouseDownPoint = mousePoint;
                 behaviorManager.fireOnMousePressed(event);
             }
 
             public void mouseReleased(MouseEvent event)
             {
-                Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-                if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_RUBBERBAND))
-                {
-                    IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
-                    IEdge newEdge = (IEdge) prototype.clone();
-                    boolean added = addEdgeAtPoints(newEdge, mouseDownPoint, mousePoint);
-                    if (added)
-                    {
-                        selectionHandler.setSelectedElement(newEdge);
-                    }
-                }
-                if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_MOVE))
-                {
-                    behaviorManager.fireOnElementsDropped(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
-                }
-                dragMode = EditorPartMouseDragModeEnum.DRAG_NONE;
                 behaviorManager.fireOnMouseReleased(event);
             }
         });
@@ -173,111 +80,12 @@ public class EditorPart extends JPanel implements IEditorPart
         {
             public void mouseDragged(MouseEvent event)
             {
-                Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-                if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_MOVE) && selectionHandler.isNodeSelectedAtLeast())
-                {
-                    behaviorManager.fireOnElementsDragged(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
-
-                    INode lastNode = selectionHandler.getLastSelectedNode();
-                    Rectangle2D bounds = lastNode.getBounds();
-                    double dx = mousePoint.getX() - lastMousePoint.getX();
-                    double dy = mousePoint.getY() - lastMousePoint.getY();
-
-                    // we don't want to drag nodes into negative coordinates
-                    // particularly with multiple selection, we might never be
-                    // able to get them back.
-                    List<INode> selectedNodes = selectionHandler.getSelectedNodes();
-                    for (INode n : selectedNodes)
-                        bounds.add(n.getBounds());
-                    dx = Math.max(dx, -bounds.getX());
-                    dy = Math.max(dy, -bounds.getY());
-
-                    for (INode n : selectedNodes)
-                    {
-                        if (!selectedNodes.contains(n.getParent())) // parents are responsible for translating their children
-                        n.translate(dx, dy);
-                    }
-                }
-                else if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_LASSO))
-                {
-                    boolean isCtrl = (event.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0;
-                    double x1 = mouseDownPoint.getX();
-                    double y1 = mouseDownPoint.getY();
-                    double x2 = mousePoint.getX();
-                    double y2 = mousePoint.getY();
-                    Rectangle2D.Double lasso = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
-                    Iterator<INode> iter = graph.getNodes().iterator();
-                    while (iter.hasNext())
-                    {
-                        INode n = (INode) iter.next();
-                        Rectangle2D bounds = n.getBounds();
-                        if (!isCtrl && !lasso.contains(bounds))
-                        {
-                            selectionHandler.removeElementFromSelection(n);
-                        }
-                        else if (lasso.contains(bounds))
-                        {
-                            selectionHandler.addSelectedElement(n);
-                        }
-                    }
-                }
                 behaviorManager.fireOnMouseDragged(event);
-                lastMousePoint = mousePoint;
             }
         });
 
 
-        aGraph.addGraphModificationListener(new GraphModificationListener()
-        {
-
-            @Override
-            public void propertyChangedOnNodeOrEdge(IGraph g, PropertyChangeEvent event)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void nodeRemoved(IGraph g, INode n)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void nodeMoved(IGraph g, INode n, double dx, double dy)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void nodeAdded(IGraph g, INode n, Point2D location)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void edgeRemoved(IGraph g, IEdge e)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void edgeAdded(IGraph g, IEdge e, Point2D startPoint, Point2D endPoint)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void childDetached(IGraph g, int index, INode p, INode c)
-            {
-                EditorPart.this.repaint();
-            }
-
-            @Override
-            public void childAttached(IGraph g, int index, INode p, INode c)
-            {
-                EditorPart.this.repaint();
-            }
-        });
+        
     }
 
     /*
@@ -290,101 +98,6 @@ public class EditorPart extends JPanel implements IEditorPart
         return this.graph;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.gui.IEditorPart#setSelectedTool(com.horstmann
-     * .violet.framework.gui.sidebar.graphtools.GraphTool)
-     */
-    public void setSelectedTool(GraphTool tool)
-    {
-        this.selectedTool = tool;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.gui.IEditorPart#editSelected()
-     */
-    public void editSelected()
-    {
-        final Object edited = selectionHandler.isNodeSelectedAtLeast() ? selectionHandler.getLastSelectedNode() : selectionHandler.getLastSelectedEdge();
-        if (edited == null)
-        {
-            return;
-        }
-        final ICustomPropertyEditor sheet = new CustomPropertyEditor(edited);
-
-        sheet.addPropertyChangeListener(new PropertyChangeListener()
-        {
-            public void propertyChange(final PropertyChangeEvent event)
-            {
-                if (event.getSource() instanceof DiagramLinkNode)
-                {
-                    DiagramLinkNode ln = (DiagramLinkNode) event.getSource();
-                    DiagramLink dl = ln.getDiagramLink();
-                    if (dl != null && dl.getOpenFlag().booleanValue())
-                    {
-                        diagramPanel.fireMustOpenFile(dl.getFile());
-                        dl.setOpenFlag(new Boolean(false));
-                    }
-                }
-
-                graph.changeNodeOrEdgeProperty(event);
-                repaint();
-            }
-        });
-
-        JOptionPane optionPane = new JOptionPane();
-        optionPane.setOpaque(false);
-        optionPane.addPropertyChangeListener(new PropertyChangeListener()
-        {
-            public void propertyChange(PropertyChangeEvent event)
-            {
-                if ((event.getPropertyName().equals(JOptionPane.VALUE_PROPERTY)) && event.getNewValue() != null && event.getNewValue() != JOptionPane.UNINITIALIZED_VALUE)
-                {
-                    if (sheet.isEditable())
-                    {
-                        // This manages optionPane submits through a property
-                        // listener because, as dialog display could be
-                        // delegated
-                        // (to Eclipse for example), host system can work in
-                        // other threads
-                        if (edited instanceof INode)
-                        {
-                            behaviorManager.fireAfterEditingNode((INode) edited);
-                        }
-                        if (edited instanceof IEdge)
-                        {
-                            behaviorManager.fireAfterEditingEdge((IEdge) edited);
-                        }
-                    }
-                }
-            }
-        });
-
-        if (sheet.isEditable())
-        {
-            if (edited instanceof INode)
-            {
-                this.behaviorManager.fireBeforeEditingNode((INode) edited);
-            }
-            if (edited instanceof IEdge)
-            {
-                this.behaviorManager.fireBeforeEditingEdge((IEdge) edited);
-            }
-            optionPane.setMessage(sheet.getAWTComponent());
-        }
-        if (!sheet.isEditable())
-        {
-            String message = this.resourceBundle.getString("dialog.properties.empty_bean_message");
-            JLabel label = new JLabel(message);
-            label.setFont(label.getFont().deriveFont(Font.PLAIN));
-            optionPane.setMessage(label);
-        }
-        this.dialogFactory.showDialog(optionPane, this.resourceBundle.getString("dialog.properties.title"), true);
-
-    }
 
     /*
      * (non-Javadoc)
@@ -482,59 +195,7 @@ public class EditorPart extends JPanel implements IEditorPart
         repaint();
     }
 
-    /**
-     * Adds a new at a precise location
-     * 
-     * @param newNode to be added
-     * @param location
-     * @return true if the node has been added
-     */
-    private boolean addNodeAtPoint(INode newNode, Point2D location)
-    {
-        boolean isAdded = false;
-        this.behaviorManager.fireBeforeAddingNodeAtPoint(newNode, location);
-        try
-        {
-            if (graph.addNode(newNode, location))
-            {
-                newNode.incrementRevision();
-            }
-        }
-        finally
-        {
-            this.behaviorManager.fireAfterAddingNodeAtPoint(newNode, location);
-        }
-        return isAdded;
-    }
 
-    /**
-     * Adds an edge at a specific location
-     * 
-     * @param newEdge
-     * @param startPoint
-     * @param endPoint
-     * @return true id the edge has been added
-     */
-    private boolean addEdgeAtPoints(IEdge newEdge, Point2D startPoint, Point2D endPoint)
-    {
-        boolean isAdded = false;
-        if (startPoint.distance(endPoint) > CONNECT_THRESHOLD)
-        {
-            this.behaviorManager.fireBeforeAddingEdgeAtPoints(newEdge, startPoint, endPoint);
-            try
-            {
-                if (graph.addEdgeAtPoints(newEdge, startPoint, endPoint))
-                {
-                    newEdge.incrementRevision();
-                }
-            }
-            finally
-            {
-                this.behaviorManager.fireAfterAddingEdgeAtPoints(newEdge, startPoint, endPoint);
-            }
-        }
-        return isAdded;
-    }
 
     public List<INode> getSelectedNodes()
     {
@@ -621,12 +282,6 @@ public class EditorPart extends JPanel implements IEditorPart
         repaint();
     }
 
-    @Override
-    public EditorPartMouseDragModeEnum getDragingMode()
-    {
-        return this.dragMode;
-    }
-
     public Component getAWTComponent()
     {
         return this;
@@ -641,6 +296,25 @@ public class EditorPart extends JPanel implements IEditorPart
         }
         EditorPart.super.doLayout();
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.scale(zoom, zoom);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (grid.isVisible()) grid.paint(g2);
+        graph.draw(g2);
+        for (IEditorPartBehavior behavior : this.behaviorManager.getBehaviors()) {
+            behavior.onPaint(g2);
+        }
+    }
+    
 
     @Override
     public IEditorPartSelectionHandler getSelectionHandler()
@@ -654,35 +328,19 @@ public class EditorPart extends JPanel implements IEditorPart
         return this.behaviorManager;
     }
 
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle(ResourceBundleConstant.OTHER_STRINGS, Locale.getDefault());
-
     private IGraph graph;
     
     private IGrid grid;
 
-    private Workspace diagramPanel;
-
     private double zoom;
 
-    private GraphTool selectedTool;
-
-    private Point2D lastMousePoint;
-
-    private Point2D mouseDownPoint;
-
-    private EditorPartMouseDragModeEnum dragMode = EditorPartMouseDragModeEnum.DRAG_NONE;
-
     private IEditorPartSelectionHandler selectionHandler = new EditorPartSelectionHandler();
-
-    private static final int CONNECT_THRESHOLD = 8;
 
     /**
      * Scale factor used to grow drawing area
      */
     private static final double GROW_SCALE_FACTOR = Math.sqrt(2);
 
-    @SpringBean(name = "dialogFactory")
-    private DialogFactory dialogFactory;
 
     private IEditorPartBehaviorManager behaviorManager = new EditorPartBehaviorManager();
 

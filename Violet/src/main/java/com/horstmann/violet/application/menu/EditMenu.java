@@ -84,15 +84,6 @@ public class EditMenu extends JMenu
         });
         this.add(redo);
 
-        properties.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                if (isThereAnyWorkspaceDisplayed()) getActiveEditorPart().editSelected();
-            }
-        });
-        this.add(properties);
-
         cut.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
@@ -209,9 +200,6 @@ public class EditMenu extends JMenu
 
     @ResourceBundleBean(key = "edit.redo")
     private JMenuItem redo;
-
-    @ResourceBundleBean(key = "edit.properties")
-    private JMenuItem properties;
 
     @ResourceBundleBean(key = "edit.cut")
     private JMenuItem cut;

@@ -64,6 +64,9 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
         Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
         // TODO : behaviorManager.fireOnElementsDragged(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
         INode lastNode = selectionHandler.getLastSelectedNode();
+        if (lastNode == null) {
+            return;
+        }
         Rectangle2D bounds = lastNode.getBounds();
         double dx = mousePoint.getX() - lastMousePoint.getX();
         double dy = mousePoint.getY() - lastMousePoint.getY();

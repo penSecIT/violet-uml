@@ -38,14 +38,6 @@ public class EditorPartUI extends PanelUI
         for (IEditorPartBehavior paintableBehaviour : editor.getBehaviorManager().getBehaviors()) {
             paintableBehaviour.onPaint(g2);
         }
-//        EditorPartMouseDragModeEnum dragMode = editor.getDragingMode();
-//        if (dragMode.equals(EditorPartMouseDragModeEnum.DRAG_RUBBERBAND))
-//        {
-//            Color oldColor = g2.getColor();
-//            g2.setColor(PURPLE);
-//            g2.draw(new Line2D.Double(mouseDownPoint, lastMousePoint));
-//            g2.setColor(oldColor);
-//        }
     }
 
 

@@ -22,7 +22,6 @@
 package com.horstmann.violet.framework.workspace;
 
 import java.io.File;
-import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,6 +37,8 @@ import com.horstmann.violet.framework.spring.annotation.SpringBean;
 import com.horstmann.violet.framework.workspace.editorpart.EditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.AddNodeBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByClickBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByLassoBehavior;
@@ -143,6 +144,8 @@ public class Workspace implements IWorkspace
             IEditorPartBehaviorManager behaviorManager = this.graphEditor.getBehaviorManager();
             behaviorManager.addBehavior(new SelectByLassoBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SelectByClickBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new AddNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new DragSelectedBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
         }
@@ -164,7 +167,7 @@ public class Workspace implements IWorkspace
             {
                 public void toolSelectionChanged(GraphTool tool)
                 {
-                    getEditorPart().setSelectedTool(tool);
+                    getEditorPart().getSelectionHandler().setSelectedTool(tool);
                 }
             });
         }

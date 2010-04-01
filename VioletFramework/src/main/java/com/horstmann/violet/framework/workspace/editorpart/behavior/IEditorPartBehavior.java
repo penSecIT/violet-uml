@@ -20,10 +20,6 @@ public interface IEditorPartBehavior
     
     public void onToolSelected( GraphTool selectedTool);
     
-    public void onElementsDragged(List<INode> concernedNodes, List<IEdge> concernedEdges);
-    
-    public void onElementsDropped(List<INode> concernedNodes, List<IEdge> concernedEdges);
-    
     public void beforeEditingNode(INode node);
     
     public void afterEditingNode(INode node);

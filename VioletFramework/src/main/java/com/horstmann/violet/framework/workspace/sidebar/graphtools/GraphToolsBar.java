@@ -49,7 +49,7 @@ public class GraphToolsBar implements IGraphToolsBar, ISideBarElement
         this.edgeTools = getStandardEdgeTools(graph);
         this.panel = new GraphToolsBarPanel(this);
         reset();
-        editorPart.setSelectedTool(getSelectedTool());
+        editorPart.getSelectionHandler().setSelectedTool(getSelectedTool());
     }
     
     public void selectNextTool()

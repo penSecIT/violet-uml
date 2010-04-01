@@ -46,18 +46,6 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     }
 
     @Override
-    public void onElementsDropped(List<INode> concernedNodes, List<IEdge> concernedEdges)
-    {
-        this.editorPart.getAWTComponent().repaint();
-    }
-
-    @Override
-    public void onElementsDragged(List<INode> concernedNodes, List<IEdge> concernedEdges)
-    {
-        this.editorPart.getAWTComponent().repaint();
-    }
-
-    @Override
     public void beforeRemovingSelectedElements()
     {
         // Nothing to do

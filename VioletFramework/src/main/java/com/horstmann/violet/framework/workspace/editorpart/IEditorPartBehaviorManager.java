@@ -21,10 +21,6 @@ public interface IEditorPartBehaviorManager
 
     public abstract void fireOnMouseReleased(MouseEvent event);
 
-    public abstract void fireOnElementsDragged(List<INode> concernedNodes, List<IEdge> concernedEdges);
-
-    public abstract void fireOnElementsDropped(List<INode> concernedNodes, List<IEdge> concernedEdges);
-
     public abstract void fireBeforeEditingNode(INode node);
 
     public abstract void fireAfterEditingNode(INode node);

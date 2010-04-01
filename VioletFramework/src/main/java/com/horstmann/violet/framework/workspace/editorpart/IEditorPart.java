@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
-import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
 
 /**
  * Defines the editor behaviour (an editor is something embedding an IGraph)
@@ -23,11 +21,6 @@ public interface IEditorPart
     public abstract IGraph getGraph();
 
     /**
-     * Edits the properties of the selected graph element.
-     */
-    public abstract void editSelected();
-
-    /**
      * Removes the selected nodes or edges.
      */
     public abstract void removeSelected();
@@ -40,12 +33,6 @@ public interface IEditorPart
      */
     public abstract void selectAnotherGraphElement(int distanceFormCurrentElement);
 
-    /**
-     * Sets the currently selected tool
-     * 
-     * @param tool t
-     */
-    public abstract void setSelectedTool(GraphTool tool);
 
     /**
      * @return currently selected nodes
@@ -80,11 +67,6 @@ public interface IEditorPart
      * @return the grid used to keep elements aligned
      */
     public IGrid getGrid();
-    
-    /**
-     * @return current mouse dragging mode
-     */
-    public EditorPartMouseDragModeEnum getDragingMode();
     
     /**
      * Grows drawing area

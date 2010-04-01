@@ -91,9 +91,9 @@ public class SelectByLassoBehavior extends AbstractEditorPartBehavior
         IEdge edge = this.graph.findEdge(mouseLocation);
         if (node == null && edge == null)
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void resetSelectedElements()

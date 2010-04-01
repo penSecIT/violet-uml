@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
+import com.horstmann.violet.framework.workspace.sidebar.graphtools.GraphTool;
 
 public interface IEditorPartSelectionHandler {
 
@@ -36,5 +37,9 @@ public interface IEditorPartSelectionHandler {
 	public abstract List<INode> getSelectedNodes();
 
 	public abstract List<IEdge> getSelectedEdges();
+	
+	public abstract void setSelectedTool(GraphTool graphTool);
+	
+	public abstract GraphTool getSelectedTool();
 
 }
