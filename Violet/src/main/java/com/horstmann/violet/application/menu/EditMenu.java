@@ -23,6 +23,7 @@ package com.horstmann.violet.application.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -31,8 +32,10 @@ import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.CutCopyPasteBehavior;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.UndoRedoBehavior;
 
 /**
@@ -68,8 +71,15 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                UndoRedoBehavior undoRedoBehavior = getUndoRedoBehavior(getActiveEditorPart());
-                if (undoRedoBehavior != null) undoRedoBehavior.undo();
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<UndoRedoBehavior> found = behaviorManager.getBehaviors(UndoRedoBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).undo();
+                }
             }
         });
         this.add(undo);
@@ -78,18 +88,49 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                UndoRedoBehavior undoRedoBehavior = getUndoRedoBehavior(getActiveEditorPart());
-                if (undoRedoBehavior != null) undoRedoBehavior.redo();
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<UndoRedoBehavior> found = behaviorManager.getBehaviors(UndoRedoBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).redo();
+                }
             }
         });
         this.add(redo);
+
+        properties.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<EditSelectedBehavior> found = behaviorManager.getBehaviors(EditSelectedBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).editSelected();
+                }
+            }
+        });
+        this.add(properties);
 
         cut.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent event)
             {
-                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior(getActiveEditorPart());
-                if (cutCopyPasteBehavior != null) cutCopyPasteBehavior.cut();
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<CutCopyPasteBehavior> found = behaviorManager.getBehaviors(CutCopyPasteBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).cut();
+                }
             }
         });
         this.add(cut);
@@ -98,8 +139,15 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior(getActiveEditorPart());
-                if (cutCopyPasteBehavior != null) cutCopyPasteBehavior.copy();
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<CutCopyPasteBehavior> found = behaviorManager.getBehaviors(CutCopyPasteBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).copy();
+                }
             }
         });
         this.add(copy);
@@ -108,8 +156,15 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior(getActiveEditorPart());
-                if (cutCopyPasteBehavior != null) cutCopyPasteBehavior.paste();
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<CutCopyPasteBehavior> found = behaviorManager.getBehaviors(CutCopyPasteBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).paste();
+                }
             }
         });
         this.add(paste);
@@ -127,7 +182,15 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                if (isThereAnyWorkspaceDisplayed()) getActiveEditorPart().selectAnotherGraphElement(1);
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<SelectByDistanceBehavior> found = behaviorManager.getBehaviors(SelectByDistanceBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).selectAnotherGraphElement(1);
+                }
             }
         });
         this.add(selectNext);
@@ -136,7 +199,15 @@ public class EditMenu extends JMenu
         {
             public void actionPerformed(ActionEvent event)
             {
-                if (isThereAnyWorkspaceDisplayed()) getActiveEditorPart().selectAnotherGraphElement(-1);
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<SelectByDistanceBehavior> found = behaviorManager.getBehaviors(SelectByDistanceBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).selectAnotherGraphElement(-1);
+                }
             }
         });
         this.add(selectPrevious);
@@ -159,39 +230,6 @@ public class EditMenu extends JMenu
         return mainFrame.getWorkspaceList().size() > 0;
     }
     
-    /**
-     * @param activeEditorPart
-     * @return current editor undo/redo behavior or null if not found
-     */
-    private UndoRedoBehavior getUndoRedoBehavior(IEditorPart activeEditorPart) {
-        if (!isThereAnyWorkspaceDisplayed()) {
-            return null;
-        }
-        for (IEditorPartBehavior behavior : activeEditorPart.getBehaviorManager().getBehaviors()) {
-            if (behavior instanceof UndoRedoBehavior) {
-                return (UndoRedoBehavior) behavior;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * @param activeEditorPart
-     * @return current editor cut/copy/paste behavior or null if not found
-     */
-    private CutCopyPasteBehavior getCutCopyPasteBehavior(IEditorPart activeEditorPart) {
-        if (!isThereAnyWorkspaceDisplayed()) {
-            return null;
-        }
-        for (IEditorPartBehavior behavior : getActiveEditorPart().getBehaviorManager().getBehaviors()) {
-            if (behavior instanceof CutCopyPasteBehavior) {
-                return (CutCopyPasteBehavior) behavior;
-            }
-        }
-        return null;
-    }
-    
-
     /** Application frame */
     private MainFrame mainFrame;
 
@@ -200,6 +238,9 @@ public class EditMenu extends JMenu
 
     @ResourceBundleBean(key = "edit.redo")
     private JMenuItem redo;
+
+    @ResourceBundleBean(key = "edit.properties")
+    private JMenuItem properties;
 
     @ResourceBundleBean(key = "edit.cut")
     private JMenuItem cut;

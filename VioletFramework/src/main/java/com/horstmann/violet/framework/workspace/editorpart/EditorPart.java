@@ -30,16 +30,13 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 
 import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
 import com.horstmann.violet.framework.spring.SpringDependencyInjector;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.IEditorPartBehavior;
@@ -117,83 +114,6 @@ public class EditorPart extends JPanel implements IEditorPart
             this.selectionHandler.clearSelection();
             this.behaviorManager.fireAfterRemovingSelectedElements();
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.gui.IEditorPart#selectAnotherGraphElement (int)
-     */
-    public void selectAnotherGraphElement(int distanceFromCurrentElement)
-    {
-        ArrayList<Object> selectables = new ArrayList<Object>();
-        selectables.addAll(graph.getNodes());
-        selectables.addAll(graph.getEdges());
-        if (selectables.size() == 0) return;
-        java.util.Collections.sort(selectables, new java.util.Comparator<Object>()
-        {
-            public int compare(Object obj1, Object obj2)
-            {
-                double x1;
-                double y1;
-                if (obj1 instanceof INode)
-                {
-                    Rectangle2D bounds = ((INode) obj1).getBounds();
-                    x1 = bounds.getX();
-                    y1 = bounds.getY();
-                }
-                else
-                {
-                    Point2D start = ((IEdge) obj1).getConnectionPoints().getP1();
-                    x1 = start.getX();
-                    y1 = start.getY();
-                }
-                double x2;
-                double y2;
-                if (obj2 instanceof INode)
-                {
-                    Rectangle2D bounds = ((INode) obj2).getBounds();
-                    x2 = bounds.getX();
-                    y2 = bounds.getY();
-                }
-                else
-                {
-                    Point2D start = ((IEdge) obj2).getConnectionPoints().getP1();
-                    x2 = start.getX();
-                    y2 = start.getY();
-                }
-                if (y1 < y2) return -1;
-                if (y1 > y2) return 1;
-                if (x1 < x2) return -1;
-                if (x1 > x2) return 1;
-                return 0;
-            }
-        });
-        int index;
-        Object lastSelected = null;
-        if (selectionHandler.isNodeSelectedAtLeast())
-        {
-            lastSelected = selectionHandler.getLastSelectedNode();
-        }
-        if (selectionHandler.isEdgeSelectedAtLeast())
-        {
-            lastSelected = selectionHandler.getLastSelectedEdge();
-        }
-        if (lastSelected == null) index = 0;
-        else index = selectables.indexOf(lastSelected) + distanceFromCurrentElement;
-        while (index < 0)
-            index += selectables.size();
-        index %= selectables.size();
-        Object toSelect = selectables.get(index);
-        if (toSelect instanceof INode)
-        {
-            selectionHandler.setSelectedElement((INode) toSelect);
-        }
-        if (toSelect instanceof IEdge)
-        {
-            selectionHandler.setSelectedElement((IEdge) toSelect);
-        }
-        repaint();
     }
 
 

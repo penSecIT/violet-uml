@@ -25,14 +25,6 @@ public interface IEditorPart
      */
     public abstract void removeSelected();
 
-    /**
-     * Selects another graph element.
-     * 
-     * @param distanceFormCurrentElement distance from the currently selected element. For example : -1 for the previous element and
-     *            +1 for the next one.
-     */
-    public abstract void selectAnotherGraphElement(int distanceFormCurrentElement);
-
 
     /**
      * @return currently selected nodes

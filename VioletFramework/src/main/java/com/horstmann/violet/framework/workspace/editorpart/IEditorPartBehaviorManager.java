@@ -14,6 +14,8 @@ public interface IEditorPartBehaviorManager
     public abstract void addBehavior(IEditorPartBehavior newBehavior);
 
     public abstract List<IEditorPartBehavior> getBehaviors();
+    
+    public abstract <T extends IEditorPartBehavior> List<T> getBehaviors(Class<T> type);
 
     public abstract void fireOnMousePressed(MouseEvent event);
 
@@ -23,9 +25,13 @@ public interface IEditorPartBehaviorManager
 
     public abstract void fireBeforeEditingNode(INode node);
 
+    public abstract void fireWhileEditingNode(INode node);
+
     public abstract void fireAfterEditingNode(INode node);
 
     public abstract void fireBeforeEditingEdge(IEdge edge);
+    
+    public abstract void fireWhileEditingEdge(IEdge edge);
 
     public abstract void fireAfterEditingEdge(IEdge edge);
 
@@ -40,5 +46,9 @@ public interface IEditorPartBehaviorManager
     public abstract void fireBeforeAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint);
 
     public abstract void fireAfterAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint);
+    
+    public abstract void fireOnNodeSelected(INode node);
+    
+    public abstract void fireOnEdgeSelected(IEdge edge);
 
 }

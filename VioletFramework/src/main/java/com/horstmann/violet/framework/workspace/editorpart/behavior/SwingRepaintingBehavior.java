@@ -3,7 +3,6 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -24,24 +23,28 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     @Override
     public void onToolSelected(GraphTool selectedTool)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void onMouseReleased(MouseEvent event)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void onMousePressed(MouseEvent event)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void onMouseDragged(MouseEvent event)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
@@ -78,30 +81,35 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     @Override
     public void afterRemovingSelectedElements()
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void afterEditingNode(INode node)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void afterEditingEdge(IEdge edge)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void afterAddingNodeAtPoint(INode node, Point2D location)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
     public void afterAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint)
     {
+        this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
     
@@ -110,6 +118,34 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     {
         // nothing to do
         
+    }
+
+    @Override
+    public void onEdgeSelected(IEdge edge)
+    {
+        this.editorPart.getAWTComponent().doLayout();
+        this.editorPart.getAWTComponent().repaint();
+    }
+
+    @Override
+    public void onNodeSelected(INode node)
+    {
+        this.editorPart.getAWTComponent().doLayout();
+        this.editorPart.getAWTComponent().repaint();
+    }
+
+    @Override
+    public void whileEditingEdge(IEdge edge)
+    {
+        this.editorPart.getAWTComponent().doLayout();
+        this.editorPart.getAWTComponent().repaint();
+    }
+
+    @Override
+    public void whileEditingNode(INode node)
+    {
+        this.editorPart.getAWTComponent().doLayout();
+        this.editorPart.getAWTComponent().repaint();
     }
 
    

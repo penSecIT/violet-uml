@@ -3,7 +3,6 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -74,6 +73,20 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
         // TODO Auto-generated method stub
 
     }
+    
+    @Override
+    public void whileEditingEdge(IEdge edge)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void whileEditingNode(INode node)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
     @Override
     public void beforeRemovingSelectedElements()
@@ -108,6 +121,20 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
     {
         // TODO Auto-generated method stub
 
+    }
+    
+    @Override
+    public void onEdgeSelected(IEdge edge)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void onNodeSelected(INode node)
+    {
+        // TODO Auto-generated method stub
+        
     }
     
     @Override

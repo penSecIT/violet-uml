@@ -17,13 +17,21 @@ public interface IEditorPartBehavior
     
     public void onMouseReleased(MouseEvent event);
     
-    public void onToolSelected( GraphTool selectedTool);
+    public void onToolSelected(GraphTool selectedTool);
+    
+    public void onNodeSelected(INode node);
+
+    public void onEdgeSelected(IEdge edge);
     
     public void beforeEditingNode(INode node);
+
+    public void whileEditingNode(INode node);
     
     public void afterEditingNode(INode node);
     
     public void beforeEditingEdge(IEdge edge);
+    
+    public void whileEditingEdge(IEdge edge);
     
     public void afterEditingEdge(IEdge edge);
     
