@@ -24,6 +24,12 @@ package com.horstmann.violet.eclipseplugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.horstmann.violet.framework.plugin.PluginLoader;
+import com.horstmann.violet.framework.spring.SpringDependencyInjector;
+import com.horstmann.violet.framework.spring.annotation.SpringBean;
 
 /**
  * The main plugin class to be used in the desktop. This plugin embeds Violet in Eclipse
@@ -35,6 +41,9 @@ public class VioletPlugin extends AbstractUIPlugin
 
     // The shared instance.
     private static VioletPlugin plugin;
+    
+    @SpringBean(name = "pluginLoader")
+    private PluginLoader pluginLoader;
 
     /**
      * The constructor.
@@ -50,6 +59,10 @@ public class VioletPlugin extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
+        ApplicationContext springContext = getApplicationContext();
+        SpringDependencyInjector injector = (SpringDependencyInjector) springContext.getBean("springDependencyInjector");
+        injector.inject(this);
+        installPlugins();
     }
 
     /**
@@ -78,6 +91,30 @@ public class VioletPlugin extends AbstractUIPlugin
     public static ImageDescriptor getImageDescriptor(String path)
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin("VioletPlugin", path);
+    }
+    
+    /**
+     * Install plugins
+     */
+    private void installPlugins()
+    {
+
+        this.pluginLoader.installPlugins();
+    }
+    
+    /**
+     * @return a new application context instance
+     */
+    private static ApplicationContext getApplicationContext()
+    {
+        String[] configLocations =
+        {
+                "classpath*:applicationContext*.xml",
+                "classpath:applicationContext-framework.xml",
+                "classpath:dedicatedApplicationContext-application.xml"
+        };
+        ApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
+        return context;
     }
 
 }

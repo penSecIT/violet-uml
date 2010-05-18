@@ -21,10 +21,10 @@
 
 package com.horstmann.violet.eclipseplugin.wizards;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.ByteBuffer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -41,8 +41,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
-import com.horstmann.violet.framework.diagram.Graph;
-import com.horstmann.violet.framework.diagram.GraphService;
+import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.spring.SpringDependencyInjector;
+import com.horstmann.violet.framework.spring.annotation.SpringBean;
 
 /**
  * Generic diagram creation wizard
@@ -117,6 +119,7 @@ public class GenericDiagramWizard extends Wizard implements INewWizard
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         this.selection = selection;
+        SpringDependencyInjector.getInjector().inject(this);
     }
 
     /**
@@ -136,9 +139,9 @@ public class GenericDiagramWizard extends Wizard implements INewWizard
      * 
      * @return class diagram by default if not alredy set
      */
-    private Graph getUMLGraph()
+    private IGraph getUMLGraph()
     {
-        Class<? extends Graph> selectedGraphType = this.selectionWizardPage.getSelectedGraphType();
+        Class<? extends IGraph> selectedGraphType = this.selectionWizardPage.getSelectedGraphType();
         try
         {
             return selectedGraphType.newInstance();
@@ -160,10 +163,11 @@ public class GenericDiagramWizard extends Wizard implements INewWizard
     {
         try
         {
-            Graph graph = this.getUMLGraph();
-            ByteBuffer buffer = GraphService.serializeGraph(graph);
-            ByteArrayInputStream bis = new ByteArrayInputStream(buffer.array());
-            file.setContents(bis, true, true, monitor);
+            IGraph graph = this.getUMLGraph();
+            PipedOutputStream pos = new PipedOutputStream();
+            PipedInputStream pis = new PipedInputStream(pos);
+            this.filePersistenceService.write(graph, pos);
+            file.setContents(pis, true, true, monitor);
         }
         catch (IOException e)
         {
@@ -195,5 +199,8 @@ public class GenericDiagramWizard extends Wizard implements INewWizard
     {
         return this.selectionWizardPage.getSelectedDiagramFileExtention();
     }
+    
+    @SpringBean
+    private IFilePersistenceService filePersistenceService;
 
 }

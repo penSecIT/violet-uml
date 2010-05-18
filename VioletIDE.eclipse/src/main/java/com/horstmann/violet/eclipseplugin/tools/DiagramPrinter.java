@@ -42,12 +42,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import com.horstmann.violet.framework.diagram.GraphService;
-import com.horstmann.violet.framework.gui.DiagramPanel;
+import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.framework.file.IGraphFile;
+import com.horstmann.violet.framework.file.export.FileExportService;
+import com.horstmann.violet.framework.workspace.IWorkspace;
 
 /**
  * Allows to print a diagram through Eclipse
- *
+ * 
  * @author Alexandre de Pellegrin
  */
 public class DiagramPrinter
@@ -59,9 +61,9 @@ public class DiagramPrinter
      * @param newDiagramPanel
      * @param newShell
      */
-    public DiagramPrinter(DiagramPanel newDiagramPanel, Shell newShell)
+    public DiagramPrinter(IWorkspace workspace, Shell newShell)
     {
-        this.diagramPanel = newDiagramPanel;
+        this.diagramPanel = workspace;
         this.shell = newShell;
     }
 
@@ -71,69 +73,80 @@ public class DiagramPrinter
     public void print()
     {
         Display display = this.shell.getDisplay();
-        
-        try {
-          BufferedImage bufferedImage = GraphService.getImage(this.diagramPanel.view.getGraphPanel(this.diagramPanel).getGraph());
-          ImageData imageData = this.convertToSWT(bufferedImage);
 
-          if (imageData == null) {
-              throw new Exception("Error while converting AWT BufferedImage to SWT ImageData");
-          }
+        try
+        {
+            IGraphFile graphFile = this.diagramPanel.getGraphFile();
+            IGraph graph = graphFile.getGraph();
+            FileExportService.getImage(graph);
+            BufferedImage bufferedImage = FileExportService.getImage(graph);
+            ImageData imageData = this.convertToSWT(bufferedImage);
 
-          // Show the Choose Printer dialog
-          PrintDialog dialog = new PrintDialog(shell, SWT.NULL);
-          PrinterData printerData = dialog.open();
+            if (imageData == null)
+            {
+                throw new Exception("Error while converting AWT BufferedImage to SWT ImageData");
+            }
 
-          
-          if (printerData != null) {
-              // Create the printer object
-              Printer printer = new Printer(printerData);
-              // Calculate the scale factor between the screen resolution and printer
-              // resolution in order to correctly size the image for the printer
-              Point screenDPI = display.getDPI();
-              Point printerDPI = printer.getDPI();
-              int scaleFactor = printerDPI.x / screenDPI.x;
-              // Determine the bounds of the entire area of the printer
-              Rectangle trim = printer.computeTrim(0, 0, 0, 0);
-              
-              // Start the print job
-              if (printer.startJob(this.diagramPanel.getFilePath())) {
-                  if (printer.startPage()) {
-                      GC gc = new GC(printer);
-                      Image printerImage = new Image(printer, imageData);
-                      // Draw the image
-                      gc.drawImage(printerImage, 0, 0, imageData.width,
-                              imageData.height, -trim.x, -trim.y, 
-                              scaleFactor * imageData.width, 
-                              scaleFactor * imageData.height);
-                      // Clean up
-                      printerImage.dispose();
-                      gc.dispose();
-                      printer.endPage();
-                  }
-              }
-              // End the job and dispose the printer
-              printer.endJob();
-              printer.dispose();
-          }
-        } catch (Exception e) {
-          MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR);
-          messageBox.setMessage("Error printing UML Diagram : " + e.getMessage());
-          messageBox.open();
+            // Show the Choose Printer dialog
+            PrintDialog dialog = new PrintDialog(shell, SWT.NULL);
+            PrinterData printerData = dialog.open();
+
+            if (printerData != null)
+            {
+                // Create the printer object
+                Printer printer = new Printer(printerData);
+                // Calculate the scale factor between the screen resolution and
+                // printer
+                // resolution in order to correctly size the image for the
+                // printer
+                Point screenDPI = display.getDPI();
+                Point printerDPI = printer.getDPI();
+                int scaleFactor = printerDPI.x / screenDPI.x;
+                // Determine the bounds of the entire area of the printer
+                Rectangle trim = printer.computeTrim(0, 0, 0, 0);
+
+                // Start the print job
+                if (printer.startJob(this.diagramPanel.getFilePath()))
+                {
+                    if (printer.startPage())
+                    {
+                        GC gc = new GC(printer);
+                        Image printerImage = new Image(printer, imageData);
+                        // Draw the image
+                        gc.drawImage(printerImage, 0, 0, imageData.width, imageData.height, -trim.x, -trim.y, scaleFactor * imageData.width, scaleFactor * imageData.height);
+                        // Clean up
+                        printerImage.dispose();
+                        gc.dispose();
+                        printer.endPage();
+                    }
+                }
+                // End the job and dispose the printerIDiagramPanel
+                printer.endJob();
+                printer.dispose();
+            }
+        }
+        catch (Exception e)
+        {
+            MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR);
+            messageBox.setMessage("Error printing UML Diagram : " + e.getMessage());
+            messageBox.open();
         }
     }
-    
-    
-    public BufferedImage convertToAWT(ImageData data) {
+
+    public BufferedImage convertToAWT(ImageData data)
+    {
         ColorModel colorModel = null;
         PaletteData palette = data.palette;
-        if (palette.isDirect) {
+        if (palette.isDirect)
+        {
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[3];
-            for (int y = 0; y < data.height; y++) {
-                for (int x = 0; x < data.width; x++) {
+            for (int y = 0; y < data.height; y++)
+            {
+                for (int x = 0; x < data.width; x++)
+                {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
                     pixelArray[0] = rgb.red;
@@ -143,27 +156,35 @@ public class DiagramPrinter
                 }
             }
             return bufferedImage;
-        } else {
+        }
+        else
+        {
             RGB[] rgbs = palette.getRGBs();
             byte[] red = new byte[rgbs.length];
             byte[] green = new byte[rgbs.length];
             byte[] blue = new byte[rgbs.length];
-            for (int i = 0; i < rgbs.length; i++) {
+            for (int i = 0; i < rgbs.length; i++)
+            {
                 RGB rgb = rgbs[i];
-                red[i] = (byte)rgb.red;
-                green[i] = (byte)rgb.green;
-                blue[i] = (byte)rgb.blue;
+                red[i] = (byte) rgb.red;
+                green[i] = (byte) rgb.green;
+                blue[i] = (byte) rgb.blue;
             }
-            if (data.transparentPixel != -1) {
+            if (data.transparentPixel != -1)
+            {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
-            } else {
+            }
+            else
+            {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
-            }       
+            }
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
-            for (int y = 0; y < data.height; y++) {
-                for (int x = 0; x < data.width; x++) {
+            for (int y = 0; y < data.height; y++)
+            {
+                for (int x = 0; x < data.width; x++)
+                {
                     int pixel = data.getPixel(x, y);
                     pixelArray[0] = pixel;
                     raster.setPixel(x, y, pixelArray);
@@ -173,23 +194,29 @@ public class DiagramPrinter
         }
     }
 
-    private ImageData convertToSWT(BufferedImage bufferedImage) {
-        if (bufferedImage.getColorModel() instanceof DirectColorModel) {
-            DirectColorModel colorModel = (DirectColorModel)bufferedImage.getColorModel();
+    private ImageData convertToSWT(BufferedImage bufferedImage)
+    {
+        if (bufferedImage.getColorModel() instanceof DirectColorModel)
+        {
+            DirectColorModel colorModel = (DirectColorModel) bufferedImage.getColorModel();
             PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(), colorModel.getBlueMask());
             ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(), colorModel.getPixelSize(), palette);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[3];
-            for (int y = 0; y < data.height; y++) {
-                for (int x = 0; x < data.width; x++) {
+            for (int y = 0; y < data.height; y++)
+            {
+                for (int x = 0; x < data.width; x++)
+                {
                     raster.getPixel(x, y, pixelArray);
                     int pixel = palette.getPixel(new RGB(pixelArray[0], pixelArray[1], pixelArray[2]));
                     data.setPixel(x, y, pixel);
                 }
-            }       
-            return data;        
-        } else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
-            IndexColorModel colorModel = (IndexColorModel)bufferedImage.getColorModel();
+            }
+            return data;
+        }
+        else if (bufferedImage.getColorModel() instanceof IndexColorModel)
+        {
+            IndexColorModel colorModel = (IndexColorModel) bufferedImage.getColorModel();
             int size = colorModel.getMapSize();
             byte[] reds = new byte[size];
             byte[] greens = new byte[size];
@@ -198,7 +225,8 @@ public class DiagramPrinter
             colorModel.getGreens(greens);
             colorModel.getBlues(blues);
             RGB[] rgbs = new RGB[size];
-            for (int i = 0; i < rgbs.length; i++) {
+            for (int i = 0; i < rgbs.length; i++)
+            {
                 rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF, blues[i] & 0xFF);
             }
             PaletteData palette = new PaletteData(rgbs);
@@ -206,8 +234,10 @@ public class DiagramPrinter
             data.transparentPixel = colorModel.getTransparentPixel();
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
-            for (int y = 0; y < data.height; y++) {
-                for (int x = 0; x < data.width; x++) {
+            for (int y = 0; y < data.height; y++)
+            {
+                for (int x = 0; x < data.width; x++)
+                {
                     raster.getPixel(x, y, pixelArray);
                     data.setPixel(x, y, pixelArray[0]);
                 }
@@ -215,9 +245,9 @@ public class DiagramPrinter
             return data;
         }
         return null;
-    }    
+    }
 
-    DiagramPanel diagramPanel;
+    IWorkspace diagramPanel;
     Shell shell;
 
 }

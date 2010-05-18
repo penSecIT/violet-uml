@@ -35,8 +35,10 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import com.horstmann.violet.framework.plugin.DiagramPlugin;
+import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.PluginRegistry;
+import com.horstmann.violet.framework.spring.SpringDependencyInjector;
+import com.horstmann.violet.framework.spring.annotation.SpringBean;
 
 /**
  * Eclipse plugin Wizard GUI
@@ -57,6 +59,8 @@ public class SelectionWizardComposite extends Composite
     {
         super(parent, SWT.EMBEDDED | SWT.BORDER);
 
+        SpringDependencyInjector.getInjector().inject(this);
+        
         this.frame = SWT_AWT.new_Frame(this);
         this.frame.add(getWizardPanel());
         this.frame.setVisible(true);
@@ -74,7 +78,7 @@ public class SelectionWizardComposite extends Composite
     {
         JPanel wizardPanel = new JPanel(new GridLayout(0, 1));
         ButtonGroup group = new ButtonGroup();
-        for (final DiagramPlugin aDiagramPlugin : this.pluginRegistry.getDiagramPlugins())
+        for (final IDiagramPlugin aDiagramPlugin : this.pluginRegistry.getDiagramPlugins())
         {
             final JRadioButton aRadioButton = new JRadioButton(aDiagramPlugin.getName());
             aRadioButton.addChangeListener(new ChangeListener()
@@ -103,7 +107,7 @@ public class SelectionWizardComposite extends Composite
     /**
      * @return currently selected diagram plugin
      */
-    public DiagramPlugin getSelectedDiagramPlugin()
+    public IDiagramPlugin getSelectedDiagramPlugin()
     {
         return this.selectedDiagramPlugin;
     }
@@ -111,12 +115,13 @@ public class SelectionWizardComposite extends Composite
     /**
      * Selected diagram plugin 
      */
-    private DiagramPlugin selectedDiagramPlugin;
+    private IDiagramPlugin selectedDiagramPlugin;
 
     /**
      * Plugin registry
      */
-    private PluginRegistry pluginRegistry = PluginRegistry.getInstance();
+    @SpringBean
+    private PluginRegistry pluginRegistry;
 
     /**
      * Diagram Panel

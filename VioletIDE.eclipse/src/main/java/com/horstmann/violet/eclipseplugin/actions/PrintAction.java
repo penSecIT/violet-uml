@@ -29,7 +29,7 @@ import org.eclipse.ui.IEditorPart;
 
 import com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor;
 import com.horstmann.violet.eclipseplugin.tools.DiagramPrinter;
-import com.horstmann.violet.framework.gui.DiagramPanel;
+import com.horstmann.violet.framework.workspace.IWorkspace;
 
 /**
  * Eclipse plugin print action
@@ -43,7 +43,7 @@ public class PrintAction implements IEditorActionDelegate
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
+     * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface .action.IAction, org.eclipse.ui.IEditorPart)
      */
     public void setActiveEditor(IAction action, IEditorPart targetEditor)
     {
@@ -57,16 +57,16 @@ public class PrintAction implements IEditorActionDelegate
      */
     public void run(IAction action)
     {
-        DiagramPanel diagramPanel = this.getActiveEditor().getUMLDiagramPanel();
+        IWorkspace workspace = this.getActiveEditor().getUMLDiagramPanel();
         Shell shell = this.getActiveEditor().getSite().getShell();
-        DiagramPrinter printer = new DiagramPrinter(diagramPanel, shell);
+        DiagramPrinter printer = new DiagramPrinter(workspace, shell);
         printer.print();
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action .IAction, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection)
     {

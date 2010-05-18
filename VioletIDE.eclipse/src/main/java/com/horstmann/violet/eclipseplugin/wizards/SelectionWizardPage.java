@@ -3,7 +3,7 @@ package com.horstmann.violet.eclipseplugin.wizards;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
-import com.horstmann.violet.framework.diagram.Graph;
+import com.horstmann.violet.framework.diagram.IGraph;
 
 /**
  * Wizard page where the end user can select which kind of diagram he wants to create
@@ -46,7 +46,7 @@ public class SelectionWizardPage extends WizardPage
     /**
      * @return graph class for the selected diagram type
      */
-    public Class<? extends Graph> getSelectedGraphType()
+    public Class<? extends IGraph> getSelectedGraphType()
     {
         return this.composite.getSelectedDiagramPlugin().getGraphClass();
     }
