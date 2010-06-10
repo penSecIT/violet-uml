@@ -108,6 +108,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
                     Graphics2D graphics = (Graphics2D) editorPart.getAWTComponent().getGraphics();
                     IGrid grid = editorPart.getGrid();
                     graph.layout(graphics, grid);
+                    isAdded = true;
                 }
             }
             finally

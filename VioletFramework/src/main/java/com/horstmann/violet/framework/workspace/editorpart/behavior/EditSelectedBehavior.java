@@ -3,6 +3,7 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -43,6 +44,16 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
         boolean isButton1Clicked = (event.getModifiers() & InputEvent.BUTTON1_MASK) == 0;
         if (event.getClickCount() > 1 || isButton1Clicked)
         {
+            double zoom = editorPart.getZoomFactor();
+            Point2D mouseLocation = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+            this.selectionHandler.clearSelection();
+            INode node = this.graph.findNode(mouseLocation);
+            IEdge edge = this.graph.findEdge(mouseLocation);
+            if (node != null) {
+                this.selectionHandler.setSelectedElement(node);
+            } else if (edge != null) {
+                this.selectionHandler.addSelectedElement(edge);
+            }
             editSelected();
         }
     }
@@ -131,6 +142,8 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
         }
         this.dialogFactory.showDialog(optionPane, this.dialogTitle, true);
     }
+    
+  
 
     private IEditorPartSelectionHandler selectionHandler;
     private IEditorPart editorPart;

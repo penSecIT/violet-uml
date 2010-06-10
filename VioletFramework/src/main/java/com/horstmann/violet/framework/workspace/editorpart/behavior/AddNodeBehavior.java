@@ -41,10 +41,10 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
         {
             return;
         }
-        INode prototype = (INode) selectedTool.getNodeOrEdge();
-        INode newNode = (INode) prototype.clone();
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+        INode prototype = (INode) selectedTool.getNodeOrEdge();
+        INode newNode = (INode) prototype.clone();
         boolean added = addNodeAtPoint(newNode, mousePoint);
         if (added)
         {
@@ -71,6 +71,7 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
                 Graphics2D graphics = (Graphics2D) editorPart.getAWTComponent().getGraphics();
                 IGrid grid = editorPart.getGrid();
                 graph.layout(graphics, grid);
+                isAdded = true;
             }
         }
         finally
