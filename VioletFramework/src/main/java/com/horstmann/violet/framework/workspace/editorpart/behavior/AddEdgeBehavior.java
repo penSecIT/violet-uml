@@ -83,6 +83,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         if (added)
         {
             selectionHandler.setSelectedElement(newEdge);
+            isDraggingInProgress = false;
         }
     }
 
