@@ -2,6 +2,7 @@ package com.horstmann.violet.framework.workspace.editorpart;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,8 +77,8 @@ public class EditorPartBehaviorManager implements IEditorPartBehaviorManager
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager#fireWhileEditingNode(com.horstmann.violet.framework.diagram.node.INode)
      */
-    public void fireWhileEditingNode(INode node) {
-        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.whileEditingNode(node);
+    public void fireWhileEditingNode(INode node, PropertyChangeEvent event) {
+        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.whileEditingNode(node, event);
     }
     
     /* (non-Javadoc)
@@ -95,8 +96,8 @@ public class EditorPartBehaviorManager implements IEditorPartBehaviorManager
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager#fireWhileEditingEdge(com.horstmann.violet.framework.diagram.edge.IEdge)
      */
-    public void fireWhileEditingEdge(IEdge edge) {
-        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.whileEditingEdge(edge);
+    public void fireWhileEditingEdge(IEdge edge, PropertyChangeEvent event) {
+        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.whileEditingEdge(edge, event);
     }
     
     /* (non-Javadoc)

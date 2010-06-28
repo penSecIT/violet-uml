@@ -35,6 +35,7 @@ import com.horstmann.violet.framework.diagram.GraphModificationListener;
 import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
+import com.horstmann.violet.framework.diagram.property.MultiLineString;
 
 /**
  * Manages action history happened on graph
@@ -217,27 +218,7 @@ public class HistoryManager
 
             public void propertyChangedOnNodeOrEdge(final IGraph g, final PropertyChangeEvent event)
             {
-                CompoundEdit capturedEdit = getCurrentCapturedEdit();
-                if (capturedEdit == null) return;
-                UndoableEdit edit = new AbstractUndoableEdit()
-                {
-                    @Override
-                    public void undo() throws CannotUndoException
-                    {
-                        PropertyChangeEvent invertedEvent = new PropertyChangeEvent(event.getSource(), event.getPropertyName(),
-                                event.getNewValue(), event.getOldValue());
-                        g.changeNodeOrEdgeProperty(invertedEvent);
-                        super.undo();
-                    }
-
-                    @Override
-                    public void redo() throws CannotRedoException
-                    {
-                        super.redo();
-                        g.changeNodeOrEdgeProperty(event);
-                    }
-                };
-                capturedEdit.addEdit(edit);
+                // Nothing to do
             }
         };
         graph.addGraphModificationListener(graphModListener);
@@ -266,7 +247,7 @@ public class HistoryManager
     /**
      * @return current composed undoable edit
      */
-    private CompoundEdit getCurrentCapturedEdit()
+    public CompoundEdit getCurrentCapturedEdit()
     {
         return this.currentCapturedEdit;
     }

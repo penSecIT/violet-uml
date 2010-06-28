@@ -3,6 +3,7 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -135,14 +136,14 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     }
 
     @Override
-    public void whileEditingEdge(IEdge edge)
+    public void whileEditingEdge(IEdge edge, PropertyChangeEvent event)
     {
         this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
 
     @Override
-    public void whileEditingNode(INode node)
+    public void whileEditingNode(INode node, PropertyChangeEvent event)
     {
         this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();

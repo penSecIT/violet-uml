@@ -85,11 +85,11 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
 
                 if (edited instanceof INode)
                 {
-                    behaviorManager.fireWhileEditingNode((INode) edited);
+                    behaviorManager.fireWhileEditingNode((INode) edited, event);
                 }
                 if (edited instanceof IEdge)
                 {
-                    behaviorManager.fireWhileEditingEdge((IEdge) edited);
+                    behaviorManager.fireWhileEditingEdge((IEdge) edited, event);
                 }
             }
         });

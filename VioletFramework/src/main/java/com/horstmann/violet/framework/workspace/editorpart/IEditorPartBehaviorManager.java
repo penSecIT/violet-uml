@@ -2,6 +2,7 @@ package com.horstmann.violet.framework.workspace.editorpart;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
@@ -25,13 +26,13 @@ public interface IEditorPartBehaviorManager
 
     public abstract void fireBeforeEditingNode(INode node);
 
-    public abstract void fireWhileEditingNode(INode node);
+    public abstract void fireWhileEditingNode(INode node, PropertyChangeEvent event);
 
     public abstract void fireAfterEditingNode(INode node);
 
     public abstract void fireBeforeEditingEdge(IEdge edge);
     
-    public abstract void fireWhileEditingEdge(IEdge edge);
+    public abstract void fireWhileEditingEdge(IEdge edge, PropertyChangeEvent event);
 
     public abstract void fireAfterEditingEdge(IEdge edge);
 

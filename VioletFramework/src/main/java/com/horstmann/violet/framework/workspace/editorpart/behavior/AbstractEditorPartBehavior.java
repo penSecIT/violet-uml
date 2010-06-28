@@ -3,6 +3,7 @@ package com.horstmann.violet.framework.workspace.editorpart.behavior;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -75,14 +76,14 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
     }
     
     @Override
-    public void whileEditingEdge(IEdge edge)
+    public void whileEditingEdge(IEdge edge, PropertyChangeEvent event)
     {
         // TODO Auto-generated method stub
         
     }
     
     @Override
-    public void whileEditingNode(INode node)
+    public void whileEditingNode(INode node, PropertyChangeEvent event)
     {
         // TODO Auto-generated method stub
         
