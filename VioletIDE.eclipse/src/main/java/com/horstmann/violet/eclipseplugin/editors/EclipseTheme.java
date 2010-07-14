@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import com.horstmann.violet.framework.theme.AbstractTheme;
+import com.horstmann.violet.framework.display.theme.AbstractTheme;
 
 
 /**
@@ -52,7 +52,7 @@ public class EclipseTheme extends AbstractTheme {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.horstmann.violet.framework.gui.theme.Theme#getLookAndFeelInfo()
+	 * @see com.horstmann.violet.framework.display.clipboard.theme.Theme#getLookAndFeelInfo()
 	 */
 	public LookAndFeelInfo getLookAndFeelInfo() {
 		LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Eclipse",
@@ -63,7 +63,7 @@ public class EclipseTheme extends AbstractTheme {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.horstmann.violet.framework.gui.theme.AbstractTheme#setup()
+	 * @see com.horstmann.violet.framework.display.clipboard.theme.AbstractTheme#setup()
 	 */
 	protected void setup() {
 	}

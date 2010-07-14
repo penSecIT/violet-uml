@@ -2,20 +2,16 @@ Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.6.5
 Created-By: 11.0-b11 (Sun Microsystems Inc.)
 Bundle-ManifestVersion: 2
-Bundle-Name: Violet UML Editor
-Bundle-SymbolicName: com.horstmann.violet;singleton:=true
-Bundle-Version: 0.23.0
+Bundle-Name: Violet UML Editor Eclipse Plugin
+Bundle-SymbolicName: com.horstmann.violet.ide.eclipse;singleton:=true
+Bundle-Version: 1.0.0.SNAPSHOT
 Bundle-Activator: com.horstmann.violet.eclipseplugin.VioletPlugin
 Bundle-Vendor: Alexandre de Pellegrin / Cay S. Horstmann
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,org.eclipse.core.resources,or
  g.eclipse.ui.ide,org.eclipse.ui
 Eclipse-LazyStart: true
-Bundle-ClassPath: .,maven/repository/antlr/antlr/2.7.5/antlr-2.7.5.jar
- ,maven/repository/javax/jnlp/jnlp/1.0/jnlp-1.0.jar,maven/repository/j
- axme/jaxmejs/0.5/jaxmejs-0.5.jar,maven/repository/com/l2fprod/common/
- l2fprod-common-tasks/7.3/l2fprod-common-tasks-7.3.jar,maven/repositor
- y/net/java/dev/pgslookandfeel/PgsLookAndFeel/1.1/PgsLookAndFeel-1.1.jar
 Product-Version: 0.23.0
 Main-Class: com.horstmann.violet.UMLEditor
 
+Bundle-ClassPath: .

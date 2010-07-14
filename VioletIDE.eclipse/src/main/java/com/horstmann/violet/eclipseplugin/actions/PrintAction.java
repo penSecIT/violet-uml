@@ -29,7 +29,7 @@ import org.eclipse.ui.IEditorPart;
 
 import com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor;
 import com.horstmann.violet.eclipseplugin.tools.DiagramPrinter;
-import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.IWorkspace;
 
 /**
  * Eclipse plugin print action

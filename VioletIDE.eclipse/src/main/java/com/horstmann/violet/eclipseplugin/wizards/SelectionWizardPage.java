@@ -3,7 +3,7 @@ package com.horstmann.violet.eclipseplugin.wizards;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
-import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 /**
  * Wizard page where the end user can select which kind of diagram he wants to create

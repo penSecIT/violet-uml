@@ -43,16 +43,16 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 import com.horstmann.violet.eclipseplugin.file.EclipseFileChooserService;
 import com.horstmann.violet.eclipseplugin.tools.EclipseUtils;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.theme.ITheme;
-import com.horstmann.violet.framework.theme.ThemeManager;
-import com.horstmann.violet.framework.workspace.IWorkspace;
-import com.horstmann.violet.framework.workspace.IWorkspaceListener;
-import com.horstmann.violet.framework.workspace.Workspace;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.product.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.IWorkspaceListener;
+import com.horstmann.violet.product.workspace.Workspace;
 
 /**
  * Main Editor Part

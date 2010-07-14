@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.horstmann.violet.framework.dialog.DialogFactory;
-import com.horstmann.violet.framework.dialog.DialogFactoryListener;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.dialog.DialogFactoryListener;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
 
 /**
  * The dialog manager has to display dialogs sent by the Violet dialog factory (since Violet cannot display its directly when it is

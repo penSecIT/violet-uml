@@ -42,10 +42,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.export.FileExportService;
-import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.workspace.IWorkspace;
 
 /**
  * Allows to print a diagram through Eclipse

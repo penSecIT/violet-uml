@@ -30,14 +30,14 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 
 import com.horstmann.violet.eclipseplugin.tools.JavaFileModel;
-import com.horstmann.violet.framework.diagram.node.INode;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 import com.horstmann.violet.product.diagram.common.DiagramLink;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.sequence.SequenceDiagramGraph;
+import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 
 /**
  * Class used to manage drag n' drop between Eclipse package explorer and
