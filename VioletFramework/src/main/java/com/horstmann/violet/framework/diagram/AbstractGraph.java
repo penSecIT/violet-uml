@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.beans.Introspector;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import java.util.List;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.AbstractNode;
 import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.util.PropertyUtils;
 import com.horstmann.violet.framework.workspace.editorpart.IGrid;
 import com.horstmann.violet.product.diagram.common.NoteNode;
 
@@ -76,7 +74,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                     addNode(e.getEnd(), e.getEnd().getLocation());
                 }
                 edges.add(e);
-                fireEdgeAdded(e, p1, p2);
                 return true;
             }
         }
@@ -250,8 +247,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                     .add(e);
         }
         edges.removeAll(edgesToBeRemoved);
-        for (IEdge e : edgesToBeRemoved)
-            fireEdgeRemoved(e);
         edgesToBeRemoved.clear();
 
         // Traverse all nodes other than the ones to be removed and make sure that none
@@ -269,8 +264,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                         {
                             INode value = (INode) descriptor.getReadMethod().invoke(n);
                             if (nodesToBeRemoved.contains(value)) descriptor.getWriteMethod().invoke(n, (Object) null);
-                            PropertyChangeEvent event = new PropertyChangeEvent(n, descriptor.getName(), value, null);
-                            firePropertyChangeOnNodeOrEdge(event);
                         }
                     }
                 }
@@ -292,10 +285,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             n.setGraph(null);
         }
         nodes.removeAll(nodesToBeRemoved);
-        for (INode n : nodesToBeRemoved)
-        {
-            fireNodeRemoved(n);
-        }
         nodesToBeRemoved.clear();
     }
 
@@ -394,7 +383,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         
         if (newNode instanceof NoteNode) {
             nodes.add(newNode);
-            fireNodeAdded(newNode, p);
             return true;
         }
         
@@ -420,7 +408,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         }
         if (insideANode && !accepted) return false;
         nodes.add(newNode);
-        fireNodeAdded(newNode, p);
         return true;
     }
 
@@ -435,7 +422,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         if (p != null) p.removeChild(n);
         nodes.remove(n);
         n.setGraph(null);
-        fireNodeRemoved(n);
     }
 
     /*
@@ -463,173 +449,9 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public void removeEdge(IEdge e)
     {
         edges.remove(e);
-        fireEdgeRemoved(e);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#addGraphModificationListener(com.horstmann.violet.framework.diagram.GraphModificationListener)
-     */
-    public void addGraphModificationListener(GraphModificationListener listener)
-    {
-        synchronized (listeners)
-        {
-            listeners.add(listener);
-        }
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.Graph#addGraphModificationListener(java.util.List)
-     */
-    public void addGraphModificationListener(List<GraphModificationListener> l)
-    {
-        synchronized (listeners)
-        {
-            listeners.addAll(l);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.Graph#getGraphModificationListener()
-     */
-    public List<GraphModificationListener> getGraphModificationListener()
-    {
-        synchronized (listeners)
-        {
-            return listeners;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#removeGraphModificationListener(com.horstmann.violet.framework.diagram.GraphModificationListener)
-     */
-    public synchronized void removeGraphModificationListener(GraphModificationListener listener)
-    {
-        synchronized (listeners)
-        {
-            listeners.remove(listener);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#changeNodeOrEdgeProperty(java.beans.PropertyChangeEvent)
-     */
-    public void changeNodeOrEdgeProperty(PropertyChangeEvent e)
-    {
-        PropertyUtils.setProperty(e.getSource(), e.getPropertyName(), e.getNewValue());
-        firePropertyChangeOnNodeOrEdge(e);
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<GraphModificationListener> cloneListeners()
-    {
-        synchronized (listeners)
-        {
-            return (List<GraphModificationListener>) listeners.clone();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireNodeAdded(com.horstmann.violet.framework.diagram.Node)
-     */
-    public void fireNodeAdded(INode n, Point2D location)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.nodeAdded(this, n, location);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireNodeRemoved(com.horstmann.violet.framework.diagram.Node)
-     */
-    public void fireNodeRemoved(INode n)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.nodeRemoved(this, n);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireChildAttached(int, com.horstmann.violet.framework.diagram.Node,
-     *      com.horstmann.violet.framework.diagram.Node)
-     */
-    public void fireChildAttached(int index, INode p, INode c)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.childAttached(this, index, p, c);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireChildDetached(int, com.horstmann.violet.framework.diagram.Node,
-     *      com.horstmann.violet.framework.diagram.Node)
-     */
-    public void fireChildDetached(int index, INode p, INode c)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.childDetached(this, index, p, c);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.Graph#fireEdgeAdded(com.horstmann.violet.framework.diagram.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
-    public void fireEdgeAdded(IEdge e, Point2D startPoint, Point2D endPoint)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.edgeAdded(this, e, startPoint, endPoint);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireEdgeRemoved(com.horstmann.violet.framework.diagram.Edge)
-     */
-    public void fireEdgeRemoved(IEdge e)
-    {
-        for (GraphModificationListener listener : cloneListeners())
-            listener.edgeRemoved(this, e);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#fireNodeMoved(com.horstmann.violet.framework.diagram.Node, double, double)
-     */
-    public void fireNodeMoved(INode node, double dx, double dy)
-    {
-        if (dx == 0 && dy == 0) return;
-        for (GraphModificationListener listener : cloneListeners())
-            listener.nodeMoved(this, node, dx, dy);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.diagram.IGraph#firePropertyChangeOnNodeOrEdge(java.beans.PropertyChangeEvent)
-     */
-    public void firePropertyChangeOnNodeOrEdge(PropertyChangeEvent event)
-    {
-        if (event.getOldValue() == event.getNewValue()) return;
-        for (GraphModificationListener listener : cloneListeners())
-            listener.propertyChangedOnNodeOrEdge(this, event);
-    }
 
     private ArrayList<INode> nodes;
     private ArrayList<IEdge> edges;
@@ -637,5 +459,4 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     private transient ArrayList<IEdge> edgesToBeRemoved;
     private transient int recursiveRemoves;
     private transient Rectangle2D minBounds;
-    private transient ArrayList<GraphModificationListener> listeners = new ArrayList<GraphModificationListener>();
 }

@@ -41,6 +41,7 @@ import com.horstmann.violet.framework.workspace.editorpart.behavior.AddEdgeBehav
 import com.horstmann.violet.framework.workspace.editorpart.behavior.AddNodeBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
+import com.horstmann.violet.framework.workspace.editorpart.behavior.FileCouldBeSavedBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByClickBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByLassoBehavior;
@@ -152,6 +153,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new DragSelectedBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new FileCouldBeSavedBehavior(this.getGraphFile()));
         }
         return this.graphEditor;
     }

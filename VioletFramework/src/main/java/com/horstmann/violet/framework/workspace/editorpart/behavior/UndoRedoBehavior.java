@@ -17,6 +17,7 @@ import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
 import com.horstmann.violet.framework.diagram.property.MultiLineString;
+import com.horstmann.violet.framework.util.PropertyUtils;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.framework.workspace.editorpart.IEditorPartSelectionHandler;
 
@@ -304,14 +305,19 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
             {
                 PropertyChangeEvent invertedEvent = new PropertyChangeEvent(event.getSource(), event.getPropertyName(), event.getNewValue(), event.getOldValue());
                 IGraph graph = editorPart.getGraph();
-                graph.changeNodeOrEdgeProperty(invertedEvent);
+                changeNodeOrEdgeProperty(invertedEvent);
             }
 
             @Override
             public void redo() throws CannotRedoException
             {
                 IGraph graph = editorPart.getGraph();
-                graph.changeNodeOrEdgeProperty(event);
+                changeNodeOrEdgeProperty(event);
+            }
+            
+            private void changeNodeOrEdgeProperty(PropertyChangeEvent e)
+            {
+                PropertyUtils.setProperty(e.getSource(), e.getPropertyName(), e.getNewValue());
             }
         };
         capturedEdit.addEdit(edit);

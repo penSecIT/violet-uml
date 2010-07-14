@@ -28,7 +28,6 @@ import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -160,10 +159,7 @@ public class ActivationBarNode extends RectangularNode
                 if (endingNode == getImplicitParameter()) return false;
                 edge.connect(this, endingNode);
                 CallEdge callEdge = (CallEdge) edge;
-                String oldValue = callEdge.getMiddleLabel();
                 callEdge.setMiddleLabel("\u00ABcreate\u00BB");
-                PropertyChangeEvent event = new PropertyChangeEvent(callEdge, "middleLabel", oldValue, callEdge.getMiddleLabel());
-                getGraph().firePropertyChangeOnNodeOrEdge(event);
                 addChild(getChildren().size(), endingNode);
                 return true;
             }

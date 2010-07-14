@@ -255,7 +255,6 @@ public abstract class AbstractNode implements INode
         if (oldParent != null) oldParent.removeChild(node);
         children.add(index, node);
         if (node instanceof AbstractNode) ((AbstractNode) node).setParent(this);
-        if (graph != null) graph.fireChildAttached(index, this, node);
     }
 
     /**
@@ -281,7 +280,6 @@ public abstract class AbstractNode implements INode
         {
             children.remove(i);
             if (node instanceof AbstractNode) ((AbstractNode) node).setParent(null);
-            if (graph != null) graph.fireChildDetached(i, this, node);
         }
     }
 

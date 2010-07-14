@@ -3,9 +3,7 @@ package com.horstmann.violet.framework.diagram;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeEvent;
 import java.util.Collection;
-import java.util.List;
 
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
@@ -175,20 +173,5 @@ public interface IGraph
      */
     public abstract void setBounds(Rectangle2D newValue);
 
-    public abstract void addGraphModificationListener(GraphModificationListener listener);
-
-    public abstract void addGraphModificationListener(List<GraphModificationListener> listeners);
-    
-    public abstract List<GraphModificationListener> getGraphModificationListener();
-
-    public abstract void removeGraphModificationListener(GraphModificationListener listener);
-
-    public abstract void changeNodeOrEdgeProperty(PropertyChangeEvent e);
-
-    public abstract void fireChildAttached(int index, INode p, INode c);
-
-    public abstract void fireChildDetached(int index, INode p, INode c);
-
-    public abstract void firePropertyChangeOnNodeOrEdge(PropertyChangeEvent event);
 
 }

@@ -1,7 +1,5 @@
 package com.horstmann.violet.framework.file;
 
-import java.awt.geom.Point2D;
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,10 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import com.horstmann.violet.framework.diagram.GraphModificationListener;
 import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.INode;
 import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.chooser.IFileOpener;
@@ -45,7 +40,6 @@ public class GraphFile implements IGraphFile
         try
         {
             this.graph = graphClass.newInstance();
-            addGraphModificationListener();
         }
         catch (Exception e)
         {
@@ -65,7 +59,8 @@ public class GraphFile implements IGraphFile
         ResourceBundleInjector.getInjector().inject(this);
         SpringDependencyInjector.getInjector().inject(this);
         IFileOpener fileOpener = fileChooserService.getFileOpener(file);
-        if (fileOpener == null) {
+        if (fileOpener == null)
+        {
             throw new IOException("Open file action cancelled by user");
         }
         InputStream in = fileOpener.getInputStream();
@@ -74,12 +69,10 @@ public class GraphFile implements IGraphFile
             this.graph = this.filePersistenceService.read(in);
             this.currentFilename = fileOpener.getFileDefinition().getFilename();
             this.currentDirectory = fileOpener.getFileDefinition().getDirectory();
-            addGraphModificationListener();
         }
         else
         {
-            throw new IOException("Unable to read file " + fileOpener.getFileDefinition().getFilename() + " from location "
-                    + fileOpener.getFileDefinition().getDirectory());
+            throw new IOException("Unable to read file " + fileOpener.getFileDefinition().getFilename() + " from location " + fileOpener.getFileDefinition().getDirectory());
         }
     }
 
@@ -111,6 +104,17 @@ public class GraphFile implements IGraphFile
     public String getDirectory()
     {
         return this.currentDirectory;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.horstmann.violet.framework.file.IGraphFile#setSaveRequired()
+     */
+    public void setSaveRequired()
+    {
+        this.isSaveRequired = true;
+        fireGraphModified();
     }
 
     /*
@@ -178,12 +182,13 @@ public class GraphFile implements IGraphFile
                 ExtensionFilter extensionFilter = this.fileNamingService.getExtensionFilter(this.graph);
                 ExtensionFilter[] array =
                 {
-                 extensionFilter
+                    extensionFilter
                 };
                 return this.fileChooserService.getFileSaver(array);
             }
-            if (!isAskedForNewLocation) {
-                
+            if (!isAskedForNewLocation)
+            {
+
             }
             return this.fileChooserService.getFileSaver(this);
         }
@@ -191,64 +196,6 @@ public class GraphFile implements IGraphFile
         {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Registers a graph listener to detect modifications and set flag isSaveRequired to true
-     */
-    private void addGraphModificationListener()
-    {
-        this.graph.addGraphModificationListener(new GraphModificationListener()
-        {
-
-            public void childAttached(IGraph g, int index, INode p, INode c)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void childDetached(IGraph g, int index, INode p, INode c)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void edgeAdded(IGraph g, IEdge e, Point2D startPoint, Point2D endPoint)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void edgeRemoved(IGraph g, IEdge e)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void nodeAdded(IGraph g, INode n, Point2D location)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void nodeMoved(IGraph g, INode n, double dx, double dy)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void nodeRemoved(IGraph g, INode n)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-
-            public void propertyChangedOnNodeOrEdge(IGraph g, PropertyChangeEvent event)
-            {
-                isSaveRequired = true;
-                fireGraphModified();
-            }
-        });
     }
 
     /*
@@ -401,7 +348,7 @@ public class GraphFile implements IGraphFile
 
     @SpringBean
     private IFilePersistenceService filePersistenceService;
-    
+
     @SpringBean
     private DialogFactory dialogFactory;
 

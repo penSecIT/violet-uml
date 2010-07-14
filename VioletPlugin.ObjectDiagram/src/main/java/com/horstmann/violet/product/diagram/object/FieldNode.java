@@ -24,10 +24,8 @@ package com.horstmann.violet.product.diagram.object;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeEvent;
 
 import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.diagram.edge.IEdge;
 import com.horstmann.violet.framework.diagram.node.INode;
 import com.horstmann.violet.framework.diagram.node.RectangularNode;
@@ -91,12 +89,6 @@ public class FieldNode extends RectangularNode
         {
             Object oldValue = value.clone();
             value.setText("");
-            IGraph g = getGraph();
-            if (g != null)
-            {
-                PropertyChangeEvent event = new PropertyChangeEvent(this, "value", oldValue, value);
-                g.firePropertyChangeOnNodeOrEdge(event);
-            }
             return true;
         }
         return false;

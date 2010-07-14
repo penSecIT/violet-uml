@@ -12,6 +12,13 @@ public interface IGraphFile extends IFile
      */
     public abstract IGraph getGraph();
     
+    
+    /**
+     * Must be triggered to allow file saving
+     */
+    public abstract void setSaveRequired();
+    
+    
     /**
      * Saves the graph
      */
