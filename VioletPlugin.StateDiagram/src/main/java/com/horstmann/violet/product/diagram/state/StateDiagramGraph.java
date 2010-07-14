@@ -24,9 +24,9 @@ package com.horstmann.violet.product.diagram.state;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.horstmann.violet.framework.diagram.AbstractGraph;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
 import com.horstmann.violet.product.diagram.common.NoteNode;

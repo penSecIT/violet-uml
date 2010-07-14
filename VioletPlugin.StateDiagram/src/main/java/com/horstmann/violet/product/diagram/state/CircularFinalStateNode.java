@@ -25,7 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.framework.diagram.node.EllipticalNode;
+import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
 
 
 /**

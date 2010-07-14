@@ -32,9 +32,9 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.ShapeEdge;
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 
 /**
  * A curved edge for a state transition in a state diagram.

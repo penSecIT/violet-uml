@@ -26,9 +26,9 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.diagram.property.MultiLineString;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 
 /**
