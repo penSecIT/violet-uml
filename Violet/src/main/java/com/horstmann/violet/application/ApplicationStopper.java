@@ -8,13 +8,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.dialog.DialogFactory;
-import com.horstmann.violet.framework.preference.UserPreferencesService;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.workspace.IWorkspace;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
+import com.horstmann.violet.product.workspace.IWorkspace;
 
 public class ApplicationStopper
 {

@@ -44,26 +44,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.horstmann.violet.application.help.AboutDialog;
 import com.horstmann.violet.application.menu.MenuFactory;
-import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.diagram.node.AbstractNode;
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
-import com.horstmann.violet.framework.diagram.property.LineStyle;
-import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.swingextension.MenuUtils;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.swingextension.MenuUtils;
-import com.horstmann.violet.framework.theme.ITheme;
-import com.horstmann.violet.framework.theme.ThemeManager;
-import com.horstmann.violet.framework.workspace.IWorkspace;
-import com.horstmann.violet.framework.workspace.IWorkspaceListener;
-import com.horstmann.violet.framework.workspace.Workspace;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
+import com.horstmann.violet.product.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.IWorkspaceListener;
+import com.horstmann.violet.product.workspace.Workspace;
 
 /**
  * This desktop frame contains panes that show graphs.

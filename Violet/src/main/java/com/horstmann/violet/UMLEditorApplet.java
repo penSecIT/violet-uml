@@ -30,9 +30,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.horstmann.violet.application.gui.MainFrame;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
 
 /**
  * A program for editing UML diagrams.

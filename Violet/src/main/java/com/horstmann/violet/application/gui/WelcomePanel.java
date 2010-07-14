@@ -43,11 +43,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.horstmann.violet.application.menu.FileMenu;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.swingextension.WelcomeButtonUI;
-import com.horstmann.violet.framework.theme.ITheme;
-import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.display.swingextension.WelcomeButtonUI;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 
 public class WelcomePanel extends JPanel
 {

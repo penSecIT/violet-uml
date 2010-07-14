@@ -29,14 +29,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.workspace.editorpart.IEditorPart;
-import com.horstmann.violet.framework.workspace.editorpart.IEditorPartBehaviorManager;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.CutCopyPasteBehavior;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.EditSelectedBehavior;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.SelectByDistanceBehavior;
-import com.horstmann.violet.framework.workspace.editorpart.behavior.UndoRedoBehavior;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
+import com.horstmann.violet.product.workspace.editorpart.behavior.CutCopyPasteBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoBehavior;
 
 /**
  * Edit menu

@@ -47,9 +47,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.swingextension.VerticalAutoScrollPane;
+import com.horstmann.violet.framework.display.swingextension.VerticalAutoScrollPane;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 
 /**
  * The About dialog box of ganttproject

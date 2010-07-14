@@ -30,9 +30,9 @@ import javax.swing.JMenuItem;
 
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.application.help.AboutDialog;
-import com.horstmann.violet.framework.help.HelpManager;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.framework.display.help.HelpManager;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 
 /**
  * Help menu

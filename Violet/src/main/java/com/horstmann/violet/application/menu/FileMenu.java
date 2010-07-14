@@ -38,8 +38,7 @@ import javax.swing.JOptionPane;
 
 import com.horstmann.violet.application.ApplicationStopper;
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
@@ -48,15 +47,16 @@ import com.horstmann.violet.framework.file.chooser.IFileOpener;
 import com.horstmann.violet.framework.file.chooser.IFileSaver;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.PluginRegistry;
-import com.horstmann.violet.framework.preference.UserPreferencesService;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
-import com.horstmann.violet.framework.workspace.IWorkspace;
-import com.horstmann.violet.framework.workspace.Workspace;
+import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.Workspace;
 
 /**
  * Represents the file menu on the editor frame

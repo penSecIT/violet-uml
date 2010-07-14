@@ -37,13 +37,13 @@ import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.LocalFile;
+import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
-import com.horstmann.violet.framework.preference.UserPreferencesService;
-import com.horstmann.violet.framework.spring.SpringDependencyInjector;
-import com.horstmann.violet.framework.spring.annotation.SpringBean;
+import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.framework.util.VersionChecker;
-import com.horstmann.violet.framework.workspace.IWorkspace;
-import com.horstmann.violet.framework.workspace.Workspace;
+import com.horstmann.violet.product.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.Workspace;
 
 /**
  * A program for editing UML diagrams.
