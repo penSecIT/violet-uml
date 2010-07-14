@@ -24,8 +24,8 @@ package com.horstmann.violet.product.diagram.object;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.horstmann.violet.framework.diagram.edge.SegmentedLineEdge;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 
 /**

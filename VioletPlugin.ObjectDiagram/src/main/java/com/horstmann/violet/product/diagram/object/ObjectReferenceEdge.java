@@ -28,9 +28,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.ShapeEdge;
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 
 /**
  * An S- or C-shaped edge with an arrowhead.
