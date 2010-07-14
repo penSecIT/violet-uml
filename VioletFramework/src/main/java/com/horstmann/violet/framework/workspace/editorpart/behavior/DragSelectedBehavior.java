@@ -36,7 +36,7 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
         }
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        if (!isMouseOnNode(mousePoint))
+        if (isMouseOnNode(mousePoint))
         {
             isReadyForDragging = true;
             lastMousePoint = mousePoint;
@@ -48,9 +48,9 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
         INode node = this.graph.findNode(mouseLocation);
         if (node == null)
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
