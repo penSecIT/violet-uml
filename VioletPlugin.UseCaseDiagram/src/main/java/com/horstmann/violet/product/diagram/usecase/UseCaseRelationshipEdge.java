@@ -29,9 +29,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.SegmentedLineEdge;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
  * An edge that is shaped like a line with up to three segments with an arrowhead
@@ -80,7 +80,7 @@ public class UseCaseRelationshipEdge extends SegmentedLineEdge
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.SegmentedLineEdge#getConnectionPoints()
+     * @see com.horstmann.violet.product.diagram.abstracts.SegmentedLineEdge#getConnectionPoints()
      */
     public Line2D getConnectionPoints()
     {
