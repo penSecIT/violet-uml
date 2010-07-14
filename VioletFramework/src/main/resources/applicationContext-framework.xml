@@ -6,19 +6,19 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
     http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
 
-	<bean id="springDependencyInjector" class="com.horstmann.violet.framework.spring.SpringDependencyInjector" />
+	<bean id="springDependencyInjector" class="com.horstmann.violet.framework.injection.bean.SpringDependencyInjector" />
 
-	<bean id="themeManager" class="com.horstmann.violet.framework.theme.ThemeManager" init-method="applyPreferedTheme">
+	<bean id="themeManager" class="com.horstmann.violet.framework.display.theme.ThemeManager" init-method="applyPreferedTheme">
 		<property name="installedThemes">
-			<list value-type="com.horstmann.violet.framework.theme.ITheme">
-				<bean class="com.horstmann.violet.framework.theme.ClassicMetalTheme" />
-				<bean class="com.horstmann.violet.framework.theme.VistaBlueTheme" />
+			<list value-type="com.horstmann.violet.framework.display.theme.ITheme">
+				<bean class="com.horstmann.violet.framework.display.theme.ClassicMetalTheme" />
+				<bean class="com.horstmann.violet.framework.display.theme.VistaBlueTheme" />
 			</list>
 		</property>
 		<property name="userPreferencesService" ref="userPreferencesService" />
 	</bean>
 	
-	<bean id="clipboard" class="com.horstmann.violet.framework.gui.Clipboard" />
+	<bean id="clipboard" class="com.horstmann.violet.framework.display.clipboard.Clipboard" />
 	
 	<bean id="pluginRegistry" class="com.horstmann.violet.framework.plugin.PluginRegistry" />
 	
@@ -26,7 +26,7 @@
 		<constructor-arg ref="pluginRegistry"/>
 	</bean>
 	
-	<bean id="userPreferencesService" class="com.horstmann.violet.framework.preference.UserPreferencesService">
+	<bean id="userPreferencesService" class="com.horstmann.violet.framework.userpreferences.UserPreferencesService">
 		<constructor-arg ref="userPreferencesDao"/>
 	</bean>
 
