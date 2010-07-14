@@ -8,16 +8,16 @@ package fr.free.alexdp.violet.importexportfilters;
 
 import java.io.OutputStream;
 
-import com.horstmann.violet.framework.diagram.Graph;
-import com.horstmann.violet.framework.diagram.GraphService;
+import com.horstmann.violet.framework.display.clipboard.DiagramPanel;
+import com.horstmann.violet.framework.display.clipboard.DialogFactory;
+import com.horstmann.violet.framework.display.clipboard.IDiagramPanel;
 import com.horstmann.violet.framework.file.ExtensionFilter;
 import com.horstmann.violet.framework.file.FileChooserService;
 import com.horstmann.violet.framework.file.FileSaverHandler;
 import com.horstmann.violet.framework.file.FileService;
-import com.horstmann.violet.framework.gui.DiagramPanel;
-import com.horstmann.violet.framework.gui.DialogFactory;
-import com.horstmann.violet.framework.gui.IDiagramPanel;
 import com.horstmann.violet.framework.plugin.DiagramPlugin;
+import com.horstmann.violet.product.diagram.abstracts.Graph;
+import com.horstmann.violet.product.diagram.abstracts.GraphService;
 
 public class ImportExportFiltersPlugin implements DiagramPlugin {
 
