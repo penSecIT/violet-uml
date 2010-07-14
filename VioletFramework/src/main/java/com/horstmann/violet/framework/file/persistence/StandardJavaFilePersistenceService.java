@@ -20,16 +20,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.horstmann.violet.framework.diagram.AbstractGraph;
-import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.diagram.Id;
-import com.horstmann.violet.framework.diagram.edge.AbstractEdge;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.AbstractNode;
-import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
-import com.horstmann.violet.framework.diagram.property.LineStyle;
+import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.Id;
+import com.horstmann.violet.product.diagram.abstracts.edge.AbstractEdge;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 import com.horstmann.violet.product.diagram.common.ImageNode;
 
 /**
@@ -42,7 +42,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
 
 
     /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.file.persistence.IFilePersistenceService#write(com.horstmann.violet.framework.diagram.IGraph, java.io.OutputStream)
+     * @see com.horstmann.violet.framework.file.persistence.IFilePersistenceService#write(com.horstmann.violet.product.diagram.abstracts.IGraph, java.io.OutputStream)
      */
     public void write(IGraph graph, OutputStream out)
     {

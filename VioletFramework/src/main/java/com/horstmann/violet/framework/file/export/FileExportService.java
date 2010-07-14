@@ -28,8 +28,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 
-import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.util.ClipboardPipe;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 public class FileExportService
 {

@@ -28,8 +28,8 @@ import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
 
-import com.horstmann.violet.framework.dialog.DialogFactory;
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 
 /**
  * Checks if the Java version of the current VM is at least a given version.

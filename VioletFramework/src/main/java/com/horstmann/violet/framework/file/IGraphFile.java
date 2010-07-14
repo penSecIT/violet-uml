@@ -2,7 +2,7 @@ package com.horstmann.violet.framework.file;
 
 import java.io.OutputStream;
 
-import com.horstmann.violet.framework.diagram.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 public interface IGraphFile extends IFile
 {

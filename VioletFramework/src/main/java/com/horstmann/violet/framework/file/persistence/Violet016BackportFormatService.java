@@ -33,10 +33,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
-import com.horstmann.violet.framework.diagram.property.LineStyle;
 import com.horstmann.violet.framework.util.StringFilterOutputStream;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
 import com.horstmann.violet.product.diagram.common.NoteNode;

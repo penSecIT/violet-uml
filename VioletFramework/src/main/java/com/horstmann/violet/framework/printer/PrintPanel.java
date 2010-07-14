@@ -44,12 +44,12 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.horstmann.violet.framework.diagram.IGraph;
-import com.horstmann.violet.framework.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.framework.swingextension.RolloverButtonUI;
-import com.horstmann.violet.framework.theme.ITheme;
-import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.display.swingextension.RolloverButtonUI;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 /**
  * This class implements a dialog for previewing and printing a graph.
