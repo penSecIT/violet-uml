@@ -35,11 +35,11 @@ import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.diagram.property.MultiLineString;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A node in a diagram represented by an image
@@ -79,7 +79,7 @@ public class ImageNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.AbstractNode#checkRemoveEdge(com.horstmann.violet.framework.diagram.Edge)
+     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#checkRemoveEdge(com.horstmann.violet.product.diagram.abstracts.Edge)
      */
     public void checkRemoveEdge(IEdge e)
     {
@@ -89,8 +89,8 @@ public class ImageNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.RectangularNode#layout(java.awt.Graphics2D,
-     *      com.horstmann.violet.framework.diagram.Grid)
+     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#layout(java.awt.Graphics2D,
+     *      com.horstmann.violet.product.diagram.abstracts.Grid)
      */
     @Override
     public void layout(Graphics2D g2, IGrid grid)
@@ -133,7 +133,7 @@ public class ImageNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.AbstractNode#draw(java.awt.Graphics2D)
+     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#draw(java.awt.Graphics2D)
      */
     public void draw(Graphics2D g2)
     {
@@ -149,7 +149,7 @@ public class ImageNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.RectangularNode#getShape()
+     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#getShape()
      */
     public Shape getShape()
     {
@@ -231,7 +231,7 @@ public class ImageNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.RectangularNode#clone()
+     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#clone()
      */
     public ImageNode clone()
     {

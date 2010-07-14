@@ -29,8 +29,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
 
 /**
  * A dotted line that connects a note to its attachment.

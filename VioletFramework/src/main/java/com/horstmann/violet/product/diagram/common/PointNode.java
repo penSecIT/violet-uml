@@ -24,8 +24,8 @@ package com.horstmann.violet.product.diagram.common;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.node.AbstractNode;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
 
 /**
  * An inivisible node that is used in the toolbar to draw an edge, and in notes to serve as an end point of the node connector.

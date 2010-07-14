@@ -28,10 +28,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.diagram.property.MultiLineString;
-import com.horstmann.violet.framework.resources.ResourceBundleConstant;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An link node in a diagram.
