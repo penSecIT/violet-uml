@@ -4,8 +4,8 @@ package com.horstmann.violet.product.diagram.classes;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import com.horstmann.violet.framework.diagram.edge.SegmentedLineEdge;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
  * An edge that is shaped like a line with up to three segments with an arrowhead
@@ -43,7 +43,7 @@ public class ClassRelationshipEdge extends SegmentedLineEdge
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.SegmentedLineEdge#getPoints()
+     * @see com.horstmann.violet.product.diagram.abstracts.SegmentedLineEdge#getPoints()
      */
     public ArrayList<Point2D> getPoints()
     {

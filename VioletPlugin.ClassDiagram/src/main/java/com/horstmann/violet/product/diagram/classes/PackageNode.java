@@ -12,12 +12,12 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.diagram.property.MultiLineString;
 import com.horstmann.violet.framework.util.GeometryUtils;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.diagram.common.NoteNode;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A package node in a UML diagram.

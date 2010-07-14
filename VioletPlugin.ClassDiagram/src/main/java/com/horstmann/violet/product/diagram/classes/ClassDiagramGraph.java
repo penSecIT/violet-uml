@@ -1,16 +1,15 @@
 package com.horstmann.violet.product.diagram.classes;
 
 
-import java.awt.geom.Point2D;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.horstmann.violet.framework.diagram.AbstractGraph;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.diagram.property.ArrowHead;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
-import com.horstmann.violet.framework.diagram.property.LineStyle;
+import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
 import com.horstmann.violet.product.diagram.common.NoteNode;
@@ -21,13 +20,6 @@ import com.horstmann.violet.product.diagram.common.NoteNode;
 public class ClassDiagramGraph extends AbstractGraph
 {
 
-    public boolean addEdgeAtPoints(IEdge e, Point2D p1, Point2D p2)
-    {
-        // Node n1 = findNode(p1);
-        // Node n2 = findNode(p2);
-        // if (n1 == n2) return false;
-        return super.addEdgeAtPoints(e, p1, p2);
-    }
 
     public INode[] getNodePrototypes()
     {
