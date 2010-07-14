@@ -1,11 +1,11 @@
-package com.horstmann.violet.framework.preference;
+package com.horstmann.violet.framework.userpreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.horstmann.violet.framework.file.IFile;
-import com.horstmann.violet.framework.theme.VistaBlueTheme;
+import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
 
 
 /**

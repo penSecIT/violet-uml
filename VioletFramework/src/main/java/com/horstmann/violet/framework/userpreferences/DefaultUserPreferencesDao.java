@@ -19,22 +19,44 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.horstmann.violet.framework.preference;
+package com.horstmann.violet.framework.userpreferences;
 
-public class AppletUserPreferencesDao implements IUserPreferencesDao
+import java.util.prefs.Preferences;
+
+/**
+ * The default preferences service that uses the java.util.prefs API.
+ */
+public class DefaultUserPreferencesDao implements IUserPreferencesDao
 {
+
+    /**
+     * Gets an instance of the service.
+     * 
+     * @return an instance of the service
+     */
+    public DefaultUserPreferencesDao()
+    {
+        prefs = Preferences.userNodeForPackage(DefaultUserPreferencesDao.class);
+    }
 
     public String get(PreferencesConstant key, String defval)
     {
-        return defval;
+        return prefs.get(key.toString(), defval);
     }
 
-    public void put(PreferencesConstant key, String value)
+    public void put(PreferencesConstant key, String defval)
     {
+        prefs.put(key.toString(), defval);
     }
 
     public void reset()
     {
+        for (int i = 0; i < PreferencesConstant.LIST.length; i++)
+        {
+            prefs.remove(PreferencesConstant.LIST[i].toString());
+        }
     }
+
+    private Preferences prefs;
 
 }

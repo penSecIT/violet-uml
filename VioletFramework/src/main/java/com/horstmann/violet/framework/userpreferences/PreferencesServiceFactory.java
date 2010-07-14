@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.horstmann.violet.framework.preference;
+package com.horstmann.violet.framework.userpreferences;
 
 /**
  * A service for storing and loading user preferences. This service uses either the standard Java preferences API or the WebStart

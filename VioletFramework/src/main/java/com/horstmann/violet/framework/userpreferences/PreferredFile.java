@@ -1,4 +1,4 @@
-package com.horstmann.violet.framework.preference;
+package com.horstmann.violet.framework.userpreferences;
 
 import java.io.IOException;
 

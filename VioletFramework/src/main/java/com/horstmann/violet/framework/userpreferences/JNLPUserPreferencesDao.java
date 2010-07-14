@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.horstmann.violet.framework.preference;
+package com.horstmann.violet.framework.userpreferences;
 
 import java.io.BufferedReader;
 import java.io.IOException;
