@@ -25,9 +25,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.SegmentedLineEdge;
-import com.horstmann.violet.framework.diagram.property.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 
 /**
@@ -66,7 +66,7 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.SegmentedLineEdge#getPoints()
+     * @see com.horstmann.violet.product.diagram.abstracts.SegmentedLineEdge#getPoints()
      */
     public ArrayList<Point2D> getPoints()
     {

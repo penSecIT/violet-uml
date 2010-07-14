@@ -27,12 +27,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.horstmann.violet.framework.diagram.Direction;
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.INode;
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.common.PointNode;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A synchronization bar node in an activity diagram.
@@ -50,7 +50,7 @@ public class SynchronizationBarNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.AbstractNode#addEdge(com.horstmann.violet.framework.diagram.Edge,
+     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
      *      java.awt.geom.Point2D, java.awt.geom.Point2D)
      */
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
@@ -61,8 +61,8 @@ public class SynchronizationBarNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.RectangularNode#layout(com.horstmann.violet.framework.diagram.Graph,
-     *      java.awt.Graphics2D, com.horstmann.violet.framework.diagram.Grid)
+     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#layout(com.horstmann.violet.product.diagram.abstracts.Graph,
+     *      java.awt.Graphics2D, com.horstmann.violet.product.diagram.abstracts.Grid)
      */
     public void layout(Graphics2D g2, IGrid grid)
     {

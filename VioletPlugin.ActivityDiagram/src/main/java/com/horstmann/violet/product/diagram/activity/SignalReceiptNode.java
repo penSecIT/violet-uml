@@ -27,10 +27,10 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.framework.diagram.edge.IEdge;
-import com.horstmann.violet.framework.diagram.node.RectangularNode;
-import com.horstmann.violet.framework.diagram.property.MultiLineString;
-import com.horstmann.violet.framework.workspace.editorpart.IGrid;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 
 /**
@@ -50,7 +50,7 @@ public class SignalReceiptNode extends RectangularNode
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.AbstractNode#addEdge(com.horstmann.violet.framework.diagram.Edge,
+     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
      *      java.awt.geom.Point2D, java.awt.geom.Point2D)
      */
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)

@@ -3,8 +3,8 @@ package com.horstmann.violet.product.diagram.activity;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.horstmann.violet.framework.diagram.IGraph;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 /**
  * Describes activity diagram graph type
@@ -48,7 +48,7 @@ public class ActivityDiagramPlugin implements IDiagramPlugin
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.GraphType#getName()
+     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getName()
      */
     public String getName()
     {
@@ -58,7 +58,7 @@ public class ActivityDiagramPlugin implements IDiagramPlugin
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.GraphType#getFileExtension()
+     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getFileExtension()
      */
     public String getFileExtension()
     {
@@ -68,7 +68,7 @@ public class ActivityDiagramPlugin implements IDiagramPlugin
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.GraphType#getFileExtensionName()
+     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getFileExtensionName()
      */
     public String getFileExtensionName()
     {
@@ -78,7 +78,7 @@ public class ActivityDiagramPlugin implements IDiagramPlugin
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.diagram.GraphType#getGraphClass()
+     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getGraphClass()
      */
     public Class<? extends IGraph> getGraphClass()
     {
