@@ -13,5 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,org.eclipse.core.resources,or
 Eclipse-LazyStart: true
 Product-Version: 0.23.0
 Main-Class: com.horstmann.violet.UMLEditor
-
 Bundle-ClassPath: .
