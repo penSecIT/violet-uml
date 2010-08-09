@@ -40,8 +40,9 @@ import com.horstmann.violet.framework.display.swingextension.CustomToggleButton;
 import com.horstmann.violet.framework.display.swingextension.LinkButtonUI;
 import com.horstmann.violet.framework.display.theme.ITheme;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
-import com.horstmann.violet.framework.injection.resources.ResourceFactory;
+import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
+import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+
 import com.horstmann.violet.product.workspace.IWorkspace;
 import com.horstmann.violet.product.workspace.sidebar.ISideBar;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
@@ -59,6 +60,8 @@ public class StatusBar extends JPanel implements IStatusBar
      */
     public StatusBar(final IWorkspace workspace)
     {
+	ResourceBundleInjector.getInjector().inject(this);
+	initSideBarLink(workspace);
         ISideBar sideBar = workspace.getSideBar();
         setLayout(new GridBagLayout());
         JPanel toolViewer = getDiagramToolViewer((GraphToolsBar) sideBar.getGraphToolsBar());
@@ -69,38 +72,35 @@ public class StatusBar extends JPanel implements IStatusBar
         c.gridx = 0;
         c.gridy = 0;
         add(toolViewer, c);
-        JButton sideBarLink = getSideBarLink(workspace);
         c = new GridBagConstraints();
         c.anchor = GridBagConstraints.EAST;
         c.insets = new Insets(2, 5, 3, 5);
         c.weightx = 1;
         c.gridx = 1;
         c.gridy = 0;
-        add(sideBarLink, c);
+        add(this.sideBarLink, c);
         ITheme cLAF = ThemeManager.getInstance().getTheme();
         setBackground(cLAF.getStatusbarBackgroundColor());
         setBorder(new EmptyBorder(0, 0, 0, 0));
     }
 
     /**
-     * Create side bar link to show / hide it
+     * Initialize side bar link with action
      * 
      * @param diagram workspace
      * @return link label
      */
-    private JButton getSideBarLink(final IWorkspace workspace)
+    private void initSideBarLink(final IWorkspace workspace)
     {
-        JButton link = getResourceFactory().createButton("sidebarlink");
-        link.setUI(new LinkButtonUI());
-        link.setForeground(ThemeManager.getInstance().getTheme().getMenubarForegroundColor());
-        link.addActionListener(new ActionListener()
+        this.sideBarLink.setUI(new LinkButtonUI());
+        this.sideBarLink.setForeground(ThemeManager.getInstance().getTheme().getMenubarForegroundColor());
+        this.sideBarLink.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
                 workspace.getSideBar().reduceOrMaximizeSize();
             }
         });
-        return link;
     }
 
     private JPanel getDiagramToolViewer(final IGraphToolsBar sideToolPanel)
@@ -127,18 +127,6 @@ public class StatusBar extends JPanel implements IStatusBar
         return button;
     }
 
-    /**
-     * @return resource factory associated to statusString.properties file
-     */
-    private ResourceFactory getResourceFactory()
-    {
-        if (this.resourceFactory == null)
-        {
-            ResourceBundle resourceBundle = ResourceBundle.getBundle(ResourceBundleConstant.STATUSBAR_STRINGS, Locale.getDefault());
-            this.resourceFactory = new ResourceFactory(resourceBundle);
-        }
-        return this.resourceFactory;
-    }
     
     /* (non-Javadoc)
      * @see com.horstmann.violet.framework.display.clipboard.IStatusBar#getAWTComponent()
@@ -147,11 +135,10 @@ public class StatusBar extends JPanel implements IStatusBar
         return this;
     }
 
-    /**
-     * Resource factory instance
-     */
-    private ResourceFactory resourceFactory;
 
     private static final int GRAPH_TOOL_VIEWER_WIDTH = 350;
+
+    @ResourceBundleBean(key = "sidebarlink")
+    private JButton sideBarLink;
 
 }

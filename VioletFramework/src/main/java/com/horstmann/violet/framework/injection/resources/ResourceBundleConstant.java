@@ -27,7 +27,6 @@ public interface ResourceBundleConstant
     public static final String OTHER_STRINGS = "properties.OtherStrings";
     public static final String FILE_STRINGS = "properties.FileStrings";
     public static final String GENERIC_STRINGS = "properties.%Strings";
-    public static final String STATUSBAR_STRINGS = "properties.StatusBarStrings";
     public static final String NODE_AND_EDGE_STRINGS = "properties.NodeAndEdgeStrings";
 
 }
