@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,13 +27,13 @@ import java.io.OutputStream;
 import com.horstmann.violet.framework.file.IFile;
 
 /**
- * A FileSaverHandler object handles the stream and name of the file that the user selected for saving.
+ * A FileSaverHandler object handles the stream and name of the file that the user selected for writing.
  */
-public interface IFileSaver
+public interface IFileWriter
 {
 
     /**
-     * Gets the output stream needed to save this file content
+     * Gets the output stream needed to write this file content
      * 
      * @return the output stream
      */

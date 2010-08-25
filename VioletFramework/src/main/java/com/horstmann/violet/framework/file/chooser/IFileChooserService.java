@@ -25,6 +25,8 @@ import java.io.IOException;
 
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
 
 
 /**
@@ -45,12 +47,12 @@ public interface IFileChooserService
     public boolean isWebStart();
 
     /**
-     * Returns a file handler to open a file somewhere in the galaxy
+     * Pick up a file and return a file handler
      * 
      * @return the Open object for the selected file
      * @throws IOException
      */
-    public IFileOpener getFileOpener() throws IOException;
+    public IFileReader chooseAndGetFileReader() throws IOException;
     
     /**
      * Returns a file handler to read the given file
@@ -59,16 +61,16 @@ public interface IFileChooserService
      * @return the Open object for the selected file
      * @throws IOException
      */
-    public IFileOpener getFileOpener(IFile file) throws IOException;
+    public IFileReader getFileReader(IFile file) throws IOException;
 
     /**
-     * Returns a file handler to save a file somewhere in the galaxy 
+     * Choose a file and return a file handler to save content 
      * 
      * @param acceptable file filters
      * @return the Save object for the selected file
      * @throws IOException
      */
-    public IFileSaver getFileSaver(ExtensionFilter... extensions) throws IOException;
+    public IFileWriter chooseAndGetFileWriter(ExtensionFilter... extensions) throws IOException;
     
     /**
      * Returns a file handler to save the given file
@@ -77,6 +79,6 @@ public interface IFileChooserService
      * @return the Save object for the selected file
      * @throws IOException
      */
-    public IFileSaver getFileSaver(IFile file) throws IOException;
+    public IFileWriter getFileWriter(IFile file) throws IOException;
 
 }

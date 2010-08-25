@@ -58,7 +58,7 @@ import com.horstmann.violet.framework.display.propertyeditor.customeditor.ArrowH
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.BentStyleEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.ChoiceListEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.ColorEditor;
-import com.horstmann.violet.framework.display.propertyeditor.customeditor.DiagramLinkEditor;
+import com.horstmann.violet.framework.display.propertyeditor.customeditor.AbstractDiagramLinkEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.LineStyleEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.MultiLineStringEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.StringEditor;
@@ -389,7 +389,7 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
         editors.put(BentStyle.class, BentStyleEditor.class);
         editors.put(ChoiceList.class, ChoiceListEditor.class);
         editors.put(java.awt.Color.class, ColorEditor.class);
-        editors.put(DiagramLink.class, DiagramLinkEditor.class);
+        editors.put(DiagramLink.class, AbstractDiagramLinkEditor.class);
         editors.put(LineStyle.class, LineStyleEditor.class);
         editors.put(MultiLineString.class, MultiLineStringEditor.class);
         editors.put(String.class, StringEditor.class);

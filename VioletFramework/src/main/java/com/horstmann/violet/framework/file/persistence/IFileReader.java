@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +27,9 @@ import java.io.InputStream;
 import com.horstmann.violet.framework.file.IFile;
 
 /**
- * An FileOpenHandler object handles the stream and name of the file that the user selected for opening.
+ * An FileOpenHandler object handles the stream and name of the file that the user selected for reading.
  */
-public interface IFileOpener
+public interface IFileReader
 {
 
     

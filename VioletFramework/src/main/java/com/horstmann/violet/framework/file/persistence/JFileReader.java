@@ -1,4 +1,4 @@
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,10 +9,10 @@ import java.io.InputStream;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
 
-public class JFileOpener implements IFileOpener
+public class JFileReader implements IFileReader
 {
 
-    public JFileOpener(File f) throws FileNotFoundException
+    public JFileReader(File f) throws FileNotFoundException
     {
         this.f = f; 
         this.in = new FileInputStream(f);

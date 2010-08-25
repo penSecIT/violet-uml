@@ -13,12 +13,12 @@ import javax.swing.JOptionPane;
 
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.file.chooser.IFileOpener;
-import com.horstmann.violet.framework.file.chooser.IFileSaver;
 import com.horstmann.violet.framework.file.export.FileExportService;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
 import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
@@ -58,7 +58,7 @@ public class GraphFile implements IGraphFile
     {
         ResourceBundleInjector.getInjector().inject(this);
         SpringDependencyInjector.getInjector().inject(this);
-        IFileOpener fileOpener = fileChooserService.getFileOpener(file);
+        IFileReader fileOpener = fileChooserService.getFileReader(file);
         if (fileOpener == null)
         {
             throw new IOException("Open file action cancelled by user");
@@ -126,7 +126,7 @@ public class GraphFile implements IGraphFile
     {
         try
         {
-            IFileSaver fileSaver = getFileSaver(false);
+            IFileWriter fileSaver = getFileSaver(false);
             OutputStream outputStream = fileSaver.getOutputStream();
             this.filePersistenceService.write(this.graph, outputStream);
             this.isSaveRequired = false;
@@ -149,7 +149,7 @@ public class GraphFile implements IGraphFile
     {
         try
         {
-            IFileSaver fileSaver = getFileSaver(true);
+            IFileWriter fileSaver = getFileSaver(true);
             OutputStream outputStream = fileSaver.getOutputStream();
             this.filePersistenceService.write(this.graph, outputStream);
             this.isSaveRequired = false;
@@ -173,7 +173,7 @@ public class GraphFile implements IGraphFile
      * @param isAskedForNewLocation if true, then the FileChooser will open a dialog box to allow to choice a new location
      * @return f
      */
-    private IFileSaver getFileSaver(boolean isAskedForNewLocation)
+    private IFileWriter getFileSaver(boolean isAskedForNewLocation)
     {
         try
         {
@@ -184,13 +184,13 @@ public class GraphFile implements IGraphFile
                 {
                     extensionFilter
                 };
-                return this.fileChooserService.getFileSaver(array);
+                return this.fileChooserService.chooseAndGetFileWriter(array);
             }
             if (!isAskedForNewLocation)
             {
 
             }
-            return this.fileChooserService.getFileSaver(this);
+            return this.fileChooserService.getFileWriter(this);
         }
         catch (Exception e)
         {

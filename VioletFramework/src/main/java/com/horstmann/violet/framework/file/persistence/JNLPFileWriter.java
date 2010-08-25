@@ -1,23 +1,25 @@
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.jnlp.FileContents;
 
 import com.horstmann.violet.framework.file.IFile;
 
-public class JNLPFileOpener implements IFileOpener
+public class JNLPFileWriter implements IFileWriter
 {
-    
-    public JNLPFileOpener(FileContents contents) {
+
+    public JNLPFileWriter(FileContents contents) {
         this.contents = contents;
     }
 
+   
     @Override
-    public InputStream getInputStream() throws IOException
+    public OutputStream getOutputStream() throws IOException
     {
-        return contents.getInputStream();
+        boolean isOverwriteAllowed = true;
+        return contents.getOutputStream(isOverwriteAllowed);
     }
 
     @Override
@@ -39,10 +41,6 @@ public class JNLPFileOpener implements IFileOpener
         };
     }
     
-    
     private FileContents contents;
-
-
-
 
 }

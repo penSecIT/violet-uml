@@ -33,6 +33,10 @@ import javax.jnlp.UnavailableServiceException;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
+import com.horstmann.violet.framework.file.persistence.JNLPFileReader;
+import com.horstmann.violet.framework.file.persistence.JNLPFileWriter;
 
 /**
  * This class provides a FileService for Java Web Start. Note that file saving is strange under Web Start. You first save the data,
@@ -72,7 +76,7 @@ public class JNLPFileChooserService implements IFileChooserService
     }
 
     @Override
-    public IFileOpener getFileOpener(IFile file) throws IOException
+    public IFileReader getFileReader(IFile file) throws IOException
     {
         String currentDirectory = file.getDirectory();
         String filename = file.getFilename();
@@ -87,11 +91,11 @@ public class JNLPFileChooserService implements IFileChooserService
         }
         String[] fileExtensionsStrings = (String[]) fileExtensions.toArray(new String[fileExtensions.size()]);
         final FileContents contents = openService.openFileDialog(currentDirectory, fileExtensionsStrings);
-        return new JNLPFileOpener(contents);
+        return new JNLPFileReader(contents);
     }    
     
     @Override
-    public IFileOpener getFileOpener() throws IOException
+    public IFileReader chooseAndGetFileReader() throws IOException
     {
         String currentDirectory = ".";
         ArrayList<String> fileExtensions = new ArrayList<String>();
@@ -104,11 +108,11 @@ public class JNLPFileChooserService implements IFileChooserService
         }
         String[] fileExtensionsStrings = (String[]) fileExtensions.toArray(new String[fileExtensions.size()]);
         final FileContents contents = openService.openFileDialog(currentDirectory, fileExtensionsStrings);
-        return new JNLPFileOpener(contents);
+        return new JNLPFileReader(contents);
     }
 
     @Override
-    public IFileSaver getFileSaver(IFile file) throws IOException
+    public IFileWriter getFileWriter(IFile file) throws IOException
     {
 
         String defaultDirectory = file.getDirectory();
@@ -126,11 +130,11 @@ public class JNLPFileChooserService implements IFileChooserService
         {
             return null;
         }
-        return new JNLPFileSaver(contents);
+        return new JNLPFileWriter(contents);
     }
     
     @Override
-    public IFileSaver getFileSaver(final ExtensionFilter... filters) throws IOException
+    public IFileWriter chooseAndGetFileWriter(final ExtensionFilter... filters) throws IOException
     {
         String defaultDirectory = ".";
         ArrayList<String> fileExtensions = new ArrayList<String>();
@@ -146,7 +150,7 @@ public class JNLPFileChooserService implements IFileChooserService
         {
             return null;
         }
-        return new JNLPFileSaver(contents);
+        return new JNLPFileWriter(contents);
     }    
 
     /**

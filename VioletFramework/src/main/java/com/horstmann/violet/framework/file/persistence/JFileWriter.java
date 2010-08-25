@@ -1,4 +1,4 @@
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,10 +14,10 @@ import com.horstmann.violet.framework.file.LocalFile;
  * @author Alexandre de Pellegrin
  *
  */
-public class JFileSaver implements IFileSaver
+public class JFileWriter implements IFileWriter
 {
 
-    public JFileSaver(File f) throws FileNotFoundException
+    public JFileWriter(File f) throws FileNotFoundException
     {
         this.f = f;
         this.out = new FileOutputStream(f);

@@ -35,6 +35,10 @@ import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.LocalFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
+import com.horstmann.violet.framework.file.persistence.JFileReader;
+import com.horstmann.violet.framework.file.persistence.JFileWriter;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
@@ -85,7 +89,7 @@ public class JFileChooserService implements IFileChooserService
     }
 
     @Override
-    public IFileOpener getFileOpener(IFile file) throws FileNotFoundException
+    public IFileReader getFileReader(IFile file) throws FileNotFoundException
     {
         try
         {
@@ -93,7 +97,7 @@ public class JFileChooserService implements IFileChooserService
             File physicalFile = localFile.toFile();
             if (physicalFile.exists() && physicalFile.isFile())
             {
-                IFileOpener foh = new JFileOpener(physicalFile);
+                IFileReader foh = new JFileReader(physicalFile);
                 return foh;
             }
             else
@@ -108,7 +112,7 @@ public class JFileChooserService implements IFileChooserService
     }
 
     @Override
-    public IFileOpener getFileOpener() throws FileNotFoundException
+    public IFileReader chooseAndGetFileReader() throws FileNotFoundException
     {
         ExtensionFilter[] filters = fileNamingService.getFileFilters();
         fileChooser.resetChoosableFileFilters();
@@ -142,17 +146,17 @@ public class JFileChooserService implements IFileChooserService
         {
             return null;
         }
-        IFileOpener foh = new JFileOpener(selectedFile);
+        IFileReader foh = new JFileReader(selectedFile);
         return foh;
     }
 
     @Override
-    public IFileSaver getFileSaver(IFile file) throws FileNotFoundException
+    public IFileWriter getFileWriter(IFile file) throws FileNotFoundException
     {
         try
         {
             LocalFile localFile = new LocalFile(file);
-            IFileSaver fsh = new JFileSaver(localFile.toFile());
+            IFileWriter fsh = new JFileWriter(localFile.toFile());
             return fsh;
         }
         catch (IOException e)
@@ -162,7 +166,7 @@ public class JFileChooserService implements IFileChooserService
     }
 
     @Override
-    public IFileSaver getFileSaver(ExtensionFilter... filters) throws FileNotFoundException
+    public IFileWriter chooseAndGetFileWriter(ExtensionFilter... filters) throws FileNotFoundException
     {
         fileChooser.resetChoosableFileFilters();
         for (int i = 0; i < filters.length; i++)
@@ -221,7 +225,7 @@ public class JFileChooserService implements IFileChooserService
         {
             return null;
         }
-        IFileSaver fsh = new JFileSaver(selectedFile);
+        IFileWriter fsh = new JFileWriter(selectedFile);
         return fsh;
     }    
     

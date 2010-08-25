@@ -1,25 +1,23 @@
-package com.horstmann.violet.framework.file.chooser;
+package com.horstmann.violet.framework.file.persistence;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
 import javax.jnlp.FileContents;
 
 import com.horstmann.violet.framework.file.IFile;
 
-public class JNLPFileSaver implements IFileSaver
+public class JNLPFileReader implements IFileReader
 {
-
-    public JNLPFileSaver(FileContents contents) {
+    
+    public JNLPFileReader(FileContents contents) {
         this.contents = contents;
     }
 
-   
     @Override
-    public OutputStream getOutputStream() throws IOException
+    public InputStream getInputStream() throws IOException
     {
-        boolean isOverwriteAllowed = true;
-        return contents.getOutputStream(isOverwriteAllowed);
+        return contents.getInputStream();
     }
 
     @Override
@@ -41,6 +39,10 @@ public class JNLPFileSaver implements IFileSaver
         };
     }
     
+    
     private FileContents contents;
+
+
+
 
 }

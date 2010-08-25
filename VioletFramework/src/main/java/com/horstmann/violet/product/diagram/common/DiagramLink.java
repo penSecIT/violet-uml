@@ -21,9 +21,13 @@
 
 package com.horstmann.violet.product.diagram.common;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 import com.horstmann.violet.framework.file.IFile;
+import com.horstmann.violet.framework.file.LocalFile;
 
 /**
  * This class is a link to a physical file. It is used to perform links between diagrams. Tested successfully in applet mode
@@ -39,11 +43,6 @@ public class DiagramLink
      */
     private IFile file;
     
-    /**
-     * @deprecated kept for compatibility
-     */
-    private URL url;
-
     /**
      * Flag to indicate if file needs to be opened
      */
@@ -99,7 +98,19 @@ public class DiagramLink
      */
     public URL getURL()
     {
-        return url;
+        if (this.file == null) {
+            return null;
+        }
+        try {
+            LocalFile localFile = new LocalFile(this.file);
+            File fileImpl = localFile.toFile();
+            if (fileImpl.exists()) {
+                return fileImpl.toURL();
+            }
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException (e);
+        }
     }
 
     /**
@@ -107,7 +118,15 @@ public class DiagramLink
      */
     public void setURL(URL url)
     {
-        this.url = url;
+        try {
+            URI uri = url.toURI();
+            File fileImpl = new File(uri);
+            if (fileImpl.exists()) {
+                this.file = new LocalFile(fileImpl);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException (e);
+        }
     }
     
 }

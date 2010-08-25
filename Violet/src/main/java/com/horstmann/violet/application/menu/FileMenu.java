@@ -43,10 +43,10 @@ import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.file.chooser.IFileOpener;
-import com.horstmann.violet.framework.file.chooser.IFileSaver;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
 import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
@@ -240,7 +240,7 @@ public class FileMenu extends JMenu
                     try
                     {
                         ExtensionFilter exportFilter = fileNamingService.getImageExtensionFilter();
-                        IFileSaver fileSaver = fileChooserService.getFileSaver(exportFilter);
+                        IFileWriter fileSaver = fileChooserService.chooseAndGetFileWriter(exportFilter);
                         OutputStream out = fileSaver.getOutputStream();
                         if (out != null)
                         {
@@ -381,7 +381,7 @@ public class FileMenu extends JMenu
             {
                 try
                 {
-                	IFileOpener fileOpener = fileChooserService.getFileOpener();
+                	IFileReader fileOpener = fileChooserService.chooseAndGetFileReader();
                     if (fileOpener == null) {
                         // Action cancelled by user
                     	return;
