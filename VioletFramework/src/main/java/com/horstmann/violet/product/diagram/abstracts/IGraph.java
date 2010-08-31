@@ -45,13 +45,19 @@ public interface IGraph
 
 
     /**
-     * Removes the given nodes and edges from this graph
-     * @param nodesToRemove a collection of nodes to remove, or null to remove no nodes
-     * @param edgesToRemove a collection of edges to remove, or null to remove no edges
+     * Removes one or more edges from this graph.
+     * 
+     * @param edgesToRemove
      */
-    public abstract void removeNodesAndEdges(Collection<? extends INode> nodesToRemove, Collection<? extends IEdge> edgesToRemove);
-
-
+    public abstract void removeEdge(IEdge... edgesToRemove);
+    
+    /**
+     * Removes one or more nodes from this graph.
+     * 
+     * @param nodesToRemove
+     */
+    public abstract void removeNode(INode... nodesToRemove);    
+    
     /**
      * Adds a node to the graph so that the top left corner of the bounding rectangle is at the given point.
      * This method is called by a decoder when reading a data file.
@@ -69,13 +75,6 @@ public interface IGraph
      * @param dest d
      */
     public abstract void moveNode(INode existingNode, Point2D dest);
-
-    /**
-     * Removes a node from this graph.
-     * 
-     * @param n
-     */
-    public abstract void removeNode(INode n);
 
  
     /**
@@ -101,11 +100,7 @@ public interface IGraph
 
 
 
-    /**
-     * Removes an edge from this graph. This method should only be called by an undoable edit.
-     * @param n
-     */
-    public abstract void removeEdge(IEdge e);
+
 
 
     /**

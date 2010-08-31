@@ -70,7 +70,7 @@ public class InterfaceNode extends RectangularNode
                 top.getHeight() + midHeight + botHeight);
     }
 
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         if (n  instanceof PointNode)
         {

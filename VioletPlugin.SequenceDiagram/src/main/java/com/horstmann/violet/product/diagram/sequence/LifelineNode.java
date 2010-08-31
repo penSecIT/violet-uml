@@ -137,7 +137,7 @@ public class LifelineNode extends RectangularNode
         return name;
     }
 
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         return n instanceof ActivationBarNode || n  instanceof PointNode;
     }

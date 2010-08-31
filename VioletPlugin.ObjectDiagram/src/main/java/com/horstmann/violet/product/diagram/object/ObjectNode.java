@@ -24,7 +24,6 @@ package com.horstmann.violet.product.diagram.object;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
@@ -143,7 +142,7 @@ public class ObjectNode extends RectangularNode
         return name;
     }
 
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         List<INode> fields = getChildren();
         if (n instanceof PointNode) return true;
@@ -152,23 +151,10 @@ public class ObjectNode extends RectangularNode
         int i = 0;
         while (i < fields.size() && fields.get(i).getLocation().getY() < p.getY())
             i++;
-        addChild(i, n);
+        addChildNode(n, i);
         return true;
     }
 
-    public void checkRemoveNode(INode n)
-    {
-        if (n == this)
-        {
-            List<INode> fields = new ArrayList<INode>(getChildren());
-            for (int i = fields.size() - 1; i >= 0; i--)
-            {
-                INode field = fields.get(i);
-                removeChild(field);
-            }
-            getGraph().removeNodesAndEdges(fields, null);
-        }
-    }    
     
     public ObjectNode clone()
     {

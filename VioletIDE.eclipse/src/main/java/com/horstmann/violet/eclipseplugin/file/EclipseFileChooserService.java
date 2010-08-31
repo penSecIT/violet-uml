@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.file.chooser.IFileOpener;
-import com.horstmann.violet.framework.file.chooser.IFileSaver;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
+import com.horstmann.violet.framework.file.persistence.IFileWriter;
 
 public class EclipseFileChooserService implements IFileChooserService {
 
@@ -16,15 +16,15 @@ public class EclipseFileChooserService implements IFileChooserService {
 	
 	private EclipseFileSaver eclipseFileSaver;
 	
-	private IFileOpener eclipseFileOpener;
+	private IFileReader eclipseFileOpener;
 	
 	@Override
-	public IFileOpener getFileOpener() throws IOException {
+	public IFileReader chooseAndGetFileReader() throws IOException {
 		throw new RuntimeException("Should never happen from Eclipse");
 	}
 
 	@Override
-	public IFileOpener getFileOpener(IFile file) throws IOException {
+	public IFileReader getFileReader(IFile file) throws IOException {
 		if (this.eclipseFileOpener == null) {
 			if (this.eclipseFile == null) throw new RuntimeException("Eclipse file must be set before EclipseFileOpener creation");
 			this.eclipseFileOpener = new EclipseFileOpener(this.eclipseFile);
@@ -33,12 +33,12 @@ public class EclipseFileChooserService implements IFileChooserService {
 	}
 
 	@Override
-	public IFileSaver getFileSaver(ExtensionFilter... extensions) throws IOException {
+	public IFileWriter chooseAndGetFileWriter(ExtensionFilter... extensions) throws IOException {
 		throw new RuntimeException("Should never happen from Eclipse");
 	}
 
 	@Override
-	public IFileSaver getFileSaver(IFile file) throws IOException {
+	public IFileWriter getFileWriter(IFile file) throws IOException {
 		return this.getFileSaver();
 	}
 

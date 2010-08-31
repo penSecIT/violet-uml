@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 
 import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.behavior.IEditorPartBehavior;
 
@@ -107,7 +108,12 @@ public class EditorPart extends JPanel implements IEditorPart
         this.behaviorManager.fireBeforeRemovingSelectedElements();
         try
         {
-            graph.removeNodesAndEdges(selectionHandler.getSelectedNodes(), selectionHandler.getSelectedEdges());
+            List<INode> selectedNodes = selectionHandler.getSelectedNodes();
+            List<IEdge> selectedEdges = selectionHandler.getSelectedEdges();
+            IEdge[] edgesArray = selectedEdges.toArray(new IEdge[selectedEdges.size()]);
+            INode[] nodesArray = selectedNodes.toArray(new INode[selectedNodes.size()]);
+            graph.removeNode(nodesArray);
+            graph.removeEdge(edgesArray);
         }
         finally
         {

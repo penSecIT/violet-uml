@@ -8,9 +8,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.CoreException;
 
 import com.horstmann.violet.framework.file.IFile;
-import com.horstmann.violet.framework.file.chooser.IFileOpener;
+import com.horstmann.violet.framework.file.persistence.IFileReader;
 
-public class EclipseFileOpener implements IFileOpener {
+public class EclipseFileOpener implements IFileReader {
 
 	private org.eclipse.core.resources.IFile eclipseFile;
 

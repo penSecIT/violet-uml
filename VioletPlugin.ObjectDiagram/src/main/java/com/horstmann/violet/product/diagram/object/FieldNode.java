@@ -100,7 +100,7 @@ public class FieldNode extends RectangularNode
      * @see com.horstmann.violet.framework.INode#addINode(com.horstmann.violet.framework.INode, java.awt.geom.Point2D)
      */
     @Override
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         if (n instanceof PointNode)
         {

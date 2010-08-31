@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -36,10 +37,11 @@ public class Clipboard extends AbstractGraph
         
         // empty old contents
         List<IEdge> edges = new ArrayList<IEdge>(getEdges());
-        for (IEdge e : edges) removeEdge(e);
         List<INode> nodes = new ArrayList<INode>(getNodes());
-        for (INode n : nodes) removeNode(n);
-        
+        IEdge[] edgesArray = edges.toArray(new IEdge[edges.size()]);
+        INode[] nodesArray = nodes.toArray(new INode[nodes.size()]);
+        removeEdge(edgesArray);
+        removeNode(nodesArray);
         copyStructure(g, includedNodes, this, null, -bounds.getX(), -bounds.getY());
     }
     
@@ -145,8 +147,12 @@ public class Clipboard extends AbstractGraph
         for (IEdge e : newEdges)
             graphOut.connect(e, e.getStart(), e.getEnd());
         
-        if (selectedOut != null)
-            selectedOut.checkPasteChildren(originalAndClonedNodes.values());
+        if (selectedOut != null) {
+            Collection<INode> nodes = originalAndClonedNodes.values();
+            for (INode aNode : nodes) {
+                selectedOut.addChildNode(aNode, aNode.getLocation());
+            }
+        }
         
         for (INode n : selectedIn)
         {
@@ -156,7 +162,7 @@ public class Clipboard extends AbstractGraph
                 if (child2 != null)
                 {
                     INode n2 = originalAndClonedNodes.get(n);
-                    n2.addChild(n2.getChildren().size(), child2);
+                    n2.addChildNode(child2, n2.getChildren().size());
                 }
             }
             try

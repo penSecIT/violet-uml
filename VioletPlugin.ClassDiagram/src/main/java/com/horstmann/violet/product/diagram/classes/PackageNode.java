@@ -1,6 +1,5 @@
 package com.horstmann.violet.product.diagram.classes;
 
-
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -22,23 +21,20 @@ import com.horstmann.violet.product.workspace.editorpart.IGrid;
 /**
  * A package node in a UML diagram.
  */
-public class PackageNode extends RectangularNode
-{
+public class PackageNode extends RectangularNode {
     /**
      * Construct a package node with a default size
      */
-    public PackageNode()
-    {
+    public PackageNode() {
         name = "";
         contents = new MultiLineString();
         setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
         top = new Rectangle2D.Double(0, 0, DEFAULT_TOP_WIDTH, DEFAULT_TOP_HEIGHT);
         bot = new Rectangle2D.Double(0, DEFAULT_TOP_HEIGHT, DEFAULT_WIDTH, DEFAULT_HEIGHT - DEFAULT_TOP_HEIGHT);
     }
-    
+
     @Override
-    public void translate(double dx, double dy)
-    {
+    public void translate(double dx, double dy) {
         GeometryUtils.translate(top, dx, dy);
         GeometryUtils.translate(bot, dx, dy);
         if (getChildren().size() == 0)
@@ -48,8 +44,7 @@ public class PackageNode extends RectangularNode
                 childNode.translate(dx, dy);
     }
 
-    public void draw(Graphics2D g2)
-    {
+    public void draw(Graphics2D g2) {
         super.draw(g2);
         Rectangle2D bounds = getBounds();
 
@@ -71,53 +66,48 @@ public class PackageNode extends RectangularNode
         contents.draw(g2, bot);
     }
 
-    public Shape getShape()
-    {
+    public Shape getShape() {
         GeneralPath path = new GeneralPath();
         path.append(top, false);
         path.append(bot, false);
         return path;
     }
-    
-    public Point2D getLocation() 
-    { 
+
+    public Point2D getLocation() {
         if (getChildren().size() > 0)
             return new Point2D.Double(getBounds().getX(), getBounds().getY());
         else
             return super.getLocation();
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
-    {
+    public void layout(Graphics2D g2, IGrid grid) {
         label.setText("<html>" + name + "</html>");
         label.setFont(g2.getFont());
         Dimension d = label.getPreferredSize();
-        double topWidth = Math.max(d.getWidth() + 2 * NAME_GAP, DEFAULT_TOP_WIDTH); 
+        double topWidth = Math.max(d.getWidth() + 2 * NAME_GAP, DEFAULT_TOP_WIDTH);
         double topHeight = Math.max(d.getHeight(), DEFAULT_TOP_HEIGHT);
-        
+
         double xgap = Math.max(DEFAULT_XGAP, grid.getSnappingWidth());
         double ygap = Math.max(DEFAULT_YGAP, grid.getSnappingHeight());
-        
+
         Rectangle2D childBounds = null;
         List<INode> children = getChildren();
-        for (INode child : children)
-        {
+        for (INode child : children) {
             child.setZ(getZ() + 1);
             child.layout(g2, grid);
-            if (childBounds == null) childBounds = child.getBounds();
-            else childBounds.add(child.getBounds());
+            if (childBounds == null)
+                childBounds = child.getBounds();
+            else
+                childBounds.add(child.getBounds());
         }
-        
+
         Rectangle2D contentsBounds = contents.getBounds(g2);
-        
-        if (childBounds == null) // no children; leave (x,y) as is and place default rect below
+
+        if (childBounds == null) // no children; leave (x,y) as is and place
+                                 // default rect below
         {
-            snapBounds(grid, 
-                    Math.max(topWidth + DEFAULT_WIDTH - DEFAULT_TOP_WIDTH, Math.max(DEFAULT_WIDTH, contentsBounds.getWidth())),
-                    topHeight + Math.max(DEFAULT_HEIGHT - DEFAULT_TOP_HEIGHT, contentsBounds.getHeight()));
-        }
-        else
-        {
+            snapBounds(grid, Math.max(topWidth + DEFAULT_WIDTH - DEFAULT_TOP_WIDTH, Math.max(DEFAULT_WIDTH, contentsBounds.getWidth())), topHeight + Math.max(DEFAULT_HEIGHT - DEFAULT_TOP_HEIGHT, contentsBounds.getHeight()));
+        } else {
             setBounds(new Rectangle2D.Double(childBounds.getX() - xgap, childBounds.getY() - topHeight - ygap, Math.max(topWidth, childBounds.getWidth() + 2 * xgap), topHeight + childBounds.getHeight() + 2 * ygap));
         }
 
@@ -129,10 +119,10 @@ public class PackageNode extends RectangularNode
     /**
      * Sets the name property value.
      * 
-     * @param newValue the class name
+     * @param newValue
+     *            the class name
      */
-    public void setName(String newValue)
-    {
+    public void setName(String newValue) {
         name = newValue;
     }
 
@@ -141,18 +131,17 @@ public class PackageNode extends RectangularNode
      * 
      * @return the class name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * Sets the contents property value.
      * 
-     * @param newValue the contents of this class
+     * @param newValue
+     *            the contents of this class
      */
-    public void setContents(MultiLineString newValue)
-    {
+    public void setContents(MultiLineString newValue) {
         contents = newValue;
     }
 
@@ -161,40 +150,27 @@ public class PackageNode extends RectangularNode
      * 
      * @return the contents of this class
      */
-    public MultiLineString getContents()
-    {
+    public MultiLineString getContents() {
         return contents;
     }
 
-    public boolean checkAddNode(INode n, Point2D p)
-    {
-        if (n instanceof ClassNode || n instanceof InterfaceNode || n instanceof PackageNode)
-        {
-            addChild(getChildren().size(), n);
+    public boolean addChildNode(INode n, Point2D p) {
+//        Old code from addChildNode(INode n)
+//        if (!(n instanceof ClassNode || n instanceof InterfaceNode || n instanceof PackageNode))
+//            return false;
+//        final int GAP = 6;
+//        n.translate(bot.getX() + GAP, bot.getY() + GAP);
+//        addChildNode(n, getChildren().size());
+//        return true;
+        if (n instanceof ClassNode || n instanceof InterfaceNode || n instanceof PackageNode) {
+            addChildNode(n, getChildren().size());
             return true;
-        }
-        else return n instanceof NoteNode;
+        } else
+            return n instanceof NoteNode;
     }
-    
-    @Override
-    public boolean checkPasteChildren(Collection<INode> children)
-    {
-        for (INode n : children)
-        {
-            if (!(n instanceof ClassNode || n instanceof InterfaceNode || n instanceof PackageNode))
-                return false;
-        }
-        for (INode n : children)
-        {
-            final int GAP = 6;
-            n.translate(bot.getX() + GAP, bot.getY() + GAP);
-            addChild(getChildren().size(), n);
-        }
-        return true;
-    }
-    
-    public PackageNode clone()
-    {
+
+
+    public PackageNode clone() {
         PackageNode cloned = (PackageNode) super.clone();
         cloned.contents = contents.clone();
         top = (Rectangle2D) top.clone();

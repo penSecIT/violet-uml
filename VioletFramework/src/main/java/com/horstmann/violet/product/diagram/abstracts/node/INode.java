@@ -43,6 +43,15 @@ import com.horstmann.violet.product.workspace.editorpart.IGrid;
 public interface INode extends Serializable, Cloneable
 {
     /**
+     * Lays out the node and its children.
+     * 
+     * @param g the ambient graph
+     * @param g2 the graphics context
+     * @param grid the grid to snap to
+     */
+    void layout(Graphics2D g2, IGrid grid);
+
+    /**
      * Draw the node.
      * 
      * @param g2 the graphics context
@@ -98,15 +107,7 @@ public interface INode extends Serializable, Cloneable
      */
     boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2);
 
-    /**
-     * Adds a node as a child node to this node.
-     * 
-     * @param n the child node
-     * @param p the point at which the node is being added
-     * @return true if this node accepts the given node as a child
-     */
-    boolean checkAddNode(INode n, Point2D p);
-
+    
     /**
      * Notifies this node that an edge is being removed.
      * 
@@ -115,6 +116,34 @@ public interface INode extends Serializable, Cloneable
      */
     void checkRemoveEdge(IEdge e);
 
+
+    /**
+     * Adds a node as a child node to this node.
+     * 
+     * @param n the child node
+     * @param p the point at which the node is being added
+     * @return true if this node accepts the given node as a child
+     */
+    boolean addChildNode(INode n, Point2D p);
+
+    
+    /**
+     * Adds a child node and fires the graph modification event.
+     * @param node the child node to add
+     * @param index the position at which to add the child
+     */
+    void addChildNode(INode node, int index);
+
+
+    
+    /**
+     * Gets the children of this node.
+     * 
+     * @return an unmodifiable list of the children
+     */
+    List<INode> getChildren();
+
+
     /**
      * Notifies this node that a node is being removed.
      * 
@@ -122,22 +151,9 @@ public interface INode extends Serializable, Cloneable
      * @param n the node to be removed
      */
     void checkRemoveNode(INode n);
-    
-    /**
-     * Adds a set of nodes as child nodes to this node
-     * @param children the children that are proposed to be pasted
-     * @return true if the paste has been accepted
-     */
-    boolean checkPasteChildren(Collection<INode> children);
 
-    /**
-     * Lays out the node and its children.
-     * 
-     * @param g the ambient graph
-     * @param g2 the graphics context
-     * @param grid the grid to snap to
-     */
-    void layout(Graphics2D g2, IGrid grid);
+
+
 
     /**
      * Gets the parent of this node.
@@ -153,35 +169,6 @@ public interface INode extends Serializable, Cloneable
      */
     void setParent(INode parentNode);
 
-    /**
-     * Gets the children of this node.
-     * 
-     * @return an unmodifiable list of the children
-     */
-    List<INode> getChildren();
-    
-    /**
-     * Sets the children of this node 
-     * 
-     * @param  an ordered list of children
-     */
-    void setChildren(List<INode> children);
-
-    /**
-     * Adds a child node and fires the graph modification event.
-     * 
-     * @param index the position at which to add the child
-     * @param node the child node to add
-     */
-    void addChild(int index, INode node);
-
-    /**
-     * Removes a child node and fires the graph modification event.
-     * 
-     * @param node the child to remove.
-     */
-    void removeChild(INode node);
-    
     /**
         
      * Gets the z-order. Nodes with higher z-order are drawn above those with lower z-order.

@@ -27,7 +27,6 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
@@ -69,7 +68,7 @@ public class NoteNode extends RectangularNode
 
     public void checkRemoveEdge(IEdge e)
     {
-        if (e.getStart() == this) getGraph().removeNodesAndEdges(Arrays.asList(e.getEnd()), null);
+        if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }
 
     @Override

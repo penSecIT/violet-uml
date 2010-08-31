@@ -163,8 +163,15 @@ public abstract class AbstractNode implements INode
      * @see com.horstmann.violet.framework.Node#removeNode(com.horstmann.violet.framework.Graph,
      *      com.horstmann.violet.framework.Node)
      */
-    public void checkRemoveNode(INode e)
+    public void checkRemoveNode(INode node)
     {
+        if (node.getParent() != this) return;
+        int i = children.indexOf(node);
+        if (i >= 0)
+        {
+            children.remove(i);
+            if (node instanceof AbstractNode) ((AbstractNode) node).setParent(null);
+        }
     }
 
     /*
@@ -182,7 +189,7 @@ public abstract class AbstractNode implements INode
      * 
      * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
      */
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         return false;
     }
@@ -234,38 +241,20 @@ public abstract class AbstractNode implements INode
         return children;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#setChildren(java.util.List)
-     */
-    public void setChildren(List<INode> children)
-    {
-        this.children = new ArrayList<INode>(children);
-    }
 
     /*
      * (non-Javadoc)
      * 
      * @see com.horstmann.violet.framework.Node#addChild(int, com.horstmann.violet.framework.Node)
      */
-    public void addChild(int index, INode node)
+    public void addChildNode(INode node, int index)
     {
         INode oldParent = node.getParent();
-        if (oldParent != null) oldParent.removeChild(node);
+        if (oldParent != null) oldParent.checkRemoveNode(node);
         children.add(index, node);
         if (node instanceof AbstractNode) ((AbstractNode) node).setParent(this);
     }
 
-    /**
-     * Called from decoder
-     * 
-     * @param node
-     */
-    public void addChild(INode node)
-    {
-        addChild(children.size(), node);
-    }
 
     /*
      * (non-Javadoc)
@@ -274,13 +263,7 @@ public abstract class AbstractNode implements INode
      */
     public void removeChild(INode node)
     {
-        if (node.getParent() != this) return;
-        int i = children.indexOf(node);
-        if (i >= 0)
-        {
-            children.remove(i);
-            if (node instanceof AbstractNode) ((AbstractNode) node).setParent(null);
-        }
+
     }
 
     /*
@@ -314,15 +297,6 @@ public abstract class AbstractNode implements INode
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#checkPasteChildren(java.util.Collection)
-     */
-    public boolean checkPasteChildren(Collection<INode> children)
-    {
-        return false;
-    }
 
 
     /*

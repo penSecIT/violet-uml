@@ -198,96 +198,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeNodesAndEdges(java.util.Collection, java.util.Collection)
-     */
-    public void removeNodesAndEdges(Collection<? extends INode> nodesToRemove, Collection<? extends IEdge> edgesToRemove)
-    {
-        recursiveRemoves++;
-
-        // Notify all nodes of removals. This might trigger recursive invocations.
-
-        if (nodesToRemove != null)
-        {
-            for (INode n : nodesToRemove)
-            {
-                if (!nodesToBeRemoved.contains(n))
-                {
-                    for (INode n2 : nodes)
-                    {
-                        n2.checkRemoveNode(n);
-                    }
-                    nodesToBeRemoved.add(n);
-                }
-            }
-        }
-        if (edgesToRemove != null)
-        {
-            for (IEdge e : edgesToRemove)
-            {
-                if (!edgesToBeRemoved.contains(e))
-                {
-                    for (INode n1 : nodes)
-                    {
-                        n1.checkRemoveEdge(e);
-                    }
-                    edgesToBeRemoved.add(e);
-                }
-            }
-        }
-
-        recursiveRemoves--;
-        if (recursiveRemoves > 0) return;
-
-        for (IEdge e : edges)
-        {
-            if (!edgesToBeRemoved.contains(e) && (nodesToBeRemoved.contains(e.getStart()) || nodesToBeRemoved.contains(e.getEnd()))) edgesToBeRemoved
-                    .add(e);
-        }
-        edges.removeAll(edgesToBeRemoved);
-        edgesToBeRemoved.clear();
-
-        // Traverse all nodes other than the ones to be removed and make sure that none
-        // of their node-valued properties fall into the set of removed nodes. (Null out if necessary.)
-
-        for (INode n : nodes)
-        {
-            if (!nodesToBeRemoved.contains(n))
-            {
-                try
-                {
-                    for (PropertyDescriptor descriptor : Introspector.getBeanInfo(n.getClass()).getPropertyDescriptors())
-                    {
-                        if (INode.class.isAssignableFrom(descriptor.getPropertyType()))
-                        {
-                            INode value = (INode) descriptor.getReadMethod().invoke(n);
-                            if (nodesToBeRemoved.contains(value)) descriptor.getWriteMethod().invoke(n, (Object) null);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-        }
-
-        for (INode n : nodesToBeRemoved)
-        {
-            for (int i = n.getChildren().size() - 1; i >= 0; i--)
-                n.removeChild(n.getChildren().get(i));
-        }
-        for (INode n : nodesToBeRemoved)
-        {
-            if (n.getParent() != null) n.getParent().removeChild(n);
-            n.setGraph(null);
-        }
-        nodes.removeAll(nodesToBeRemoved);
-        nodesToBeRemoved.clear();
-    }
-
 
     /**
      * Prepare graph elements before painting
@@ -402,7 +312,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                 if (!n.equals(newNode) && n.getZ() == z && n.contains(p))
                 {
                     insideANode = true;
-                    accepted = n.checkAddNode(newNode, p);
+                    accepted = n.addChildNode(newNode, p);
                 }
             }
         }
@@ -411,17 +321,68 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeNode(com.horstmann.violet.product.diagram.abstracts.Node)
+
+    /* (non-Javadoc)
+     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeNode(com.horstmann.violet.product.diagram.abstracts.node.INode[])
      */
-    public void removeNode(INode n)
+    public void removeNode(INode... nodesToRemove)
     {
-        INode p = n.getParent();
-        if (p != null) p.removeChild(n);
-        nodes.remove(n);
-        n.setGraph(null);
+        // Notify all nodes of removals. This might trigger recursive invocations.
+        if (nodesToRemove != null)
+        {
+            for (INode n : nodesToRemove)
+            {
+                if (!nodesToBeRemoved.contains(n))
+                {
+                    for (INode n2 : nodes)
+                    {
+                        n2.checkRemoveNode(n);
+                    }
+                    nodesToBeRemoved.add(n);
+                }
+            }
+        }
+        
+
+        // Traverse all nodes other than the ones to be removed and make sure that none
+        // of their node-valued properties fall into the set of removed nodes. (Null out if necessary.)
+
+        for (INode n : nodes)
+        {
+            if (!nodesToBeRemoved.contains(n))
+            {
+                try
+                {
+                    for (PropertyDescriptor descriptor : Introspector.getBeanInfo(n.getClass()).getPropertyDescriptors())
+                    {
+                        if (INode.class.isAssignableFrom(descriptor.getPropertyType()))
+                        {
+                            INode value = (INode) descriptor.getReadMethod().invoke(n);
+                            if (nodesToBeRemoved.contains(value)) descriptor.getWriteMethod().invoke(n, (Object) null);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        for (INode n : nodesToBeRemoved)
+        {
+            for (int i = n.getChildren().size() - 1; i >= 0; i--)
+                n.checkRemoveNode(n.getChildren().get(i));
+        }
+        for (INode n : nodesToBeRemoved)
+        {
+            if (n.getParent() != null) n.getParent().checkRemoveNode(n);
+            n.setGraph(null);
+        }
+        nodes.removeAll(nodesToBeRemoved);
+        nodesToBeRemoved.clear();
+        
+        
     }
 
     /*
@@ -441,14 +402,33 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeEdge(com.horstmann.violet.product.diagram.abstracts.Edge)
+    /* (non-Javadoc)
+     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeEdge(com.horstmann.violet.product.diagram.abstracts.edge.IEdge[])
      */
-    public void removeEdge(IEdge e)
+    public void removeEdge(IEdge... edgesToRemove)
     {
-        edges.remove(e);
+        if (edgesToRemove != null)
+        {
+            for (IEdge e : edgesToRemove)
+            {
+                if (!edgesToBeRemoved.contains(e))
+                {
+                    for (INode n1 : nodes)
+                    {
+                        n1.checkRemoveEdge(e);
+                    }
+                    edgesToBeRemoved.add(e);
+                }
+            }
+        }
+
+        for (IEdge e : edges)
+        {
+            if (!edgesToBeRemoved.contains(e) && (nodesToBeRemoved.contains(e.getStart()) || nodesToBeRemoved.contains(e.getEnd()))) edgesToBeRemoved
+                    .add(e);
+        }
+        edges.removeAll(edgesToBeRemoved);
+        edgesToBeRemoved.clear();
     }
 
 

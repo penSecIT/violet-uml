@@ -89,7 +89,7 @@ public class ClassNode extends RectangularNode
      * 
      * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
      */
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         // TODO : where is it added?
         if (n instanceof PointNode)

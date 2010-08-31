@@ -4,13 +4,14 @@ Created-By: 11.0-b11 (Sun Microsystems Inc.)
 Bundle-ManifestVersion: 2
 Bundle-Name: Violet UML Editor Eclipse Plugin
 Bundle-SymbolicName: com.horstmann.violet.ide.eclipse;singleton:=true
-Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Version: 2.0.0
 Bundle-Activator: com.horstmann.violet.eclipseplugin.VioletPlugin
 Bundle-Vendor: Alexandre de Pellegrin / Cay S. Horstmann
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,org.eclipse.core.resources,or
  g.eclipse.ui.ide,org.eclipse.ui
 Eclipse-LazyStart: true
-Product-Version: 0.23.0
+Product-Version: 2.0.0
 Main-Class: com.horstmann.violet.UMLEditor
 Bundle-ClassPath: .
+

@@ -30,7 +30,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
@@ -83,7 +82,7 @@ public class ImageNode extends RectangularNode
      */
     public void checkRemoveEdge(IEdge e)
     {
-        if (e.getStart() == this) getGraph().removeNodesAndEdges(Arrays.asList(e.getEnd()), null);
+        if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }
 
     /*

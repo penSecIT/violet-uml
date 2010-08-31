@@ -160,7 +160,7 @@ public class ActivationBarNode extends RectangularNode
                 edge.connect(this, endingNode);
                 CallEdge callEdge = (CallEdge) edge;
                 callEdge.setMiddleLabel("\u00ABcreate\u00BB");
-                addChild(getChildren().size(), endingNode);
+                addChildNode(endingNode, getChildren().size());
                 return true;
             }
 
@@ -182,7 +182,7 @@ public class ActivationBarNode extends RectangularNode
             int i = 0;
             while (i < children.size() && children.get(i).getLocation().getY() < startingNodePoint.getY())
                 i++;
-            addChild(i, endingNode);
+            addChildNode(endingNode, i);
             return true;
         }
         else if (edge instanceof ReturnEdge)
@@ -218,7 +218,7 @@ public class ActivationBarNode extends RectangularNode
      */
     public void checkRemoveNode(INode n)
     {
-        if (n == lifeline) getGraph().removeNodesAndEdges(Arrays.asList(this), null);
+        // FIXME : if (n == lifeline) getGraph().removeNodesAndEdges(Arrays.asList(this), null);
     }
 
     /**
@@ -306,7 +306,7 @@ public class ActivationBarNode extends RectangularNode
      * 
      * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
      */
-    public boolean checkAddNode(INode n, Point2D p)
+    public boolean addChildNode(INode n, Point2D p)
     {
         // TODO : where is it added?
         return n instanceof PointNode;
