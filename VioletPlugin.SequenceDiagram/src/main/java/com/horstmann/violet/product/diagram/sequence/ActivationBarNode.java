@@ -135,55 +135,56 @@ public class ActivationBarNode extends RectangularNode
 
         if (edge instanceof CallEdge)
         {
-            INode endingNode = edge.getEnd();
-            if (endingNode == null)
-            {
-                // If ending node is null, is could be considered as an action
-                // to attach a child if the endingNodePoint is not to far from
-                // the starting node.
-                double x = this.getBounds().getX();
-                double y = this.getBounds().getY();
-                double w = this.getBounds().getWidth();
-                double h = this.getBounds().getHeight();
-                Rectangle2D acceptableBounds = new Rectangle2D.Double(x, y - h, w * 3, h * 3);
-                if (acceptableBounds.contains(endingNodePoint))
-                {
-                    endingNode = this.getImplicitParameter();
-                }
-            }
-
-            if (!(endingNode instanceof ActivationBarNode || endingNode instanceof LifelineNode)) return false;
-
-            if (endingNode instanceof LifelineNode && ((LifelineNode) endingNode).getTopRectangle().contains(endingNodePoint))
-            {
-                if (endingNode == getImplicitParameter()) return false;
-                edge.connect(this, endingNode);
-                CallEdge callEdge = (CallEdge) edge;
-                callEdge.setMiddleLabel("\u00ABcreate\u00BB");
-                addChildNode(endingNode, getChildren().size());
-                return true;
-            }
-
-            if (endingNode instanceof ActivationBarNode && (endingNode.getParent() != null || getAncestors().contains(endingNode))) endingNode = ((ActivationBarNode) endingNode)
-                    .getImplicitParameter();
-
-            if (endingNode == null) return false;
-
-            if (endingNode instanceof LifelineNode)
-            {
-                ActivationBarNode newNode = new ActivationBarNode();
-                getGraph().addNode(newNode, endingNodePoint);
-                newNode.setImplicitParameter((LifelineNode) endingNode);
-                endingNode = newNode;
-            }
-
-            edge.connect(this, endingNode);
-            List<INode> children = getChildren();
-            int i = 0;
-            while (i < children.size() && children.get(i).getLocation().getY() < startingNodePoint.getY())
-                i++;
-            addChildNode(endingNode, i);
-            return true;
+            addCallEdge((CallEdge) edge, startingNodePoint, endingNodePoint);
+//            INode endingNode = edge.getEnd();
+//            if (endingNode == null)
+//            {
+//                // If ending node is null, is could be considered as an action
+//                // to attach a child if the endingNodePoint is not to far from
+//                // the starting node.
+//                double x = this.getBounds().getX();
+//                double y = this.getBounds().getY();
+//                double w = this.getBounds().getWidth();
+//                double h = this.getBounds().getHeight();
+//                Rectangle2D acceptableBounds = new Rectangle2D.Double(x, y - h, w * 3, h * 3);
+//                if (acceptableBounds.contains(endingNodePoint))
+//                {
+//                    endingNode = this.getImplicitParameter();
+//                }
+//            }
+//
+//            if (!(endingNode instanceof ActivationBarNode || endingNode instanceof LifelineNode)) return false;
+//
+//            if (endingNode instanceof LifelineNode && ((LifelineNode) endingNode).getTopRectangle().contains(endingNodePoint))
+//            {
+//                if (endingNode == getImplicitParameter()) return false;
+//                edge.connect(this, endingNode);
+//                CallEdge callEdge = (CallEdge) edge;
+//                callEdge.setMiddleLabel("\u00ABcreate\u00BB");
+//                addChildNode(endingNode, getChildren().size());
+//                return true;
+//            }
+//
+//            if (endingNode instanceof ActivationBarNode && (endingNode.getParent() != null || getAncestors().contains(endingNode))) endingNode = ((ActivationBarNode) endingNode)
+//                    .getImplicitParameter();
+//
+//            if (endingNode == null) return false;
+//
+//            if (endingNode instanceof LifelineNode)
+//            {
+//                ActivationBarNode newNode = new ActivationBarNode();
+//                getGraph().addNode(newNode, endingNodePoint);
+//                newNode.setImplicitParameter((LifelineNode) endingNode);
+//                endingNode = newNode;
+//            }
+//
+//            edge.connect(this, endingNode);
+//            List<INode> children = getChildren();
+//            int i = 0;
+//            while (i < children.size() && children.get(i).getLocation().getY() < startingNodePoint.getY())
+//                i++;
+//            addChildNode(endingNode, i);
+//            return true;
         }
         else if (edge instanceof ReturnEdge)
         {
@@ -196,6 +197,68 @@ public class ActivationBarNode extends RectangularNode
             }
         }
 
+        return false;
+    }
+    
+    
+    private boolean addCallEdge(CallEdge edge, Point2D startingNodePoint, Point2D endingNodePoint) {
+        INode endingNode = edge.getEnd();
+        if (endingNode == null) {
+            // If ending node is null, is could be considered as an action
+            // to attach a child if the endingNodePoint is not to far from
+            // the starting node.
+            double x = this.getBounds().getX();
+            double y = this.getBounds().getY();
+            double w = this.getBounds().getWidth();
+            double h = this.getBounds().getHeight();
+            Rectangle2D acceptableBounds = new Rectangle2D.Double(x, y - h, w * 3, h * 3);
+            if (acceptableBounds.contains(endingNodePoint))
+            {
+                ActivationBarNode newEndingNode = new ActivationBarNode();
+                int lastPos = getChildren().size();
+                addChildNode(newEndingNode, lastPos);
+                edge.connect(this, endingNode);
+                return true;
+            }
+        }
+        if (endingNode instanceof ActivationBarNode) {
+            ActivationBarNode castedEndingNode = (ActivationBarNode) endingNode;
+            if (castedEndingNode == this) {
+                return false;
+            }
+            if (castedEndingNode.getImplicitParameter() != this.getImplicitParameter()) {
+                List<INode> children = getChildren();
+                int i = 0;
+                while (i < children.size() && children.get(i).getLocation().getY() < startingNodePoint.getY()) {
+                    i++;
+                }
+                addChildNode(endingNode, i);
+                return true;
+            }
+        }
+        if (endingNode instanceof LifelineNode) {
+            LifelineNode castedEndingNode = (LifelineNode) endingNode;
+            if (castedEndingNode == this.getImplicitParameter()) {
+                return false;
+            }
+            Rectangle2D topRectangle = castedEndingNode.getTopRectangle();
+            if (topRectangle.contains(endingNodePoint)) {
+                edge.setMiddleLabel("\u00ABcreate\u00BB");
+                addChildNode(endingNode, getChildren().size());
+                return true;
+            }
+            if (!topRectangle.contains(endingNodePoint)) {
+                ActivationBarNode newEndingNode = new ActivationBarNode();
+                getGraph().addNode(newEndingNode, endingNodePoint);
+                // newEndingNode.setImplicitParameter(castedEndingNode);
+                List<INode> children = getChildren();
+                int i = 0;
+                while (i < children.size() && children.get(i).getLocation().getY() < startingNodePoint.getY()) {
+                    i++;
+                }
+                addChildNode(newEndingNode, i);
+            }
+        }
         return false;
     }
 
