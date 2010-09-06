@@ -135,7 +135,7 @@ public class ActivationBarNode extends RectangularNode
 
         if (edge instanceof CallEdge)
         {
-            addCallEdge((CallEdge) edge, startingNodePoint, endingNodePoint);
+            return addCallEdge((CallEdge) edge, startingNodePoint, endingNodePoint);
 //            INode endingNode = edge.getEnd();
 //            if (endingNode == null)
 //            {
@@ -204,22 +204,7 @@ public class ActivationBarNode extends RectangularNode
     private boolean addCallEdge(CallEdge edge, Point2D startingNodePoint, Point2D endingNodePoint) {
         INode endingNode = edge.getEnd();
         if (endingNode == null) {
-            // If ending node is null, is could be considered as an action
-            // to attach a child if the endingNodePoint is not to far from
-            // the starting node.
-            double x = this.getBounds().getX();
-            double y = this.getBounds().getY();
-            double w = this.getBounds().getWidth();
-            double h = this.getBounds().getHeight();
-            Rectangle2D acceptableBounds = new Rectangle2D.Double(x, y - h, w * 3, h * 3);
-            if (acceptableBounds.contains(endingNodePoint))
-            {
-                ActivationBarNode newEndingNode = new ActivationBarNode();
-                int lastPos = getChildren().size();
-                addChildNode(newEndingNode, lastPos);
-                edge.connect(this, endingNode);
-                return true;
-            }
+            return false;
         }
         if (endingNode instanceof ActivationBarNode) {
             ActivationBarNode castedEndingNode = (ActivationBarNode) endingNode;
@@ -233,18 +218,37 @@ public class ActivationBarNode extends RectangularNode
                     i++;
                 }
                 addChildNode(endingNode, i);
+                edge.connect(this, endingNode);
                 return true;
             }
         }
         if (endingNode instanceof LifelineNode) {
             LifelineNode castedEndingNode = (LifelineNode) endingNode;
             if (castedEndingNode == this.getImplicitParameter()) {
-                return false;
+                // If ending node is null, is could be considered as an action
+                // to attach a child if the endingNodePoint is not to far from
+                // the starting node.
+                double x = this.getBounds().getX();
+                double y = this.getBounds().getY();
+                double w = this.getBounds().getWidth();
+                double h = this.getBounds().getHeight();
+                Rectangle2D acceptableBounds = new Rectangle2D.Double(x, y - h, w * 3, h * 3);
+                if (acceptableBounds.contains(endingNodePoint))
+                {
+                    ActivationBarNode newEndingNode = new ActivationBarNode();
+                    newEndingNode.setImplicitParameter(getImplicitParameter());
+                    newEndingNode.setGraph(getGraph());
+                    int lastPos = getChildren().size();
+                    addChildNode(newEndingNode, lastPos);
+                    edge.connect(this, newEndingNode);
+                    return true;
+                }
             }
             Rectangle2D topRectangle = castedEndingNode.getTopRectangle();
             if (topRectangle.contains(endingNodePoint)) {
                 edge.setMiddleLabel("\u00ABcreate\u00BB");
                 addChildNode(endingNode, getChildren().size());
+                edge.connect(this, endingNode);
                 return true;
             }
             if (!topRectangle.contains(endingNodePoint)) {
@@ -257,6 +261,8 @@ public class ActivationBarNode extends RectangularNode
                     i++;
                 }
                 addChildNode(newEndingNode, i);
+                edge.connect(this, newEndingNode);
+                return true;
             }
         }
         return false;
