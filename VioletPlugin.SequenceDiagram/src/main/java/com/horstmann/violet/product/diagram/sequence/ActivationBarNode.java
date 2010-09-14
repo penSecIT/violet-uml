@@ -28,7 +28,6 @@ import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
@@ -135,7 +134,7 @@ public class ActivationBarNode extends RectangularNode
 
         if (edge instanceof CallEdge)
         {
-            return addCallEdge((CallEdge) edge, startingNodePoint, endingNodePoint);
+            addCallEdge((CallEdge) edge, startingNodePoint, endingNodePoint);
 //            INode endingNode = edge.getEnd();
 //            if (endingNode == null)
 //            {
@@ -202,7 +201,7 @@ public class ActivationBarNode extends RectangularNode
     
     
     private boolean addCallEdge(CallEdge edge, Point2D startingNodePoint, Point2D endingNodePoint) {
-        INode endingNode = edge.getEnd();
+                INode endingNode = edge.getEnd();
         if (endingNode == null) {
             return false;
         }
@@ -313,6 +312,62 @@ public class ActivationBarNode extends RectangularNode
         // TODO Auto-generated method stub
         super.setBounds(newBounds);
     }
+    
+    @Override
+    public Rectangle2D getBounds() {
+        if (getImplicitParameter() == null)
+        {
+            return null;
+        }
+        Rectangle2D lifeLineBounds = getImplicitParameter().getBounds();
+        // Horizontal location
+        double xmid = lifeLineBounds.getBounds().getCenterX() - DEFAULT_WIDTH / 2;
+        for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
+        {
+            if (n.lifeline == lifeline)
+            {
+                xmid += DEFAULT_WIDTH / 2;
+            }
+        }
+        double x = xmid;
+        // Vertical location
+        double y = 0;
+        if (getParent() == getImplicitParameter()) {
+            Rectangle2D topRectangle = getImplicitParameter().getTopRectangle();
+            y = topRectangle.getY() + topRectangle.getHeight();
+            int childPos = getImplicitParameter().getChildren().indexOf(this);
+            y = y + childPos * CALL_YGAP;
+            for (int i = 0; i < childPos; i++) {
+                INode brotherNode = getImplicitParameter().getChildren().get(i);
+                Rectangle2D brotherBounds = brotherNode.getBounds();
+                y = y + brotherBounds.getHeight();
+            }
+        } else {
+            Rectangle2D parentBounds = getParent().getBounds();
+            y = parentBounds.getY() + CALL_YGAP;
+        }
+        // Height
+        double height = DEFAULT_HEIGHT;
+        int childVisibleNodesCounter = 0;
+        for (INode aNode : getChildren()) {
+            if (aNode instanceof ActivationBarNode) {
+                childVisibleNodesCounter++;
+            }
+        }
+        if (childVisibleNodesCounter > 0) {
+            height = CALL_YGAP;
+            for (INode aNode : getChildren()) {
+                if (aNode instanceof ActivationBarNode) {
+                    Rectangle2D aNodeBounds = aNode.getBounds();
+                    height = height + aNodeBounds.getHeight() + CALL_YGAP;
+                }
+            }
+        }
+        return new Rectangle2D.Double(x, y, DEFAULT_WIDTH, height);
+        
+        // TODO : manage openbottom
+    }
+    
 
     /*
      * (non-Javadoc)
@@ -323,51 +378,51 @@ public class ActivationBarNode extends RectangularNode
     public void layout(Graphics2D g2, IGrid grid)
     {
 
-        if (getImplicitParameter() == null)
-        {
-            return;
-        }
-
-        // Horizontal translation
-        double xmid = lifeline.getBounds().getCenterX() - DEFAULT_WIDTH / 2;
-        for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
-        {
-            if (n.lifeline == lifeline)
-            {
-                xmid += DEFAULT_WIDTH / 2;
-            }
-        }
-        translate(xmid - getLocation().getX(), 0);
-
-        // Set height
-        double ytop = getLocation().getY() + CALL_YGAP;
-        List<INode> calls = getChildren();
-
-        for (INode n : calls)
-        {
-            if (n instanceof ActivationBarNode) n.setZ(getZ() + 1);
-            else n.setZ(0);
-            IEdge callEdge = findEdge(this, n);
-            // compute height of call edge
-            if (callEdge != null) ytop += callEdge.getBounds().getHeight() - CALL_YGAP;
-
-            if (n instanceof LifelineNode) n.translate(0, ytop - ((LifelineNode) n).getTopRectangle().getHeight() / 2
-                    - n.getLocation().getY());
-            else n.translate(0, ytop - n.getLocation().getY());
-
-            n.layout(g2, grid);
-            if (n instanceof ActivationBarNode && ((ActivationBarNode) n).signaled) ytop += CALL_YGAP;
-            else if (n instanceof ActivationBarNode) ytop += n.getBounds().getHeight() + CALL_YGAP;
-            else if (n instanceof LifelineNode) ytop += ((LifelineNode) n).getTopRectangle().getHeight() / 2 + CALL_YGAP;
-        }
-        if (openBottom) ytop += 2 * CALL_YGAP;
-
-        double minHeight = DEFAULT_HEIGHT;
-        IEdge returnEdge = findEdge(this, getParent());
-        if (returnEdge != null) minHeight = Math.max(minHeight, returnEdge.getBounds().getHeight());
-
-        setBounds(new Rectangle2D.Double(getLocation().getX(), getLocation().getY(), DEFAULT_WIDTH, Math.max(minHeight, ytop
-                - getLocation().getY())));
+//        if (getImplicitParameter() == null)
+//        {
+//            return;
+//        }
+//
+//        // Horizontal translation
+//        double xmid = lifeline.getBounds().getCenterX() - DEFAULT_WIDTH / 2;
+//        for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
+//        {
+//            if (n.lifeline == lifeline)
+//            {
+//                xmid += DEFAULT_WIDTH / 2;
+//            }
+//        }
+//        translate(xmid - getLocation().getX(), 0);
+//
+//        // Set height
+//        double ytop = getLocation().getY() + CALL_YGAP;
+//        List<INode> calls = getChildren();
+//
+//        for (INode n : calls)
+//        {
+//            if (n instanceof ActivationBarNode) n.setZ(getZ() + 1);
+//            else n.setZ(0);
+//            IEdge callEdge = findEdge(this, n);
+//            // compute height of call edge
+//            if (callEdge != null) ytop += callEdge.getBounds().getHeight() - CALL_YGAP;
+//
+//            if (n instanceof LifelineNode) n.translate(0, ytop - ((LifelineNode) n).getTopRectangle().getHeight() / 2
+//                    - n.getLocation().getY());
+//            else n.translate(0, ytop - n.getLocation().getY());
+//
+//            n.layout(g2, grid);
+//            if (n instanceof ActivationBarNode && ((ActivationBarNode) n).signaled) ytop += CALL_YGAP;
+//            else if (n instanceof ActivationBarNode) ytop += n.getBounds().getHeight() + CALL_YGAP;
+//            else if (n instanceof LifelineNode) ytop += ((LifelineNode) n).getTopRectangle().getHeight() / 2 + CALL_YGAP;
+//        }
+//        if (openBottom) ytop += 2 * CALL_YGAP;
+//
+//        double minHeight = DEFAULT_HEIGHT;
+//        IEdge returnEdge = findEdge(this, getParent());
+//        if (returnEdge != null) minHeight = Math.max(minHeight, returnEdge.getBounds().getHeight());
+//
+//        setBounds(new Rectangle2D.Double(getLocation().getX(), getLocation().getY(), DEFAULT_WIDTH, Math.max(minHeight, ytop
+//                - getLocation().getY())));
     }
 
     /*
@@ -377,8 +432,11 @@ public class ActivationBarNode extends RectangularNode
      */
     public boolean addChildNode(INode n, Point2D p)
     {
-        // TODO : where is it added?
-        return n instanceof PointNode;
+        if (n instanceof PointNode || n instanceof ActivationBarNode) {
+            n.setParent(this);
+            return getChildren().add(n);
+        }
+        return false;
     }
 
     /**
