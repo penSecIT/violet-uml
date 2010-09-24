@@ -69,7 +69,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             e.connect(n1, n2);
             if (n1.checkAddEdge(e, p1, p2) && e.getEnd() != null)
             {
-                if (!nodes.contains(e.getEnd()))
+                if (!getAllNodes().contains(e.getEnd()))
                 {
                     addNode(e.getEnd(), e.getEnd().getLocation());
                 }
@@ -100,19 +100,28 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      */
     public INode findNode(Point2D p)
     {
-        int maxZ = 0;
-        for (INode n : nodes)
-        {
-            if (n.getZ() > maxZ) maxZ = n.getZ();
-        }
-        for (int z = maxZ; z >= 0; z--)
-        {
-            for (INode n : nodes)
-            {
-                if (n.getZ() == z && n.contains(p)) return n;
+        for (INode n : getAllNodes()) {
+            if (n.contains(p)) {
+                return n;
             }
         }
         return null;
+    }
+    
+    private List<INode> getAllNodes() {
+        List<INode> fifo = new ArrayList<INode>();
+        List<INode> allNodes = new ArrayList<INode>();
+        fifo.addAll(nodes);
+        allNodes.addAll(nodes);
+        while (!fifo.isEmpty()) {
+            INode nodeToInspect = fifo.remove(0);
+            List<INode> children = nodeToInspect.getChildren();
+            fifo.addAll(children);
+            allNodes.addAll(children);
+        }
+        // Let's have children first 
+        Collections.reverse(allNodes);
+        return allNodes;
     }
 
     /*
@@ -122,7 +131,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      */
     public INode findNode(Id id)
     {
-        for (INode n : nodes)
+        for (INode n : getAllNodes())
         {
             if (n.getId().equals(id)) return n;
         }
@@ -168,9 +177,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         
         int count = 0;
         int z = 0;
-        while (count < nodes.size())
+        List<INode> allNodes = getAllNodes();
+        while (count < allNodes.size())
         {
-            for (INode n : nodes)
+            for (INode n : allNodes)
             {
                 
                 if (n.getZ() == z)
@@ -206,7 +216,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      */
     public void layout(Graphics2D g2, IGrid gr)
     {
-        for (INode n : nodes)
+        for (INode n : getAllNodes())
         {
             if (n.getParent() == null) // parents lay out their children
             n.layout(g2, gr);
@@ -221,7 +231,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public Rectangle2D getClipBounds()
     {
         Rectangle2D r = minBounds;
-        for (INode n : nodes)
+        for (INode n : getAllNodes())
         {
             Rectangle2D b = n.getBounds();
             if (r == null) r = b;
@@ -267,7 +277,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      */
     public Collection<INode> getNodes()
     {
-        return Collections.unmodifiableCollection(nodes);
+        return Collections.unmodifiableCollection(getAllNodes());
     }
 
     /*
@@ -288,35 +298,19 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
      */
     public boolean addNode(INode newNode, Point2D p)
     {
-        newNode.setGraph(this);
-        newNode.translate(p.getX() - newNode.getLocation().getX(), p.getY() - newNode.getLocation().getY());
-        
+        // Case 1 : Note node always attached to the graph
         if (newNode instanceof NoteNode) {
+            newNode.setGraph(this);
             nodes.add(newNode);
             return true;
         }
-        
-        
-        boolean accepted = false;
-        boolean insideANode = false;
-        int maxZ = 0;
-        for (INode n : nodes)
-        {
-            if (n.getZ() > maxZ) maxZ = n.getZ();
+        // Case 2 : attached to an existing node
+        INode potentialParentNode = findNode(p);
+        if (potentialParentNode != null) {
+            return potentialParentNode.addChildNode(newNode, p);
         }
-        for (int z = maxZ; !accepted && z >= 0; z--)
-        {
-            for (int i = 0; !accepted && i < nodes.size(); i++)
-            {
-                INode n = nodes.get(i);
-                if (!n.equals(newNode) && n.getZ() == z && n.contains(p))
-                {
-                    insideANode = true;
-                    accepted = n.addChildNode(newNode, p);
-                }
-            }
-        }
-        if (insideANode && !accepted) return false;
+        // Case 3 : attached directly to the graph
+        newNode.setGraph(this);
         nodes.add(newNode);
         return true;
     }
@@ -334,7 +328,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             {
                 if (!nodesToBeRemoved.contains(n))
                 {
-                    for (INode n2 : nodes)
+                    for (INode n2 : getAllNodes())
                     {
                         n2.checkRemoveNode(n);
                     }
@@ -347,7 +341,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         // Traverse all nodes other than the ones to be removed and make sure that none
         // of their node-valued properties fall into the set of removed nodes. (Null out if necessary.)
 
-        for (INode n : nodes)
+        for (INode n : getAllNodes())
         {
             if (!nodesToBeRemoved.contains(n))
             {
@@ -413,7 +407,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             {
                 if (!edgesToBeRemoved.contains(e))
                 {
-                    for (INode n1 : nodes)
+                    for (INode n1 : getAllNodes())
                     {
                         n1.checkRemoveEdge(e);
                     }
@@ -437,6 +431,5 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     private ArrayList<IEdge> edges;
     private transient ArrayList<INode> nodesToBeRemoved;
     private transient ArrayList<IEdge> edgesToBeRemoved;
-    private transient int recursiveRemoves;
     private transient Rectangle2D minBounds;
 }

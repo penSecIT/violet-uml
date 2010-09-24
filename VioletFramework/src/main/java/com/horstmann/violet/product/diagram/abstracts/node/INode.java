@@ -71,7 +71,14 @@ public interface INode extends Serializable, Cloneable
      * top left corner of the bounds (which is adjusted visually when snapping to the grid).
      * @return the location
      */
-    Point2D getLocation();     
+    Point2D getLocation();
+    
+    
+    /**
+     * Set or change node location 
+     * @param aPoint
+     */
+    void setLocation(Point2D aPoint);
     
     /**
      * Tests whether the node contains a point.

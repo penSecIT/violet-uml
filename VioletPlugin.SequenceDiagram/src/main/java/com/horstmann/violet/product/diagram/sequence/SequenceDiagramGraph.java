@@ -48,6 +48,7 @@ public class SequenceDiagramGraph extends AbstractGraph
 {
     public boolean addNode(INode n, Point2D p)
     {
+        if (!super.addNode(n, p)) return false;
         if (n instanceof ActivationBarNode) // must be inside an object
         {
             Collection<INode> nodes = getNodes();
@@ -64,8 +65,6 @@ public class SequenceDiagramGraph extends AbstractGraph
             }
             if (!inside) return false;
         }
-
-        if (!super.addNode(n, p)) return false;
         return true;
     }
 

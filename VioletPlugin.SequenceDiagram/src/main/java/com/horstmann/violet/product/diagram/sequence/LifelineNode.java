@@ -139,7 +139,12 @@ public class LifelineNode extends RectangularNode
 
     public boolean addChildNode(INode n, Point2D p)
     {
-        return n instanceof ActivationBarNode || n  instanceof PointNode;
+        if (n instanceof ActivationBarNode || n  instanceof PointNode) {
+            int pos = getChildren().size();
+            addChildNode(n, pos);
+            return true;
+        }
+        return false;
     }
 
     public LifelineNode clone()

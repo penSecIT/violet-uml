@@ -317,16 +317,18 @@ public class ActivationBarNode extends RectangularNode
     public Rectangle2D getBounds() {
         if (getImplicitParameter() == null)
         {
-            return null;
+            return new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         }
         Rectangle2D lifeLineBounds = getImplicitParameter().getBounds();
         // Horizontal location
         double xmid = lifeLineBounds.getBounds().getCenterX() - DEFAULT_WIDTH / 2;
-        for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
-        {
-            if (n.lifeline == lifeline)
+        if (getParent() != getImplicitParameter()) {
+            for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
             {
-                xmid += DEFAULT_WIDTH / 2;
+                if (n.lifeline == lifeline)
+                {
+                    xmid += DEFAULT_WIDTH / 2;
+                }
             }
         }
         double x = xmid;
@@ -334,7 +336,7 @@ public class ActivationBarNode extends RectangularNode
         double y = 0;
         if (getParent() == getImplicitParameter()) {
             Rectangle2D topRectangle = getImplicitParameter().getTopRectangle();
-            y = topRectangle.getY() + topRectangle.getHeight();
+            y = topRectangle.getY() + topRectangle.getHeight() + CALL_YGAP;
             int childPos = getImplicitParameter().getChildren().indexOf(this);
             y = y + childPos * CALL_YGAP;
             for (int i = 0; i < childPos; i++) {

@@ -26,7 +26,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.UIManager;
@@ -62,12 +61,18 @@ public abstract class AbstractNode implements INode
      */
     public Point2D getLocation()
     {
-        // Legacy grief--some versions of the XML encoder wrote calls to setBounds
-        // We use the location set by setBounds until the first call to translate.
-        if (location == null) return new Point2D.Double(getBounds().getX(), getBounds().getY());
-        return location;
+        return this.location;
     }
 
+    
+    /* (non-Javadoc)
+     * @see com.horstmann.violet.product.diagram.abstracts.node.INode#setLocation(java.awt.geom.Point2D)
+     */
+    @Override
+    public void setLocation(Point2D aPoint) {
+        this.location = aPoint;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -128,12 +133,7 @@ public abstract class AbstractNode implements INode
      */
     public void translate(double dx, double dy)
     {
-        // Legacy grief--some versions of the XML encoder wrote calls to setBounds
-        // We use the location set by setBounds until the first call to translate.
-        if (location == null) location = (Point2D.Double) getLocation();
-
-        location.x += dx;
-        location.y += dy;
+        location.setLocation(location.getX() +  dx, location.getY() + dy);
     }
 
     /*
@@ -390,8 +390,8 @@ public abstract class AbstractNode implements INode
     private ArrayList<INode> children;
     private INode parent;
     private IGraph graph;
+    private Point2D location = new Point2D.Double(0, 0); 
     private transient String toolTip;
-    private Point2D.Double location;
     private transient int z;
 
     /** Node's current id (unique in all the graph) */

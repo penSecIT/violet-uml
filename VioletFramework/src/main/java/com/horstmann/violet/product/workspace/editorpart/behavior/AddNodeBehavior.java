@@ -45,6 +45,7 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
         INode prototype = (INode) selectedTool.getNodeOrEdge();
         INode newNode = (INode) prototype.clone();
+        
         boolean added = addNodeAtPoint(newNode, mousePoint);
         if (added)
         {
