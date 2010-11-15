@@ -66,6 +66,22 @@ public abstract class AbstractNode implements INode
 
     
     /* (non-Javadoc)
+     * @see com.horstmann.violet.product.diagram.abstracts.node.INode#getLocationOnGraph()
+     */
+    @Override
+    public Point2D getLocationOnGraph()
+    {
+        INode parentNode = getParent();
+        if (parentNode == null) {
+            return getLocation();
+        }
+        Point2D parentLocationOnGraph = parentNode.getLocationOnGraph();
+        Point2D relativeLocation = getLocation();
+        Point2D result = new Point2D.Double(parentLocationOnGraph.getX() + relativeLocation.getX(), parentLocationOnGraph.getY() + relativeLocation.getY());
+        return result;
+    }
+    
+    /* (non-Javadoc)
      * @see com.horstmann.violet.product.diagram.abstracts.node.INode#setLocation(java.awt.geom.Point2D)
      */
     @Override

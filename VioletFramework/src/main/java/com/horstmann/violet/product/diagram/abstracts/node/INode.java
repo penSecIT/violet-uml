@@ -67,12 +67,16 @@ public interface INode extends Serializable, Cloneable
     void translate(double dx, double dy);
     
     /**
-     * Gets the location of this node. The location determines how the node is laid out. The location is usually not the same as the 
-     * top left corner of the bounds (which is adjusted visually when snapping to the grid).
+     * Gets the location of this node on its parent (i.e. relative location)
      * @return the location
      */
     Point2D getLocation();
     
+    /**
+     * Gets the location of this node on the whole graph. (i.e. absolute location)
+     * @return
+     */
+    Point2D getLocationOnGraph();
     
     /**
      * Set or change node location 

@@ -46,27 +46,27 @@ import com.horstmann.violet.product.workspace.editorpart.IGrid;
  */
 public class SequenceDiagramGraph extends AbstractGraph
 {
-    public boolean addNode(INode n, Point2D p)
-    {
-        if (!super.addNode(n, p)) return false;
-        if (n instanceof ActivationBarNode) // must be inside an object
-        {
-            Collection<INode> nodes = getNodes();
-            boolean inside = false;
-            Iterator<INode> iter = nodes.iterator();
-            while (!inside && iter.hasNext())
-            {
-                INode n2 = iter.next();
-                if (n2 instanceof LifelineNode && n2.contains(p))
-                {
-                    inside = true;
-                    ((ActivationBarNode) n).setImplicitParameter((LifelineNode) n2);
-                }
-            }
-            if (!inside) return false;
-        }
-        return true;
-    }
+//    public boolean addNode(INode n, Point2D p)
+//    {
+//        if (!super.addNode(n, p)) return false;
+//        if (n instanceof ActivationBarNode) // must be inside an object
+//        {
+//            Collection<INode> nodes = getNodes();
+//            boolean inside = false;
+//            Iterator<INode> iter = nodes.iterator();
+//            while (!inside && iter.hasNext())
+//            {
+//                INode n2 = iter.next();
+//                if (n2 instanceof LifelineNode && n2.contains(p))
+//                {
+//                    inside = true;
+//                    ((ActivationBarNode) n).setImplicitParameter((LifelineNode) n2);
+//                }
+//            }
+//            if (!inside) return false;
+//        }
+//        return true;
+//    }
 
     /*
      * public void addEdgeToRemove(Edge e) { if (e instanceof CallEdge && e.getEnd().getChildren().size() == 0)
@@ -85,14 +85,14 @@ public class SequenceDiagramGraph extends AbstractGraph
             else if (n.getParent() == null) otherNodes.add(n);
         }
 
-        for (IEdge e : getEdges())
-        {
-            if (e instanceof CallEdge)
-            {
-                INode end = e.getEnd();
-                if (end instanceof ActivationBarNode) ((ActivationBarNode) end).setSignaled(((CallEdge) e).isSignal());
-            }
-        }
+//        for (IEdge e : getEdges())
+//        {
+//            if (e instanceof CallEdge)
+//            {
+//                INode end = e.getEnd();
+//                if (end instanceof ActivationBarNode) ((ActivationBarNode) end).setSignaled(((CallEdge) e).isSignal());
+//            }
+//        }
 
         // find the max of the heights of the objects
 

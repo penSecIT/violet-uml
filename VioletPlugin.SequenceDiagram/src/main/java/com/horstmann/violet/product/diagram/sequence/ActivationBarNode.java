@@ -62,28 +62,10 @@ public class ActivationBarNode extends RectangularNode
         g2.setColor(Color.WHITE);
         g2.fill(getBounds());
         g2.setColor(oldColor);
-        if (openBottom)
-        {
-            Rectangle2D b = getBounds();
-            double x1 = b.getX();
-            double x2 = x1 + b.getWidth();
-            double y1 = b.getY();
-            double y3 = y1 + b.getHeight();
-            double y2 = y3 - CALL_YGAP;
-            g2.draw(new Line2D.Double(x1, y1, x2, y1));
-            g2.draw(new Line2D.Double(x1, y1, x1, y2));
-            g2.draw(new Line2D.Double(x2, y1, x2, y2));
-            Stroke oldStroke = g2.getStroke();
-            g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0.0f, new float[]
-            {
-                    5.0f,
-                    5.0f
-            }, 0.0f));
-            g2.draw(new Line2D.Double(x1, y2, x1, y3));
-            g2.draw(new Line2D.Double(x2, y2, x2, y3));
-            g2.setStroke(oldStroke);
+        g2.draw(getBounds());
+        for (INode node : getChildren()) {
+            node.draw(g2);
         }
-        else g2.draw(getBounds());
     }
 
     /**
@@ -306,48 +288,61 @@ public class ActivationBarNode extends RectangularNode
         return null;
     }
 
+
     @Override
-    public void setBounds(Rectangle2D newBounds)
+    public Point2D getLocation()
     {
-        // TODO Auto-generated method stub
-        super.setBounds(newBounds);
+        double x = getHorizontalLocation();
+        double y = getVerticalLocation();
+        return new Point2D.Double(x, y);
+    }
+    
+    /**
+     * @return x location relative to the parent
+     */
+    private double getHorizontalLocation() {
+        INode parentNode = getParent();
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            return DEFAULT_WIDTH / 2;
+        }
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
+            LifelineNode lifeLineNode = (LifelineNode) parentNode;
+            Rectangle2D lifeLineTopRectangle = lifeLineNode.getTopRectangle();
+            return lifeLineTopRectangle.getWidth() / 2 - DEFAULT_WIDTH / 2;
+        }
+        return 0;
+    }
+    
+    
+    /**
+     * @return y location relative to the parent
+     */
+    private double getVerticalLocation() {
+        INode parentNode = getParent();
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            List<INode> parentChildren = parentNode.getChildren();
+            double y = CALL_YGAP;
+            for (INode aNode : parentChildren) {
+                if (aNode != this) {
+                    y = y + aNode.getBounds().getHeight() + CALL_YGAP;
+                }
+                if (aNode == this) {
+                    break;
+                }
+            }
+            return y;
+        }
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
+            LifelineNode lifeLineNode = (LifelineNode) parentNode;
+            Rectangle2D lifeLineTopRectangle = lifeLineNode.getTopRectangle();
+            return lifeLineTopRectangle.getHeight() + CALL_YGAP;
+        }
+        return 0;
     }
     
     @Override
     public Rectangle2D getBounds() {
-        if (getImplicitParameter() == null)
-        {
-            return new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        }
-        Rectangle2D lifeLineBounds = getImplicitParameter().getBounds();
-        // Horizontal location
-        double xmid = lifeLineBounds.getBounds().getCenterX() - DEFAULT_WIDTH / 2;
-        if (getParent() != getImplicitParameter()) {
-            for (ActivationBarNode n = (ActivationBarNode) getParent(); n != null; n = (ActivationBarNode) n.getParent())
-            {
-                if (n.lifeline == lifeline)
-                {
-                    xmid += DEFAULT_WIDTH / 2;
-                }
-            }
-        }
-        double x = xmid;
-        // Vertical location
-        double y = 0;
-        if (getParent() == getImplicitParameter()) {
-            Rectangle2D topRectangle = getImplicitParameter().getTopRectangle();
-            y = topRectangle.getY() + topRectangle.getHeight() + CALL_YGAP;
-            int childPos = getImplicitParameter().getChildren().indexOf(this);
-            y = y + childPos * CALL_YGAP;
-            for (int i = 0; i < childPos; i++) {
-                INode brotherNode = getImplicitParameter().getChildren().get(i);
-                Rectangle2D brotherBounds = brotherNode.getBounds();
-                y = y + brotherBounds.getHeight();
-            }
-        } else {
-            Rectangle2D parentBounds = getParent().getBounds();
-            y = parentBounds.getY() + CALL_YGAP;
-        }
+        Point2D nodeLocation = getLocation();
         // Height
         double height = DEFAULT_HEIGHT;
         int childVisibleNodesCounter = 0;
@@ -365,8 +360,7 @@ public class ActivationBarNode extends RectangularNode
                 }
             }
         }
-        return new Rectangle2D.Double(x, y, DEFAULT_WIDTH, height);
-        
+        return new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
         // TODO : manage openbottom
     }
     
@@ -436,48 +430,15 @@ public class ActivationBarNode extends RectangularNode
     {
         if (n instanceof PointNode || n instanceof ActivationBarNode) {
             n.setParent(this);
+            n.setLocation(p);
             return getChildren().add(n);
         }
         return false;
     }
 
-    /**
-     * Sets the signaled property.
-     * 
-     * @param newValue true if this node is the target of a signal edge. (This means that its length doesn't depend on the length of
-     *            the parent.)
-     */
-    public void setSignaled(boolean newValue)
-    {
-        signaled = newValue;
-    }
-
-    /**
-     * Gets the openBottom property.
-     * 
-     * @return true if this node has an open bottom, indicating indefinite length.
-     */
-    public boolean isOpenBottom()
-    {
-        return openBottom;
-    }
-
-    /**
-     * Sets the openBottom property.
-     * 
-     * @param newValue true if this node has an open bottom, indicating indefinite length.
-     */
-    public void setOpenBottom(boolean newValue)
-    {
-        openBottom = newValue;
-    }
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
-
-    private boolean signaled;
-
-    private boolean openBottom;
 
     /** Default with */
     private static int DEFAULT_WIDTH = 16;

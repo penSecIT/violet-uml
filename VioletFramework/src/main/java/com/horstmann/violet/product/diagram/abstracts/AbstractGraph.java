@@ -301,16 +301,20 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         // Case 1 : Note node always attached to the graph
         if (newNode instanceof NoteNode) {
             newNode.setGraph(this);
+            newNode.setLocation(p);
             nodes.add(newNode);
             return true;
         }
         // Case 2 : attached to an existing node
         INode potentialParentNode = findNode(p);
         if (potentialParentNode != null) {
-            return potentialParentNode.addChildNode(newNode, p);
+            Point2D parentLocationOnGraph = potentialParentNode.getLocationOnGraph();
+            Point2D relativeLocation = new Point2D.Double(p.getX() - parentLocationOnGraph.getX(), p.getY() - parentLocationOnGraph.getY());
+            return potentialParentNode.addChildNode(newNode, relativeLocation);
         }
         // Case 3 : attached directly to the graph
         newNode.setGraph(this);
+        newNode.setLocation(p);
         nodes.add(newNode);
         return true;
     }

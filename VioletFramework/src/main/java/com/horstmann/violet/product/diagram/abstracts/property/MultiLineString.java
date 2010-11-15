@@ -22,8 +22,10 @@
 package com.horstmann.violet.product.diagram.abstracts.property;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,7 @@ public class MultiLineString implements Serializable, Cloneable
     {
         text = newValue;
         setLabelText();
+        isBoundsDirty = true;
     }
 
     /**
@@ -77,6 +80,7 @@ public class MultiLineString implements Serializable, Cloneable
     {
         justification = newValue;
         setLabelText();
+        isBoundsDirty = true;
     }
 
     /**
@@ -108,6 +112,7 @@ public class MultiLineString implements Serializable, Cloneable
     {
         underlined = newValue;
         setLabelText();
+        isBoundsDirty = true;
     }
 
     /**
@@ -119,6 +124,7 @@ public class MultiLineString implements Serializable, Cloneable
     {
         size = newValue;
         setLabelText();
+        isBoundsDirty = true;
     }
 
     /**
@@ -208,6 +214,7 @@ public class MultiLineString implements Serializable, Cloneable
      * 
      * @param g2 the graphics context
      * @return the bounding rectangle (with top left corner (0,0))
+     * @deprecated use getBounds() instead
      */
     public Rectangle2D getBounds(Graphics2D g2)
     {
@@ -216,6 +223,21 @@ public class MultiLineString implements Serializable, Cloneable
         if (text.length() == 0) return new Rectangle2D.Double();
         Dimension dim = label.getPreferredSize();
         return new Rectangle2D.Double(0, 0, dim.getWidth(), dim.getHeight());
+    }
+
+    /**
+     * Gets the bounding rectangle for this multiline string.
+     * @return the bounding rectangle (with top left corner (0,0))
+     */
+    public Rectangle2D getBounds()
+    {
+        if (this.isBoundsDirty || this.bounds == null) {
+            BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = (Graphics2D) image.getGraphics();
+            this.bounds = getBounds(g2);
+            this.isBoundsDirty = false;
+        }
+        return this.bounds;
     }
 
     /**
@@ -235,19 +257,19 @@ public class MultiLineString implements Serializable, Cloneable
 
     public MultiLineString clone()
     {
-       try
-       {
-          MultiLineString cloned = (MultiLineString) super.clone();
-          cloned.label = new JLabel();
-          cloned.setLabelText();
-          return cloned;
-       }
-       catch (CloneNotSupportedException exception)
-       {
-          return null;
-       }
+        try
+        {
+            MultiLineString cloned = (MultiLineString) super.clone();
+            cloned.label = new JLabel();
+            cloned.setLabelText();
+            return cloned;
+        }
+        catch (CloneNotSupportedException exception)
+        {
+            return null;
+        }
     }
-    
+
     public static final int LEFT = 0;
     public static final int CENTER = 1;
     public static final int RIGHT = 2;
@@ -259,7 +281,7 @@ public class MultiLineString implements Serializable, Cloneable
     private int justification;
     private int size;
     private boolean underlined;
-    
-    
     private transient JLabel label = new JLabel();
+    private transient boolean isBoundsDirty = true;
+    private transient Rectangle2D bounds;
 }
