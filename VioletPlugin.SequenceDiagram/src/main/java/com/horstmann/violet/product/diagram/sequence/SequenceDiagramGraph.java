@@ -25,10 +25,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -67,6 +65,16 @@ public class SequenceDiagramGraph extends AbstractGraph
 //        }
 //        return true;
 //    }
+    
+    @Override
+    public boolean addNode(INode newNode, Point2D p)
+    {
+        INode foundNode = findNode(p);
+        if (foundNode == null && newNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            return false;
+        }
+        return super.addNode(newNode, p);
+    }
 
     /*
      * public void addEdgeToRemove(Edge e) { if (e instanceof CallEdge && e.getEnd().getChildren().size() == 0)
