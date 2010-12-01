@@ -111,11 +111,12 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         {
             if (graph.getNodes().contains(n))
             {
-                Rectangle2D grabberBounds = n.getBounds();
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMinX(), grabberBounds.getMinY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMinX(), grabberBounds.getMaxY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMaxX(), grabberBounds.getMinY());
-                GrabberUtils.drawGrabber(g2, grabberBounds.getMaxX(), grabberBounds.getMaxY());
+                Point2D nodeLocationOnGraph = n.getLocationOnGraph();
+                Rectangle2D nodeBounds = n.getBounds();
+                GrabberUtils.drawGrabber(g2, nodeLocationOnGraph.getX(), nodeLocationOnGraph.getY());
+                GrabberUtils.drawGrabber(g2, nodeLocationOnGraph.getX(), nodeLocationOnGraph.getY() + nodeBounds.getHeight());
+                GrabberUtils.drawGrabber(g2, nodeLocationOnGraph.getX() + nodeBounds.getWidth(), nodeLocationOnGraph.getY());
+                GrabberUtils.drawGrabber(g2, nodeLocationOnGraph.getX() + nodeBounds.getWidth(), nodeLocationOnGraph.getY() + nodeBounds.getHeight());
             }
         }
         List<IEdge> edges = selectionHandler.getSelectedEdges();

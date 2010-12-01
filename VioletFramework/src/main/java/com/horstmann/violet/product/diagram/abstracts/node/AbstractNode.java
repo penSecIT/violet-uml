@@ -401,7 +401,7 @@ public abstract class AbstractNode implements INode
     
     private static final Color SHADOW_COLOR = Color.LIGHT_GRAY;
     protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
-    public static final int SHADOW_GAP = 4;
+    public static final double SHADOW_GAP = 4;
 
     private ArrayList<INode> children;
     private INode parent;

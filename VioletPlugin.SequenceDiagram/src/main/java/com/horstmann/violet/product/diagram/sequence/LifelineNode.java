@@ -198,6 +198,10 @@ public class LifelineNode extends RectangularNode
         }, 0.0f));
         g2.draw(line);
         g2.setStroke(oldStroke);
+        // Draw its children
+        for (INode node : getChildren()) {
+            node.draw(g2);
+        }
     }
 
     public boolean contains(Point2D p)

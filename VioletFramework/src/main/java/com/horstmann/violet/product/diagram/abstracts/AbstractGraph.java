@@ -101,7 +101,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public INode findNode(Point2D p)
     {
         for (INode n : getAllNodes()) {
-            if (n.contains(p)) {
+            Point2D locationOnGraph = n.getLocationOnGraph();
+            Rectangle2D bounds = n.getBounds();
+            Rectangle2D boundsToCheck = new Rectangle2D.Double(locationOnGraph.getX(), locationOnGraph.getY(), bounds.getWidth(), bounds.getHeight());
+            if (boundsToCheck.contains(p)) {
                 return n;
             }
         }
@@ -177,10 +180,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         
         int count = 0;
         int z = 0;
-        List<INode> allNodes = getAllNodes();
-        while (count < allNodes.size())
+        Collection<INode> nodes = getNodes();
+        while (count < nodes.size())
         {
-            for (INode n : allNodes)
+            for (INode n : nodes)
             {
                 
                 if (n.getZ() == z)
@@ -188,7 +191,15 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                     if (n instanceof NoteNode) {
                         specialNodes.add(n);
                     } else {
+                        // Translate g2 if node has parent
+//                        INode p = n.getParent();
+//                        Point2D nodeLocationOnGraph = n.getLocationOnGraph();
+//                        Point2D nodeLocation = n.getLocation();
+//                        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+//                        g2.translate(g2Location.getX(), g2Location.getY());
                         n.draw(g2);
+                        // Restore g2 original location
+//                        g2.translate(-g2Location.getX(), -g2Location.getY());
                     }
                     count++;
                 }
@@ -203,7 +214,15 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         }
         // Special nodes are always drawn upon other elements
         for (INode n : specialNodes) {
+            // Translate g2 if node has parent
+            INode p = n.getParent();
+            Point2D nodeLocationOnGraph = n.getLocationOnGraph();
+            Point2D nodeLocation = n.getLocation();
+            Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+            g2.translate(g2Location.getX(), g2Location.getY());
             n.draw(g2);
+            // Restore g2 original location
+            g2.translate(-g2Location.getX(), -g2Location.getY());
         }
         
     }
