@@ -191,15 +191,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                     if (n instanceof NoteNode) {
                         specialNodes.add(n);
                     } else {
-                        // Translate g2 if node has parent
-//                        INode p = n.getParent();
-//                        Point2D nodeLocationOnGraph = n.getLocationOnGraph();
-//                        Point2D nodeLocation = n.getLocation();
-//                        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
-//                        g2.translate(g2Location.getX(), g2Location.getY());
                         n.draw(g2);
-                        // Restore g2 original location
-//                        g2.translate(-g2Location.getX(), -g2Location.getY());
                     }
                     count++;
                 }
