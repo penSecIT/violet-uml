@@ -97,7 +97,7 @@ public class CallEdge extends SegmentedLineEdge
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
         Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
         Point2D endPoint = getEnd().getConnectionPoint(d);
-        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX(), endPoint.getY() + endingNodeLocationOnGraph.getY());
+        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endPoint.getY() + endingNodeLocationOnGraph.getY() - endingNodeBounds.getY());
         if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
             a.add(new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY()));
         }
@@ -117,14 +117,14 @@ public class CallEdge extends SegmentedLineEdge
         Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
         Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        Point2D p = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endNodeBoundsOnGraph.getY() - ActivationBarNode.CALL_YGAP / 2);
-        Point2D q = new Point2D.Double(endNodeBoundsOnGraph.getMaxX(), endNodeBoundsOnGraph.getY());
-        Point2D s = new Point2D.Double(q.getX() + endNodeBoundsOnGraph.getWidth(), q.getY());
-        Point2D r = new Point2D.Double(s.getX(), p.getY());
+        Point2D p = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), startNodeBoundsOnGraph.getY() + ActivationBarNode.CALL_YGAP / 2);
+        Point2D q = new Point2D.Double(endNodeBoundsOnGraph.getMaxX() + endNodeBoundsOnGraph.getWidth(), p.getY());
+        Point2D r = new Point2D.Double(q.getX(), endNodeBoundsOnGraph.getY());
+        Point2D s = new Point2D.Double(endNodeBoundsOnGraph.getMaxX(), r.getY());
         a.add(p);
+        a.add(q);
         a.add(r);
         a.add(s);
-        a.add(q);
         return a;
     }
 

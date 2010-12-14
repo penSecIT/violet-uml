@@ -31,8 +31,6 @@ import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
-import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An activation bar in a sequence diagram. This activation bar is hang on a lifeline (implicit parameter)
@@ -327,11 +325,14 @@ public class ActivationBarNode extends RectangularNode
      */
     public boolean addChildNode(INode n, Point2D p)
     {
-        if (n instanceof PointNode || n instanceof ActivationBarNode)
+        boolean isActivationBarNode = n instanceof ActivationBarNode;
+        if (isActivationBarNode)
         {
-            n.setParent(this);
-            n.setLocation(p);
-            return getChildren().add(n);
+            ActivationBarNode newChildNode = (ActivationBarNode) n;
+            newChildNode.setParent(this);
+            newChildNode.setLocation(p);
+            newChildNode.setImplicitParameter(this.getImplicitParameter());
+            return getChildren().add(newChildNode);
         }
         return false;
     }
