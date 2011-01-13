@@ -29,6 +29,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -157,8 +158,9 @@ public class LifelineNode extends RectangularNode
         double height = 0;
         double topRectHeight = getTopRectangle().getHeight();
         double topRectWidth = getTopRectangle().getWidth();
-        height = topRectHeight + ActivationBarNode.CALL_YGAP;
-        for (INode n : getChildren())
+        height = topRectHeight + ActivationBarNode.CALL_YGAP * 3;
+        List<INode> children = getChildren();
+        for (INode n : children)
         {
             double childNodeHeight = n.getBounds().getHeight();
             if (childNodeHeight > 0)
@@ -167,7 +169,23 @@ public class LifelineNode extends RectangularNode
             }
         }
         Point2D nodeLocation = getLocation();
-        return new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
+        Rectangle2D bounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
+        Rectangle2D scaledBounds = getScaledBounds(bounds);
+        return scaledBounds;
+    }
+
+    private Rectangle2D getScaledBounds(Rectangle2D bounds)
+    {
+        double x = bounds.getX();
+        double y = bounds.getY();
+        double w = bounds.getWidth();
+        double h = bounds.getHeight();
+        double diffY = this.maxYOverAllLifeLineNodes - bounds.getMaxY();
+        if (diffY > 0)
+        {
+            h = h + diffY;
+        }
+        return new Rectangle2D.Double(x, y, w, h);
     }
 
     public Shape getShape()
@@ -189,7 +207,7 @@ public class LifelineNode extends RectangularNode
         g2.draw(top);
         name.draw(g2, top);
         double xmid = getBounds().getCenterX();
-        Line2D line = new Line2D.Double(xmid, top.getMaxY(), xmid, getBounds().getMaxY());
+        Line2D line = new Line2D.Double(xmid, top.getMaxY(), xmid, getMaxYOverAllLifeLineNodes());
         Stroke oldStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0.0f, new float[]
         {
@@ -199,9 +217,33 @@ public class LifelineNode extends RectangularNode
         g2.draw(line);
         g2.setStroke(oldStroke);
         // Draw its children
-        for (INode node : getChildren()) {
+        for (INode node : getChildren())
+        {
             node.draw(g2);
         }
+    }
+
+    private double getMaxYOverAllLifeLineNodes()
+    {
+        double maxY = this.getBounds().getMaxY();
+        IGraph graph = getGraph();
+        if (graph == null)
+        {
+            return maxY;
+        }
+        Collection<INode> nodes = graph.getNodes();
+        for (INode node : nodes)
+        {
+            if (!node.getClass().isAssignableFrom(LifelineNode.class))
+            {
+                continue;
+            }
+            Rectangle2D aLifeLineBounds = node.getBounds();
+            double currentMaxY = aLifeLineBounds.getMaxY();
+            maxY = Math.max(maxY, currentMaxY);
+        }
+        this.maxYOverAllLifeLineNodes = maxY;
+        return maxY;
     }
 
     public boolean contains(Point2D p)
@@ -218,6 +260,7 @@ public class LifelineNode extends RectangularNode
     }
 
     private MultiLineString name;
+    private double maxYOverAllLifeLineNodes = 0;
     private static int DEFAULT_TOP_HEIGHT = 60;
     private static int DEFAULT_WIDTH = 80;
     private static int DEFAULT_HEIGHT = 120;
