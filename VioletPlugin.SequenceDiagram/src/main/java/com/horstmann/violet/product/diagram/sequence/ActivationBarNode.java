@@ -25,9 +25,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
@@ -52,6 +54,7 @@ public class ActivationBarNode extends RectangularNode
      */
     public void draw(Graphics2D g2)
     {
+        adjustedVerticalLocation();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
@@ -107,8 +110,8 @@ public class ActivationBarNode extends RectangularNode
      */
     public Point2D getConnectionPoint(Direction d)
     {
-        if (d.getX() > 0) return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY());
-        else return new Point2D.Double(getBounds().getX(), getBounds().getMinY());
+        if (d.getX() > 0) return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + CALL_YGAP / 2);
+        else return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + CALL_YGAP / 2);
     }
 
     /*
@@ -221,8 +224,51 @@ public class ActivationBarNode extends RectangularNode
     {
         double x = getHorizontalLocation();
         double y = getVerticalLocation();
-        return new Point2D.Double(x, y);
+        return new Point2D.Double(x, y + this.verticalLocationAdjustment);
     }
+
+    /**
+     * Adjust vertical location to be able to align ActivationBarNodes that are connected
+     * This method is called when nodes are painted. 
+     */
+    private void adjustedVerticalLocation()
+    {
+        IGraph currentGraph = getGraph();
+        if (currentGraph == null)
+        {
+            return;
+        }
+        Collection<IEdge> edges = currentGraph.getEdges();
+        for (IEdge edge : edges)
+        {
+            if (edge.getClass().isAssignableFrom(CallEdge.class))
+            {
+                ActivationBarNode startingNode = (ActivationBarNode) edge.getStart();
+                ActivationBarNode endingNode = (ActivationBarNode) edge.getEnd();
+                LifelineNode startingLifeLineNode = startingNode.getImplicitParameter();
+                LifelineNode endingLifeLineNode = endingNode.getImplicitParameter();
+                boolean isSameLifeLine = (startingLifeLineNode == endingLifeLineNode);
+                boolean isThisInvolved = (startingNode == this || endingNode == this);
+                if (isThisInvolved && !isSameLifeLine)
+                {
+                    Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+                    Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
+                    double startingY = startingNodeLocationOnGraph.getY();
+                    double endingY = endingNodeLocationOnGraph.getY();
+                    if (startingNode == this && endingY > startingY) {
+                        this.verticalLocationAdjustment = endingY - startingY;
+                    }
+                    if (endingNode == this && startingY > endingY) {
+                        this.verticalLocationAdjustment = startingY - endingY;
+                    }
+                    return;
+                }
+            }
+        }
+        // If there's no edge connected
+        this.verticalLocationAdjustment = 0;
+    }
+
 
     /**
      * @return x location relative to the parent
@@ -276,7 +322,7 @@ public class ActivationBarNode extends RectangularNode
             {
                 if (aNode != this && aNode.getClass().isAssignableFrom(ActivationBarNode.class))
                 {
-                    y = y + aNode.getBounds().getHeight() + CALL_YGAP;
+                    y = aNode.getBounds().getMaxY() + CALL_YGAP;
                 }
                 if (aNode == this)
                 {
@@ -287,6 +333,7 @@ public class ActivationBarNode extends RectangularNode
         }
         return 0;
     }
+    Point2D currentLocation = getLocation();
 
     @Override
     public Rectangle2D getBounds()
@@ -340,6 +387,9 @@ public class ActivationBarNode extends RectangularNode
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
 
+    /** Adjust y to align connected nodes */
+    private transient double verticalLocationAdjustment = 0; 
+    
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
 

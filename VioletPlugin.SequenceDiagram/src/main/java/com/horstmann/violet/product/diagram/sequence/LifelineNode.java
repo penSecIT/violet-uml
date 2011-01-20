@@ -102,9 +102,9 @@ public class LifelineNode extends RectangularNode
         double topHeight = topRectangle.getHeight();
         if (d.getX() > 0)
         {
-            return new Point2D.Double(bounds.getMaxX(), topMinY + topHeight / 2);
+            return new Point2D.Double(bounds.getMaxX(), topMinY + ActivationBarNode.CALL_YGAP / 2);
         }
-        return new Point2D.Double(bounds.getX(), topMinY + topHeight / 2);
+        return new Point2D.Double(bounds.getX(), topMinY + ActivationBarNode.CALL_YGAP / 2);
     }
 
     @Override
