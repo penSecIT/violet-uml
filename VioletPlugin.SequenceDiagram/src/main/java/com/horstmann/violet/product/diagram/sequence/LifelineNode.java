@@ -155,19 +155,18 @@ public class LifelineNode extends RectangularNode
     @Override
     public Rectangle2D getBounds()
     {
-        double height = 0;
         double topRectHeight = getTopRectangle().getHeight();
         double topRectWidth = getTopRectangle().getWidth();
-        height = topRectHeight + ActivationBarNode.CALL_YGAP * 3;
+        double height = topRectHeight; // default initial height 
         List<INode> children = getChildren();
         for (INode n : children)
         {
-            double childNodeHeight = n.getBounds().getHeight();
-            if (childNodeHeight > 0)
-            {
-                height = height + childNodeHeight + ActivationBarNode.CALL_YGAP;
+            if (n.getClass().isAssignableFrom(ActivationBarNode.class)) {
+                // We are looking for the last activation bar node to get the total height needed
+                height = Math.max(height, n.getBounds().getMaxY());
             }
         }
+        height = height + ActivationBarNode.CALL_YGAP * 2;
         Point2D nodeLocation = getLocation();
         Rectangle2D bounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
         Rectangle2D scaledBounds = getScaledBounds(bounds);

@@ -241,7 +241,7 @@ public class ActivationBarNode extends RectangularNode
         Collection<IEdge> edges = currentGraph.getEdges();
         for (IEdge edge : edges)
         {
-            if (edge.getClass().isAssignableFrom(CallEdge.class))
+            if (edge.getClass().isAssignableFrom(CallEdge.class) && edge.getStart().getClass().isAssignableFrom(ActivationBarNode.class) && edge.getEnd().getClass().isAssignableFrom(ActivationBarNode.class))
             {
                 ActivationBarNode startingNode = (ActivationBarNode) edge.getStart();
                 ActivationBarNode endingNode = (ActivationBarNode) edge.getEnd();
