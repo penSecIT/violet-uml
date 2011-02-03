@@ -38,7 +38,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An object node in a scenario diagram.
@@ -99,7 +98,6 @@ public class LifelineNode extends RectangularNode
         Rectangle2D bounds = getBounds();
         Rectangle2D topRectangle = getTopRectangle();
         double topMinY = topRectangle.getMinY();
-        double topHeight = topRectangle.getHeight();
         if (d.getX() > 0)
         {
             return new Point2D.Double(bounds.getMaxX(), topMinY + ActivationBarNode.CALL_YGAP / 2);
@@ -149,7 +147,9 @@ public class LifelineNode extends RectangularNode
         double topY = nodeLocation.getY();
         double topWidth = Math.max(bounds.getWidth(), DEFAULT_WIDTH);
         double topHeight = Math.max(bounds.getHeight(), DEFAULT_TOP_HEIGHT);
-        return new Rectangle2D.Double(topX, topY, topWidth, topHeight);
+        Rectangle2D topRectangle = new Rectangle2D.Double(topX, topY, topWidth, topHeight);
+        Rectangle2D snappedRectangle = getGraph().getGrid().snap(topRectangle);
+        return snappedRectangle;
     }
 
     @Override
@@ -170,7 +170,8 @@ public class LifelineNode extends RectangularNode
         Point2D nodeLocation = getLocation();
         Rectangle2D bounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
         Rectangle2D scaledBounds = getScaledBounds(bounds);
-        return scaledBounds;
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(scaledBounds);
+        return snappedBounds;
     }
 
     private Rectangle2D getScaledBounds(Rectangle2D bounds)
@@ -192,12 +193,6 @@ public class LifelineNode extends RectangularNode
         return getTopRectangle();
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        Rectangle2D b = getBounds();
-        grid.snap(b);
-        setLocation(new Point2D.Double(b.getX(), b.getY()));
-    }
 
     public void draw(Graphics2D g2)
     {
@@ -205,7 +200,7 @@ public class LifelineNode extends RectangularNode
         Rectangle2D top = getTopRectangle();
         g2.draw(top);
         name.draw(g2, top);
-        double xmid = getBounds().getCenterX();
+        double xmid = top.getCenterX();
         Line2D line = new Line2D.Double(xmid, top.getMaxY(), xmid, getMaxYOverAllLifeLineNodes());
         Stroke oldStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0.0f, new float[]

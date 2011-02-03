@@ -146,13 +146,6 @@ public interface IGraph
      */
     public abstract void draw(Graphics2D g2);
 
-    /**
-     * Computes the layout of the graph. If you override this method, you must first call <code>super.layout</code>.
-     * 
-     * @param g the graphics context
-     * @param gr the grid to snap to
-     */
-    public abstract void layout(Graphics2D g2, IGrid gr);
 
     /**
      * Gets the smallest rectangle enclosing the graph
@@ -160,13 +153,20 @@ public interface IGraph
      * @return the bounding rectangle
      */
     public abstract Rectangle2D getClipBounds();
-
+    
+    
     /**
      * Sets desired bound
      * 
      * @param newValue
      */
     public abstract void setBounds(Rectangle2D newValue);
+    
+    
+    /**
+     * Return the grid used to snap elements on the graph
+     */
+    public IGrid getGrid();
 
 
 }

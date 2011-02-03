@@ -9,7 +9,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An interface node in a class diagram.
@@ -26,50 +25,79 @@ public class InterfaceNode extends RectangularNode
         name.setText("\u00ABinterface\u00BB");
         methods = new MultiLineString();
         methods.setJustification(MultiLineString.LEFT);
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        midHeight = DEFAULT_COMPARTMENT_HEIGHT;
-        botHeight = DEFAULT_COMPARTMENT_HEIGHT;
     }
 
+    private Rectangle2D getTopRectangleBounds() {
+        Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
+        Rectangle2D nameBounds = name.getBounds();
+        globalBounds.add(nameBounds);
+        boolean isMethodsEmpty = (methods.getText().length() == 0);
+        double defaultHeight = DEFAULT_HEIGHT;
+        if (!isMethodsEmpty) {
+            defaultHeight = DEFAULT_COMPARTMENT_HEIGHT;
+        }
+        globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, defaultHeight));
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = globalBounds.getWidth();
+        double h = globalBounds.getHeight();
+        globalBounds.setFrame(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
+        return snappedBounds;
+    }
+    
+    
+    private Rectangle2D getBottomRectangleBounds() {
+        Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
+        Rectangle2D methodsBounds = methods.getBounds();
+        globalBounds.add(methodsBounds);
+        if (methodsBounds.getHeight() > 0) {
+            globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_COMPARTMENT_HEIGHT));
+        }
+        Rectangle2D topBounds = getTopRectangleBounds();
+        double x = topBounds.getX();
+        double y = topBounds.getMaxY();
+        double w = globalBounds.getWidth();
+        double h = globalBounds.getHeight();
+        globalBounds.setFrame(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
+        return snappedBounds;
+    }
+    
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Rectangle2D top = getTopRectangleBounds();
+        Rectangle2D bot = getBottomRectangleBounds();
+        top.add(bot);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(top);
+        return snappedBounds;
+    }
+    
+    @Override
     public void draw(Graphics2D g2)
     {
+        // Translate g2 if node has parent
+        Point2D nodeLocationOnGraph = getLocationOnGraph();
+        Point2D nodeLocation = getLocation();
+        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+        g2.translate(g2Location.getX(), g2Location.getY());
+        // Perform drawing
         super.draw(g2);
-        Rectangle2D top = new Rectangle2D.Double(getBounds().getX(), getBounds().getY(), getBounds().getWidth(), getBounds()
-                .getHeight()
-                - midHeight - botHeight);
-        g2.draw(top);
-        name.draw(g2, top);
-        Rectangle2D mid = new Rectangle2D.Double(top.getX(), top.getMaxY(), top.getWidth(), midHeight);
-        g2.draw(mid);
-        Rectangle2D bot = new Rectangle2D.Double(top.getX(), mid.getMaxY(), top.getWidth(), botHeight);
-        g2.draw(bot);
-        methods.draw(g2, bot);
+        Rectangle2D currentBounds = getBounds();
+        Rectangle2D topBounds = getTopRectangleBounds();
+        Rectangle2D bottomBounds = getBottomRectangleBounds();
+        g2.draw(currentBounds);
+        name.draw(g2, topBounds);
+        g2.drawLine((int) topBounds.getX(),(int) topBounds.getMaxY(),(int) currentBounds.getMaxX(),(int) topBounds.getMaxY());
+        methods.draw(g2, bottomBounds);
+        // Restore g2 original location
+        g2.translate(-g2Location.getX(), -g2Location.getY());
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        Rectangle2D min = new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_COMPARTMENT_HEIGHT);
-        Rectangle2D top = name.getBounds(g2);
-        top.add(min);
-        Rectangle2D bot = methods.getBounds(g2);
 
-        botHeight = bot.getHeight();
-        if (botHeight == 0)
-        {
-            top.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
-            midHeight = 0;
-        }
-        else
-        {
-            bot.add(min);
-            midHeight = DEFAULT_COMPARTMENT_HEIGHT;
-            botHeight = bot.getHeight();
-        }
-
-        snapBounds(grid, Math.max(top.getWidth(), bot.getWidth()),
-                top.getHeight() + midHeight + botHeight);
-    }
-
+    @Override
     public boolean addChildNode(INode n, Point2D p)
     {
         if (n  instanceof PointNode)
@@ -119,6 +147,7 @@ public class InterfaceNode extends RectangularNode
         return methods;
     }
 
+    @Override
     public InterfaceNode clone()
     {
        InterfaceNode cloned = (InterfaceNode)super.clone();
@@ -127,8 +156,8 @@ public class InterfaceNode extends RectangularNode
        return cloned;
     }
     
-    private transient double midHeight;
-    private transient double botHeight;
+    //private transient double midHeight;
+    //private transient double botHeight;
     private MultiLineString name;
     private MultiLineString methods;
 

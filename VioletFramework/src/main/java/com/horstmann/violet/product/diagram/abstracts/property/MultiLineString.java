@@ -220,7 +220,7 @@ public class MultiLineString implements Serializable, Cloneable
     {
         label.setFont(g2.getFont());
         label.validate();
-        if (text.length() == 0) return new Rectangle2D.Double();
+        if (text.length() == 0) return new Rectangle2D.Double(0,0,0,0);
         Dimension dim = label.getPreferredSize();
         return new Rectangle2D.Double(0, 0, dim.getWidth(), dim.getHeight());
     }

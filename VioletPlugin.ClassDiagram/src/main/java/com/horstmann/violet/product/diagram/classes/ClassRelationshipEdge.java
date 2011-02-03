@@ -1,10 +1,11 @@
 package com.horstmann.violet.product.diagram.classes;
 
-
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
@@ -47,7 +48,17 @@ public class ClassRelationshipEdge extends SegmentedLineEdge
      */
     public ArrayList<Point2D> getPoints()
     {
-        return bentStyle.getPath(getStart().getBounds(), getEnd().getBounds());
+        INode startingNode = getStart();
+        Rectangle2D startingNodeBounds = startingNode.getBounds();
+        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+        Rectangle2D startingNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(),
+                startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
+        INode endingNode = getEnd();
+        Rectangle2D endingNodeBounds = endingNode.getBounds();
+        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
+        Rectangle2D endingNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(),
+                endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
+        return bentStyle.getPath(startingNodeBoundsOnGraph, endingNodeBoundsOnGraph);
     }
 
     private BentStyle bentStyle;

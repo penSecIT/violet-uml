@@ -36,6 +36,7 @@ import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.common.NoteNode;
+import com.horstmann.violet.product.workspace.editorpart.EmptyGrid;
 import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
@@ -52,6 +53,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         edges = new ArrayList<IEdge>();
         nodesToBeRemoved = new ArrayList<INode>();
         edgesToBeRemoved = new ArrayList<IEdge>();
+        grid = new EmptyGrid();
     }
 
     /*
@@ -220,20 +222,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     }
 
 
-    /**
-     * Prepare graph elements before painting
-     * @param g2
-     * @param gr
-     */
-    public void layout(Graphics2D g2, IGrid gr)
-    {
-        for (INode n : getAllNodes())
-        {
-            if (n.getParent() == null) // parents lay out their children
-            n.layout(g2, gr);
-        }
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -385,6 +373,16 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         }
         for (INode n : nodesToBeRemoved)
         {
+            List<IEdge> edgesToRemove = new ArrayList<IEdge>();
+            for (IEdge edge : getEdges()) {
+                if (n == edge.getStart() || n == edge.getEnd()) {
+                    edgesToRemove.add(edge);
+                }
+            }
+            removeEdge(edgesToRemove.toArray(new IEdge[edgesToRemove.size()]));
+        }
+        for (INode n : nodesToBeRemoved)
+        {
             if (n.getParent() != null) n.getParent().checkRemoveNode(n);
             n.setGraph(null);
         }
@@ -440,6 +438,14 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         edgesToBeRemoved.clear();
     }
 
+    
+    /* (non-Javadoc)
+     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getGrid()
+     */
+    public IGrid getGrid()
+    {
+        return grid;
+    }
 
 
     private ArrayList<INode> nodes;
@@ -447,4 +453,5 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     private transient ArrayList<INode> nodesToBeRemoved;
     private transient ArrayList<IEdge> edgesToBeRemoved;
     private transient Rectangle2D minBounds;
+    private transient IGrid grid;
 }

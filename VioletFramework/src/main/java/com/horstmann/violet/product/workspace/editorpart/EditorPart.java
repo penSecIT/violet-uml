@@ -214,15 +214,6 @@ public class EditorPart extends JPanel implements IEditorPart
         return this;
     }
 
-    @Override
-    public void doLayout()
-    {
-        if (graph != null && grid != null)
-        {
-            graph.layout((Graphics2D) getGraphics(), grid);
-        }
-        EditorPart.super.doLayout();
-    }
     
     /*
      * (non-Javadoc)

@@ -25,15 +25,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.UIManager;
 
+import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A class that supplies convenience implementations for a number of methods in the Node interface
@@ -50,6 +51,21 @@ public abstract class AbstractNode implements INode
         children = new ArrayList<INode>();
         parent = null;
         this.id = new Id();
+        // Empty graph used to avoid null pointer while drawing elements not attached
+        // to a graph such as diagram tools
+        this.graph = new AbstractGraph()
+        {
+            @Override
+            public INode[] getNodePrototypes()
+            {
+                return new INode[0];
+            }
+            @Override
+            public IEdge[] getEdgePrototypes()
+            {
+                return new IEdge[0];
+            }
+        };
     }
 
 
@@ -149,7 +165,8 @@ public abstract class AbstractNode implements INode
      */
     public void translate(double dx, double dy)
     {
-        location.setLocation(location.getX() +  dx, location.getY() + dy);
+        Point2D newLocation = new Point2D.Double(location.getX() +  dx, location.getY() + dy);
+        setLocation(newLocation);
     }
 
     /*
@@ -182,22 +199,7 @@ public abstract class AbstractNode implements INode
     public void checkRemoveNode(INode node)
     {
         if (node.getParent() != this) return;
-        int i = children.indexOf(node);
-        if (i >= 0)
-        {
-            children.remove(i);
-            if (node instanceof AbstractNode) ((AbstractNode) node).setParent(null);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#layout(com.horstmann.violet.framework.Graph, java.awt.Graphics2D,
-     *      com.horstmann.violet.framework.Grid)
-     */
-    public void layout(Graphics2D g2, IGrid grid)
-    {
+        children.remove(node);
     }
 
     /*
@@ -268,7 +270,8 @@ public abstract class AbstractNode implements INode
         INode oldParent = node.getParent();
         if (oldParent != null) oldParent.checkRemoveNode(node);
         children.add(index, node);
-        if (node instanceof AbstractNode) ((AbstractNode) node).setParent(this);
+        node.setParent(this);
+        node.setGraph(getGraph());
     }
 
 
@@ -290,7 +293,6 @@ public abstract class AbstractNode implements INode
     public void draw(Graphics2D g2)
     {
         Shape shape = getShape();
-        if (shape == null) return;
         /*
          * Area shadow = new Area(shape); shadow.transform(AffineTransform.getTranslateInstance(SHADOW_GAP, SHADOW_GAP));
          * shadow.subtract(new Area(shape));
@@ -310,7 +312,7 @@ public abstract class AbstractNode implements INode
      */
     public Shape getShape()
     {
-        return null;
+        return new Rectangle2D.Double(0,0,0,0);
     }
 
 

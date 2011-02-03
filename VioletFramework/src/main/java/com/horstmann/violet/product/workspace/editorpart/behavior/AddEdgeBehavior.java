@@ -12,7 +12,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.IGraphToolsBar;
 
@@ -106,9 +105,6 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
                 if (graph.addEdgeAtPoints(newEdge, startPoint, endPoint))
                 {
                     newEdge.incrementRevision();
-                    Graphics2D graphics = (Graphics2D) editorPart.getAWTComponent().getGraphics();
-                    IGrid grid = editorPart.getGrid();
-                    graph.layout(graphics, grid);
                     isAdded = true;
                 }
             }

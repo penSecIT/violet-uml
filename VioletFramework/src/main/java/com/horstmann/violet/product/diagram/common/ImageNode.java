@@ -35,10 +35,8 @@ import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A node in a diagram represented by an image
@@ -72,9 +70,22 @@ public class ImageNode extends RectangularNode
     public void setImage(Image img)
     {
         this.imageIcon = new ImageIcon(img);
-        setBounds(new Rectangle2D.Double(0, 0, this.imageIcon.getIconWidth(), this.imageIcon.getIconHeight()));
     }
 
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Rectangle2D b = text.getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(b.getWidth(), this.imageIcon.getIconWidth());
+        double h = b.getHeight() + this.imageIcon.getIconHeight();
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snapperBounds = getGraph().getGrid().snap(currentBounds);
+        return snapperBounds;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -85,30 +96,7 @@ public class ImageNode extends RectangularNode
         if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#layout(java.awt.Graphics2D,
-     *      com.horstmann.violet.product.diagram.abstracts.Grid)
-     */
-    @Override
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        // Make sure that the end point has a high enough z to be selectable
-        for (IEdge e : getGraph().getEdges())
-        {
-            if (e.getStart() == this)
-            {
-                INode end = e.getEnd();
-                Point2D endPoint = end.getLocation();
-                INode n = getGraph().findNode(endPoint);
-                if (n != null && n != end) end.setZ(n.getZ() + 1);
-            }
-        }
-        Rectangle2D b = text.getBounds(g2);
-        snapBounds(grid, Math.max(b.getWidth(), this.imageIcon.getIconWidth()), b.getHeight() + this.imageIcon.getIconHeight());
-    }
-
+    
     /**
      * Gets the value of the text property.
      * 
@@ -139,7 +127,7 @@ public class ImageNode extends RectangularNode
         Rectangle2D bounds = getBounds();
         g2.drawImage(this.imageIcon.getImage(), (int) bounds.getCenterX() - this.imageIcon.getIconWidth() / 2, (int) bounds.getY(),
                 this.imageIcon.getImageObserver());
-        Rectangle2D b = text.getBounds(g2);
+        Rectangle2D b = text.getBounds();
         Rectangle2D textBounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + this.imageIcon.getIconHeight(),
                 b.getWidth(), b.getHeight());
         text.draw(g2, textBounds);

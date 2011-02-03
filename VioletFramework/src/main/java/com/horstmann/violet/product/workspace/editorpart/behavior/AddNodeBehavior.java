@@ -1,6 +1,5 @@
 package com.horstmann.violet.product.workspace.editorpart.behavior;
 
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
@@ -9,7 +8,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.IGraphToolsBar;
 
@@ -69,9 +67,6 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
             if (graph.addNode(newNode, location))
             {
                 newNode.incrementRevision();
-                Graphics2D graphics = (Graphics2D) editorPart.getAWTComponent().getGraphics();
-                IGrid grid = editorPart.getGrid();
-                graph.layout(graphics, grid);
                 isAdded = true;
             }
         }

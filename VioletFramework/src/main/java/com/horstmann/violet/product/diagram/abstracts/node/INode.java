@@ -42,19 +42,12 @@ import com.horstmann.violet.product.workspace.editorpart.IGrid;
  */
 public interface INode extends Serializable, Cloneable
 {
-    /**
-     * Lays out the node and its children.
-     * 
-     * @param g the ambient graph
-     * @param g2 the graphics context
-     * @param grid the grid to snap to
-     */
-    void layout(Graphics2D g2, IGrid grid);
-
+    
     /**
      * Draw the node.
      * 
      * @param g2 the graphics context
+     * @param grid the grid to snap to
      */
     void draw(Graphics2D g2);
     

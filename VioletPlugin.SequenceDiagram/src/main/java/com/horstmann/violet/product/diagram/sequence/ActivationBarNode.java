@@ -33,20 +33,13 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An activation bar in a sequence diagram. This activation bar is hang on a lifeline (implicit parameter)
  */
 public class ActivationBarNode extends RectangularNode
 {
-    /**
-     * Construct an activation bar with a default size
-     */
-    public ActivationBarNode()
-    {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -361,8 +354,10 @@ public class ActivationBarNode extends RectangularNode
                 }
             }
         }
-        return new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
         // TODO : manage openbottom
+        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
     }
 
     /*

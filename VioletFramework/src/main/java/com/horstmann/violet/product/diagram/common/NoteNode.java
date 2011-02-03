@@ -29,13 +29,25 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A note node in a UML diagram.
+ * 
+ * FIXME : manage Z order
+ * 
+ *       for (IEdge e : getGraph().getEdges())
+ *       {
+ *           if (e.getStart() == this)
+ *           {
+ *               INode end = e.getEnd();
+ *               Point2D endPoint = end.getLocation();
+ *               INode n = getGraph().findNode(endPoint);
+ *               if (n != end) end.setZ(n.getZ() + 1); 
+ *           }
+ *       }
+ * 
  */
 public class NoteNode extends RectangularNode
 {
@@ -44,7 +56,6 @@ public class NoteNode extends RectangularNode
      */
     public NoteNode()
     {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
         text = new MultiLineString();
         text.setJustification(MultiLineString.LEFT);
         color = DEFAULT_COLOR;
@@ -72,23 +83,20 @@ public class NoteNode extends RectangularNode
     }
 
     @Override
-    public void layout(Graphics2D g2, IGrid grid)
+    public Rectangle2D getBounds()
     {
-        // Make sure that the end point has a high enough z to be selectable
-        for (IEdge e : getGraph().getEdges())
-        {
-            if (e.getStart() == this)
-            {
-                INode end = e.getEnd();
-                Point2D endPoint = end.getLocation();
-                INode n = getGraph().findNode(endPoint);
-                if (n != end) end.setZ(n.getZ() + 1); 
-            }
-        }
-        Rectangle2D b = text.getBounds(g2);
-        snapBounds(grid, Math.max(b.getWidth(), DEFAULT_WIDTH), Math.max(b.getHeight(),
-                DEFAULT_HEIGHT));
+        Rectangle2D b = text.getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w =  Math.max(b.getWidth(), DEFAULT_WIDTH);
+        double h = Math.max(b.getHeight(), DEFAULT_HEIGHT);
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snapperBounds = getGraph().getGrid().snap(currentBounds);
+        return snapperBounds;
     }
+    
+    
 
     /**
      * Gets the value of the text property.

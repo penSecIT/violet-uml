@@ -24,6 +24,7 @@ package com.horstmann.violet.product.diagram.common;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,7 +32,6 @@ import java.util.ResourceBundle;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An link node in a diagram.
@@ -39,36 +39,29 @@ import com.horstmann.violet.product.workspace.editorpart.IGrid;
 public class DiagramLinkNode extends RectangularNode
 {
 
-    /** Label */
-    private MultiLineString label;
-
-    /** Linked diagram */
-    private DiagramLink diagramLink;
-
-    /** Defaukt bounding rectangle width */
-    private static int DEFAULT_WIDTH = 48;
-
-    /** Defaukt bounding rectangle height */
-    private static int DEFAULT_HEIGHT = 32;
-
-    /** Default tool icon size */
-    private static int DEFAULT_SIZE = 32;
-
     /**
      * Construct a link ode with a default size
      */
     public DiagramLinkNode()
     {
         this.label = new MultiLineString();
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
-
-    public void layout(Graphics2D g2, IGrid grid)
+    
+    @Override
+    public Rectangle2D getBounds()
     {
         Rectangle2D top = new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        Rectangle2D bot = getLabel().getBounds(g2);
-        snapBounds(grid, Math.max(top.getWidth(), bot.getWidth()), top.getHeight() + bot.getHeight());
+        Rectangle2D bot = getLabel().getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(top.getWidth(), bot.getWidth());
+        double h = top.getHeight() + bot.getHeight();
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snapperBounds = getGraph().getGrid().snap(currentBounds);
+        return snapperBounds;
     }
+
 
     public void draw(Graphics2D g2)
     {
@@ -155,5 +148,20 @@ public class DiagramLinkNode extends RectangularNode
         }
         return this.label;
     }
+    
+    /** Label */
+    private MultiLineString label;
+
+    /** Linked diagram */
+    private DiagramLink diagramLink;
+
+    /** Default bounding rectangle width */
+    private static int DEFAULT_WIDTH = 48;
+
+    /** Default bounding rectangle height */
+    private static int DEFAULT_HEIGHT = 32;
+
+    /** Default tool icon size */
+    private static int DEFAULT_SIZE = 32;
 
 }
