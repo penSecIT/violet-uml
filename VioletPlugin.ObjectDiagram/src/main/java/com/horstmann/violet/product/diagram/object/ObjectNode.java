@@ -32,7 +32,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An object node in an object diagram.
@@ -47,27 +46,22 @@ public class ObjectNode extends RectangularNode
         name = new MultiLineString();
         name.setUnderlined(true);
         name.setSize(MultiLineString.LARGE);
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        Rectangle2D top = getTopRectangle();
-        g2.draw(top);
-        g2.draw(getBounds());
-        name.draw(g2, top);
-        // for (Node n : getChildren()) n.draw(g2); // make sure they get drawn on top
+        Rectangle2D globalBounds = getBounds();
+        Rectangle2D topBounds = getTopRectangle();
+        g2.draw(globalBounds);
+        name.draw(g2, topBounds);
+        g2.drawLine((int) globalBounds.getX(),(int) topBounds.getMaxY(),(int) globalBounds.getMaxX(),(int) topBounds.getMaxY());
+        for (INode n : getChildren()) {
+            n.draw(g2); // make sure they get drawn on top
+        }
     }
 
-    @Override
-    public void translate(double dx, double dy)
-    {
-        super.translate(dx, dy);
-        for (INode childNode : getChildren())
-            childNode.translate(dx, dy);
-    }    
-    
+        
     /**
      * Returns the rectangle at the top of the object node.
      * 
@@ -75,7 +69,46 @@ public class ObjectNode extends RectangularNode
      */
     public Rectangle2D getTopRectangle()
     {
-        return new Rectangle2D.Double(getBounds().getX(), getBounds().getY(), getBounds().getWidth(), topHeight);
+        Rectangle2D b = name.getBounds();
+        double defaultHeight = DEFAULT_HEIGHT;
+        boolean hasChildren = (getChildren().size() > 0);
+        if (hasChildren) {
+            defaultHeight = defaultHeight - YGAP;
+        }
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(b.getWidth(), DEFAULT_WIDTH);
+        double h = Math.max(b.getHeight(), DEFAULT_HEIGHT);
+        Rectangle2D topBounds = new Rectangle2D.Double(x, y, w, h);
+        topBounds = getGraph().getGrid().snap(topBounds);
+        return topBounds;
+    }
+    
+    private Rectangle2D getBottomRectangle() {
+        Rectangle2D bottomBounds = new Rectangle2D.Double(0, 0, 0, 0);
+        for (INode node : getChildren()) {
+            Rectangle2D nodeBounds = node.getBounds();
+            bottomBounds.add(nodeBounds);
+        }
+        Rectangle2D topBounds = getTopRectangle();
+        double x = topBounds.getX();
+        double y = topBounds.getMaxY();
+        double w = bottomBounds.getWidth();
+        double h = bottomBounds.getHeight();
+        bottomBounds.setFrame(x, y, w, h);
+        bottomBounds = getGraph().getGrid().snap(bottomBounds);
+        return bottomBounds;
+    }
+    
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Rectangle2D topBounds = getTopRectangle();
+        Rectangle2D bottomBounds = getBottomRectangle();
+        topBounds.add(bottomBounds);
+        topBounds = getGraph().getGrid().snap(topBounds);
+        return topBounds;
     }
 
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
@@ -85,43 +118,15 @@ public class ObjectNode extends RectangularNode
 
     public Point2D getConnectionPoint(Direction d)
     {
-        if (d.getX() > 0) return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + topHeight / 2);
-        else return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + topHeight / 2);
+        Rectangle2D topBounds = getTopRectangle();
+        double topHeight = topBounds.getHeight();
+        if (d.getX() > 0) {
+            return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + topHeight / 2);
+        }
+        return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + topHeight / 2);
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        Rectangle2D b = name.getBounds(g2);
-        b.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT - YGAP));
-        double leftWidth = 0;
-        double rightWidth = 0;
-        List<INode> fields = getChildren();
-        double height = fields.size() == 0 ? 0 : YGAP;
-        for (INode n : fields)
-        {
-            FieldNode f = (FieldNode) n;
-            f.layout(g2, grid);
-            Rectangle2D b2 = f.getBounds();
-            height += b2.getHeight() + YGAP;
-            double axis = f.getAxisX();
-            leftWidth = Math.max(leftWidth, axis);
-            rightWidth = Math.max(rightWidth, b2.getWidth() - axis);
-        }
-        double width = 2 * Math.max(leftWidth, rightWidth) + 2 * XGAP;
-        width = Math.max(width, b.getWidth());
-        width = Math.max(width, DEFAULT_WIDTH);
-        snapBounds(grid, width, b.getHeight() + height);
-        topHeight = getBounds().getHeight() - height;
-        double ytop = getBounds().getY() + topHeight + YGAP;
-        double xmid = getBounds().getCenterX();
-        for (INode n : fields)
-        {
-            FieldNode f = (FieldNode) n;
-            f.translate(xmid - f.getAxisX() - f.getLocation().getX(), ytop - f.getLocation().getY());
-            ytop += f.getBounds().getHeight() + YGAP;
-        }
-    }
-
+    
     /**
      * Sets the name property value.
      * 
@@ -142,16 +147,18 @@ public class ObjectNode extends RectangularNode
         return name;
     }
 
+    @Override
     public boolean addChildNode(INode n, Point2D p)
     {
         List<INode> fields = getChildren();
-        if (n instanceof PointNode) return true;
         if (!(n instanceof FieldNode)) return false;
         if (fields.contains(n)) return true;
         int i = 0;
         while (i < fields.size() && fields.get(i).getLocation().getY() < p.getY())
             i++;
         addChildNode(n, i);
+        n.setGraph(getGraph());
+        n.setParent(this);
         return true;
     }
 
@@ -163,11 +170,9 @@ public class ObjectNode extends RectangularNode
         return cloned;
     }
 
-    private transient double topHeight;
     private MultiLineString name;
 
     private static int DEFAULT_WIDTH = 80;
     private static int DEFAULT_HEIGHT = 60;
-    private static int XGAP = 5;
     private static int YGAP = 5;
 }
