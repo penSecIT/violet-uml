@@ -31,7 +31,6 @@ import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.diagram.common.PointNode;
 
 /**
  * A field node in an object diagram.
@@ -58,6 +57,8 @@ public class FieldNode extends RectangularNode
         Point2D snappedLocation = getGraph().getGrid().snap(location);
         return snappedLocation;
     }
+    
+    
     
     private void adjustVerticalLocation() {
         this.verticalLocation = 0;
@@ -127,38 +128,50 @@ public class FieldNode extends RectangularNode
         g2.translate(-g2Location.getX(), -g2Location.getY());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.INode#addIEdge(com.horstmann.violet.framework.IEdge, java.awt.geom.Point2D,
-     *      java.awt.geom.Point2D)
-     */
     @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         INode endingINode = e.getEnd();
-        if (e instanceof ObjectReferenceEdge && endingINode instanceof ObjectNode)
+        if (e.getClass().isAssignableFrom(ObjectReferenceEdge.class) && endingINode.getClass().isAssignableFrom(ObjectNode.class))
         {
             Object oldValue = value.clone();
             value.setText("");
             return true;
         }
+        // Hack to allow drawing relationship edge over fields
+        if (e.getClass().isAssignableFrom(ObjectRelationshipEdge.class)) {
+            INode startingNode = e.getStart();
+            INode endingNode = e.getEnd();
+            if (startingNode.getClass().isAssignableFrom(FieldNode.class)) {
+                startingNode = startingNode.getParent();
+            }
+            if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
+                endingNode = endingNode.getParent();
+            }
+            e.connect(startingNode, endingNode);
+            return getParent().checkAddEdge(e, p1, p2);
+        }
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.INode#addINode(com.horstmann.violet.framework.INode, java.awt.geom.Point2D)
+    /**
+     * Hack to be able to add fields on object when we do a single click on another field
+     * READ THIS : due to this hack, when you dble click to edit this field, the first click
+     * triggers this methods (which is a correct framework behavior). The workaround for end users
+     * is to use right click instead of dble click to edit fields. It is so simple to find it
+     * so we accept to deal with this bug.
      */
     @Override
     public boolean addChildNode(INode n, Point2D p)
     {
-        if (n instanceof PointNode)
-        {
-            return true;
+        if (!n.getClass().isAssignableFrom(FieldNode.class)) {
+            return false;
         }
-        return false;
+        INode parent = getParent();
+        List<INode> parentChildren = parent.getChildren();
+        int currentPosition = parentChildren.indexOf(this);
+        parent.addChildNode(n, currentPosition + 1);
+        return true;
     }
 
 
@@ -166,7 +179,17 @@ public class FieldNode extends RectangularNode
     public Point2D getConnectionPoint(Direction d)
     {
         Rectangle2D b = getBounds();
-        return new Point2D.Double((b.getMaxX() + b.getX() + getAxisX()) / 2, b.getCenterY());
+        double parentX = 0;
+        double parentY = 0;
+        // This node has a location relative to its parent
+        // So, we need to take the parent's location in the connection point we return
+        INode parentNode = getParent();
+        if (parentNode != null) {
+            Point2D parentLocation = parentNode.getLocation();
+            parentX = parentLocation.getX();
+            parentY = parentLocation.getY();
+        }
+        return new Point2D.Double(parentX + (b.getMaxX() + b.getX() + getAxisX()) / 2, parentY + b.getCenterY());
     }
     
     private Rectangle2D getNameBounds() {

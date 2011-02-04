@@ -86,12 +86,13 @@ public class ObjectNode extends RectangularNode
     }
     
     private Rectangle2D getBottomRectangle() {
-        Rectangle2D bottomBounds = new Rectangle2D.Double(0, 0, 0, 0);
+        Rectangle2D topBounds = getTopRectangle();
+        double topHeight = topBounds.getHeight();
+        Rectangle2D bottomBounds = new Rectangle2D.Double(0, topHeight, 0, 0);
         for (INode node : getChildren()) {
             Rectangle2D nodeBounds = node.getBounds();
             bottomBounds.add(nodeBounds);
         }
-        Rectangle2D topBounds = getTopRectangle();
         double x = topBounds.getX();
         double y = topBounds.getMaxY();
         double w = bottomBounds.getWidth();
@@ -113,7 +114,19 @@ public class ObjectNode extends RectangularNode
 
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
-        return e instanceof ObjectRelationshipEdge && e.getEnd() != null;
+        if (!e.getClass().isAssignableFrom(ObjectRelationshipEdge.class)) {
+            return false;
+        }
+        INode startingNode = e.getStart();
+        INode endingNode = e.getEnd();
+        if (startingNode.getClass().isAssignableFrom(FieldNode.class)) {
+            startingNode = startingNode.getParent();
+        }
+        if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
+            endingNode = endingNode.getParent();
+        }
+        e.connect(startingNode, endingNode);
+        return true;
     }
 
     public Point2D getConnectionPoint(Direction d)
