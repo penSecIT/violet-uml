@@ -22,12 +22,11 @@
 package com.horstmann.violet.product.diagram.usecase;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * A use case node in a use case diagram.
@@ -40,9 +39,28 @@ public class UseCaseNode extends EllipticalNode
     public UseCaseNode()
     {
         name = new MultiLineString();
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
+    @Override
+    public Rectangle2D getBounds()
+    {
+        double aspectRatio = DEFAULT_WIDTH / DEFAULT_HEIGHT;
+        Rectangle2D b = name.getBounds();
+        double bw = b.getWidth();
+        double bh = b.getHeight();
+        double minWidth = Math.sqrt(bw * bw + aspectRatio * aspectRatio * bh * bh);
+        double minHeight = minWidth / aspectRatio;
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(minWidth, DEFAULT_WIDTH);
+        double h = Math.max(minHeight, DEFAULT_HEIGHT);
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
@@ -70,19 +88,7 @@ public class UseCaseNode extends EllipticalNode
         return name;
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        double aspectRatio = DEFAULT_WIDTH / DEFAULT_HEIGHT;
-        Rectangle2D b = name.getBounds(g2);
-        double bw = b.getWidth();
-        double bh = b.getHeight();
-        double minWidth = Math.sqrt(bw * bw + aspectRatio * aspectRatio * bh * bh);
-        double minHeight = minWidth / aspectRatio;
-
-        snapBounds(grid, Math.max(minWidth, DEFAULT_WIDTH), Math.max(minHeight,
-                DEFAULT_HEIGHT));
-    }
-
+    @Override
     public UseCaseNode clone()
     {
         UseCaseNode cloned = (UseCaseNode) super.clone();

@@ -23,12 +23,11 @@ package com.horstmann.violet.product.diagram.usecase;
 
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * An actor node in a use case diagram.
@@ -43,23 +42,27 @@ public class ActorNode extends RectangularNode
     {
         name = new MultiLineString();
         name.setText("Actor");
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
-    /**
-     * Prepare the layout by setting the position and bounds
-     */
-    public void layout(Graphics2D g2, IGrid grid)
+    @Override
+    public Rectangle2D getBounds()
     {
         Rectangle2D top = new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        Rectangle2D bot = name.getBounds(g2);
-        snapBounds(grid, Math.max(top.getWidth(), bot.getWidth()),
-                top.getHeight() + bot.getHeight());
+        Rectangle2D bot = name.getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(top.getWidth(), bot.getWidth());
+        double h = top.getHeight() + bot.getHeight();
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
     }
 
     /**
      * Draws the stick man
      */
+    @Override
     public void draw(Graphics2D g2)
     {
         Rectangle2D bounds = getBounds();
@@ -93,7 +96,7 @@ public class ActorNode extends RectangularNode
         g2.draw(path);
 
         // Draw name
-        Rectangle2D bot = name.getBounds(g2);
+        Rectangle2D bot = name.getBounds();
         Rectangle2D namebox = new Rectangle2D.Double(bounds.getX() + (bounds.getWidth() - bot.getWidth()) / 2, bounds.getY()
                 + DEFAULT_HEIGHT, bot.getWidth(), bot.getHeight());
         name.draw(g2, namebox);
@@ -121,10 +124,10 @@ public class ActorNode extends RectangularNode
 
     public ActorNode clone()
     {
-       ActorNode cloned = (ActorNode) super.clone();
-       cloned.name = (MultiLineString) name.clone();
-       return cloned;
-    }    
+        ActorNode cloned = (ActorNode) super.clone();
+        cloned.name = (MultiLineString) name.clone();
+        return cloned;
+    }
 
     /** Actor name */
     private MultiLineString name;
