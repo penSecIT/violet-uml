@@ -23,23 +23,28 @@ package com.horstmann.violet.product.diagram.state;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
-
 
 /**
  * An initial or final node (bull's eye) in a state or activity diagram.
  */
 public class CircularFinalStateNode extends EllipticalNode
 {
-    /**
-     * Construct a node with a default size
-     * 
-     */
-    public CircularFinalStateNode()
+
+    @Override
+    public Rectangle2D getBounds()
     {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_DIAMETER + 2 * DEFAULT_GAP, DEFAULT_DIAMETER + 2 * DEFAULT_GAP));
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = DEFAULT_DIAMETER + 2 * DEFAULT_GAP;
+        double h = DEFAULT_DIAMETER + 2 * DEFAULT_GAP;
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
     }
 
     /*
@@ -65,4 +70,5 @@ public class CircularFinalStateNode extends EllipticalNode
 
     /** default gap between the main circle and the ring for a final node */
     private static int DEFAULT_GAP = 3;
+
 }
