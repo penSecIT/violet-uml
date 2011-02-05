@@ -23,13 +23,12 @@ package com.horstmann.violet.product.diagram.activity;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * An activity node in an activity diagram.
@@ -42,7 +41,6 @@ public class ActivityNode extends RectangularNode
     public ActivityNode()
     {
         name = new MultiLineString();
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
     public void draw(Graphics2D g2)
@@ -52,17 +50,25 @@ public class ActivityNode extends RectangularNode
         name.draw(g2, getBounds());
     }
 
+    @Override
     public Shape getShape()
     {
-        return new RoundRectangle2D.Double(getBounds().getX(), getBounds().getY(), getBounds().getWidth(), getBounds().getHeight(),
-                ARC_SIZE, ARC_SIZE);
+        Rectangle2D bounds = getBounds();
+        return new RoundRectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), ARC_SIZE, ARC_SIZE);
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
+    @Override
+    public Rectangle2D getBounds()
     {
-        Rectangle2D b = name.getBounds(g2);
-        snapBounds(grid, Math.max(b.getWidth(), DEFAULT_WIDTH), Math.max(b
-                .getHeight(), DEFAULT_HEIGHT));
+        Rectangle2D nameBounds = name.getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(nameBounds.getWidth(), DEFAULT_WIDTH);
+        double h = Math.max(nameBounds.getHeight(), DEFAULT_HEIGHT);
+        Rectangle2D.Double globalBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
+        return snappedBounds;
     }
 
     /**
@@ -94,7 +100,7 @@ public class ActivityNode extends RectangularNode
     }
 
     private MultiLineString name;
-    
+
     private static int ARC_SIZE = 20;
     private static int DEFAULT_WIDTH = 80;
     private static int DEFAULT_HEIGHT = 60;

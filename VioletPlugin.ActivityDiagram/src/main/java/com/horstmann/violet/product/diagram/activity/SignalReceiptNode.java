@@ -30,8 +30,6 @@ import java.awt.geom.Rectangle2D;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * An receive event node in an activity diagram.
@@ -44,15 +42,9 @@ public class SignalReceiptNode extends RectangularNode
     public SignalReceiptNode()
     {
         signal = new MultiLineString();
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         if (e.getEnd() != null && this != e.getEnd())
@@ -62,6 +54,7 @@ public class SignalReceiptNode extends RectangularNode
         return false;
     }
 
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
@@ -69,6 +62,7 @@ public class SignalReceiptNode extends RectangularNode
         signal.draw(g2, getTextBounds());
     }
 
+    @Override
     public Shape getShape()
     {
         Rectangle2D b = getBounds();
@@ -98,11 +92,18 @@ public class SignalReceiptNode extends RectangularNode
         return new Rectangle2D.Double(b.getX(), b.getY(), b.getWidth() - EDGE_WIDTH, b.getHeight());
     }
 
-    public void layout(Graphics2D g2, IGrid grid)
+    @Override
+    public Rectangle2D getBounds()
     {
-        Rectangle2D textBounds = signal.getBounds(g2);
-        snapBounds(grid, Math.max(textBounds.getWidth(), DEFAULT_WIDTH), Math.max(textBounds
-                .getHeight(), DEFAULT_HEIGHT));        
+        Rectangle2D textBounds = signal.getBounds();
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = Math.max(textBounds.getWidth(), DEFAULT_WIDTH);
+        double h = Math.max(textBounds.getHeight(), DEFAULT_HEIGHT);
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
     }
 
     /**
@@ -133,9 +134,9 @@ public class SignalReceiptNode extends RectangularNode
     {
         SignalReceiptNode cloned = (SignalReceiptNode) super.clone();
         cloned.signal = (MultiLineString) signal.clone();
-        return cloned;        
+        return cloned;
     }
-    
+
     private MultiLineString signal;
 
     private static int DEFAULT_WIDTH = 80;

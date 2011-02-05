@@ -28,45 +28,33 @@ import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * A final node (bull's eye) in an activity diagram.
  */
 public class ScenarioEndNode extends EllipticalNode
 {
-    /**
-     * Construct a node with a default size
-     * 
-     */
-    public ScenarioEndNode()
-    {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_DIAMETER + 2 * DEFAULT_GAP, DEFAULT_DIAMETER + 2 * DEFAULT_GAP));
-    }
-    
-    @Override
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        snapBounds(grid, DEFAULT_DIAMETER + 2 * DEFAULT_GAP, DEFAULT_DIAMETER + 2 * DEFAULT_GAP);
-    }    
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = DEFAULT_DIAMETER + 2 * DEFAULT_GAP;
+        double h = DEFAULT_DIAMETER + 2 * DEFAULT_GAP;
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         return e.getEnd() != null && this != e.getEnd();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#draw(java.awt.Graphics2D)
-     */
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
@@ -79,10 +67,7 @@ public class ScenarioEndNode extends EllipticalNode
         g2.fill(inside);
         g2.draw(circle);
     }
-    
-    /**
-     * @see java.lang.Object#clone()
-     */
+
     @Override
     public ScenarioEndNode clone()
     {

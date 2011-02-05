@@ -31,50 +31,24 @@ import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
-import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A synchronization bar node in an activity diagram.
  */
 public class SynchronizationBarNode extends RectangularNode
 {
-    /**
-     * Construct a join/fork node with a default size
-     */
-    public SynchronizationBarNode()
-    {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         return e.getEnd() != null && this != e.getEnd();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#layout(com.horstmann.violet.product.diagram.abstracts.Graph,
-     *      java.awt.Graphics2D, com.horstmann.violet.product.diagram.abstracts.Grid)
-     */
-    public void layout(Graphics2D g2, IGrid grid)
+    @Override
+    public Rectangle2D getBounds()
     {
-        List<INode> connectedNodes = new ArrayList<INode>();
-        // needs to contain all incoming and outgoing edges
-        for (IEdge e : getGraph().getEdges())
-        {
-            if (e.getStart() == this) connectedNodes.add(e.getEnd());
-            if (e.getEnd() == this) connectedNodes.add(e.getStart());
-        }
-
-        Rectangle2D b = getBounds();
+        Rectangle2D b = getDefaultBounds();
+        List<INode> connectedNodes = getConnectedNodes();
         if (connectedNodes.size() > 0)
         {
             double centerY = b.getCenterY();
@@ -91,37 +65,54 @@ public class SynchronizationBarNode extends RectangularNode
 
             minX -= EXTRA_WIDTH;
             maxX += EXTRA_WIDTH;
-            translate(minX - getLocation().getX(), b.getY() - getLocation().getY());
+            // calling translate() hare is a hack but this node (at the opposite of other nodes)
+            // can have its location changed when it is connected to other nodes.
+            // Other nodes are usually only moved with a drag and drop action.
+            translate(minX - b.getX(), 0);
             b = new Rectangle2D.Double(minX, b.getY(), maxX - minX, DEFAULT_HEIGHT);
-            setBounds(b);
         }
+        return b;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * 
-     * @see com.horstmann.violet.framework.Node#draw(java.awt.Graphics2D)
+     * @return minimal bounds (location + default width and default height
      */
+    private Rectangle2D getDefaultBounds()
+    {
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = DEFAULT_WIDTH;
+        double h = DEFAULT_HEIGHT;
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    /**
+     * 
+     * @return nodes which are connected (with edges) to this node
+     */
+    private List<INode> getConnectedNodes()
+    {
+        List<INode> connectedNodes = new ArrayList<INode>();
+        // needs to contain all incoming and outgoing edges
+        for (IEdge e : getGraph().getEdges())
+        {
+            if (e.getStart() == this) connectedNodes.add(e.getEnd());
+            if (e.getEnd() == this) connectedNodes.add(e.getStart());
+        }
+        return connectedNodes;
+    }
+
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
         g2.fill(getShape());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
-     */
-    public boolean addChildNode(INode n, Point2D p)
-    {
-        if (n instanceof PointNode)
-        {
-            return true;
-        }
-        return false;
-    }
-    
     /**
      * @see java.lang.Object#clone()
      */
@@ -133,6 +124,5 @@ public class SynchronizationBarNode extends RectangularNode
 
     private static int DEFAULT_WIDTH = 24;
     private static int DEFAULT_HEIGHT = 4;
-
     private static int EXTRA_WIDTH = 12;
 }

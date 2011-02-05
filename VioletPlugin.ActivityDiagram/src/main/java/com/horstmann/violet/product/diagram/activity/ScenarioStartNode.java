@@ -28,57 +28,42 @@ import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * An initial node (bull's eye) in an activity diagram.
  */
 public class ScenarioStartNode extends EllipticalNode
 {
-    /**
-     * Construct a node with a default size
-     * 
-     */
-    public ScenarioStartNode()
-    {
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_DIAMETER, DEFAULT_DIAMETER));
-    }
-    
+
     @Override
-    public void layout(Graphics2D g2, IGrid grid)
+    public Rectangle2D getBounds()
     {
-        snapBounds(grid, DEFAULT_DIAMETER, DEFAULT_DIAMETER);
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = DEFAULT_DIAMETER;
+        double h = DEFAULT_DIAMETER;
+        Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         return e.getEnd() != null && this != e.getEnd();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#draw(java.awt.Graphics2D)
-     */
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        Ellipse2D circle = new Ellipse2D.Double(getBounds().getX(), getBounds().getY(), getBounds().getWidth(), getBounds()
-                .getHeight());
+        Rectangle2D bounds = getBounds();
+        Ellipse2D circle = new Ellipse2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
 
         g2.fill(circle);
     }
-    
-    /**
-     * @see java.lang.Object#clone()
-     */
+
     @Override
     public ScenarioStartNode clone()
     {

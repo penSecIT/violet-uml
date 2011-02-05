@@ -26,15 +26,10 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.diagram.common.PointNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
-
 
 /**
  * A decision node in an activity diagram.
@@ -47,30 +42,40 @@ public class DecisionNode extends RectangularNode
     public DecisionNode()
     {
         condition = new MultiLineString();
-        setBounds(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#addEdge(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         return e.getEnd() != null && this != e.getEnd();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framClassework.Node#draw(java.awt.Graphics2D)
-     */
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Rectangle2D b = condition.getBounds();
+        Rectangle2D textRect = new Rectangle2D.Double(0, 0, Math.max(DEFAULT_WIDTH, b.getWidth()), Math.max(DEFAULT_HEIGHT,
+                b.getHeight()));
+        double w1 = textRect.getWidth() / 2;
+        double h1 = textRect.getHeight() / 2;
+        double w2 = Math.tan(Math.toRadians(60)) * h1;
+        double h2 = Math.tan(Math.toRadians(30)) * w1;
+        Point2D currentLocation = getLocation();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = (w1 + w2) * 2;
+        double h = (h1 + h2) * 2;
+        Rectangle2D globalBounds = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
+        return snappedBounds;
+    }
+
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
         Rectangle2D shapeRect = getBounds();
-        Rectangle2D textRect = condition.getBounds(g2);
+        Rectangle2D textRect = condition.getBounds();
         textRect.setRect(shapeRect.getCenterX() - textRect.getWidth() / 2, shapeRect.getCenterY() - textRect.getHeight() / 2,
                 textRect.getWidth(), textRect.getHeight());
 
@@ -78,11 +83,7 @@ public class DecisionNode extends RectangularNode
         condition.draw(g2, textRect);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.RectangularNode#getShape()
-     */
+    @Override
     public Shape getShape()
     {
         Rectangle2D shapeRect = getBounds();
@@ -101,51 +102,6 @@ public class DecisionNode extends RectangularNode
         diamond.lineTo(x4, y4);
         diamond.lineTo(x1, y1);
         return diamond;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#layout(com.horstmann.violet.framework.Graph, java.awt.Graphics2D,
-     *      com.horstmann.violet.framework.Grid)
-     */
-    public void layout(Graphics2D g2, IGrid grid)
-    {
-        Rectangle2D b = condition.getBounds(g2);
-        Rectangle2D textRect = new Rectangle2D.Double(0, 0, Math.max(DEFAULT_WIDTH, b.getWidth()), Math.max(DEFAULT_HEIGHT, b
-                .getHeight()));
-        double w1 = textRect.getWidth() / 2;
-        double h1 = textRect.getHeight() / 2;
-        double w2 = Math.tan(Math.toRadians(60)) * h1;
-        double h2 = Math.tan(Math.toRadians(30)) * w1;
-        double shapeWidth = (w1 + w2) * 2;
-        double shapeHeight = (h1 + h2) * 2;
-        snapBounds(grid, shapeWidth, shapeHeight);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#getAncestors()
-     */
-    public List<INode> getAncestors()
-    {
-        // TODO Auto-generated method stub
-        return super.getAncestors();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
-     */
-    public boolean addChildNode(INode n, Point2D p)
-    {
-        if (n instanceof PointNode)
-        {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -174,11 +130,11 @@ public class DecisionNode extends RectangularNode
     @Override
     public DecisionNode clone()
     {
-        DecisionNode cloned = (DecisionNode)super.clone();
-        cloned.condition = (MultiLineString)condition.clone();
+        DecisionNode cloned = (DecisionNode) super.clone();
+        cloned.condition = (MultiLineString) condition.clone();
         return cloned;
     }
-    
+
     private MultiLineString condition;
 
     private static int DEFAULT_WIDTH = 30;
