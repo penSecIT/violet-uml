@@ -33,18 +33,14 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * An activation bar in a sequence diagram. This activation bar is hang on a lifeline (implicit parameter)
  */
 public class ActivationBarNode extends RectangularNode
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#draw(java.awt.Graphics2D)
-     */
+
+    @Override
     public void draw(Graphics2D g2)
     {
         adjustedVerticalLocation();
@@ -96,23 +92,15 @@ public class ActivationBarNode extends RectangularNode
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#getConnectionPoint(com.horstmann.violet.framework.Direction)
-     */
+    @Override
     public Point2D getConnectionPoint(Direction d)
     {
         if (d.getX() > 0) return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + CALL_YGAP / 2);
         else return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + CALL_YGAP / 2);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addEdge(com.horstmann.violet.framework.Edge, java.awt.geom.Point2D,
-     * java.awt.geom.Point2D)
-     */
+
+    @Override
     public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
     {
         INode endingNode = edge.getEnd();
@@ -173,23 +161,15 @@ public class ActivationBarNode extends RectangularNode
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#removeEdge(com.horstmann.violet.framework.Graph,
-     * com.horstmann.violet.framework.Edge)
-     */
+
+    @Override
     public void checkRemoveEdge(IEdge e)
     {
         if (e.getStart() == this) removeChild(e.getEnd());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#removeNode(com.horstmann.violet.framework.Graph,
-     * com.horstmann.violet.framework.Node)
-     */
+
+    @Override
     public void checkRemoveNode(INode n)
     {
         getChildren().remove(n);
@@ -360,11 +340,8 @@ public class ActivationBarNode extends RectangularNode
         return snappedBounds;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
-     */
+
+    @Override
     public boolean addChildNode(INode n, Point2D p)
     {
         boolean isActivationBarNode = n instanceof ActivationBarNode;
@@ -372,6 +349,7 @@ public class ActivationBarNode extends RectangularNode
         {
             ActivationBarNode newChildNode = (ActivationBarNode) n;
             newChildNode.setParent(this);
+            newChildNode.setGraph(getGraph());
             newChildNode.setLocation(p);
             newChildNode.setImplicitParameter(this.getImplicitParameter());
             return getChildren().add(newChildNode);

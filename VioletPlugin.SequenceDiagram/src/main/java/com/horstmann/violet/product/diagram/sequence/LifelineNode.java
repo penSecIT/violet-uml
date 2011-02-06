@@ -80,17 +80,56 @@ public class LifelineNode extends RectangularNode
 
     public boolean addChildNode(INode n, Point2D p)
     {
-        if (n instanceof ActivationBarNode || n instanceof PointNode)
-        {
-            if (n instanceof ActivationBarNode)
-            {
-                ((ActivationBarNode) n).setImplicitParameter(this);
-            }
-            int pos = getChildren().size();
-            addChildNode(n, pos);
-            return true;
+        if (!n.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            return false;
         }
-        return false;
+        ((ActivationBarNode) n).setImplicitParameter(this);
+        n.setGraph(getGraph());
+        int pos = getChildren().size();
+        INode nearestNodeBeforePoint = getNearestNodeAfterThisPoint(p);
+        if (nearestNodeBeforePoint != null) {
+            pos = getChildren().indexOf(nearestNodeBeforePoint);
+        }
+        System.out.println(pos);
+        addChildNode(n, pos);
+        return true;
+    }
+    
+    /**
+     * Looks for the node which is located just after the given point
+     * @param p
+     * @return the node we found or null if there's no node after this point
+     */
+    private INode getNearestNodeAfterThisPoint(Point2D p) {
+        double y = p.getY();
+        INode nearestNodeAfterThisPoint = null;
+        // Step 1 : we look for the closest node
+        for (INode childNode : getChildren()) {
+            if (nearestNodeAfterThisPoint == null) {
+                nearestNodeAfterThisPoint = childNode;
+            }
+            Point2D childLocation = childNode.getLocation();
+            Point2D nearestNodeLocation = nearestNodeAfterThisPoint.getLocation();
+            double childY = childLocation.getY();
+            double nearestY = nearestNodeLocation.getY();
+            double currentNodeGap = childY - y;
+            double nearestNodeGap = nearestY - y;
+            if (currentNodeGap  > 0 && Math.abs(currentNodeGap) < Math.abs(nearestNodeGap)) {
+                nearestNodeAfterThisPoint = childNode;
+            }
+        }
+        // Step 2 : if nothng found, we return null
+        if (nearestNodeAfterThisPoint == null) {
+            return null;
+        }
+        // Step 3 : as by default we set the first child node as the nearest one
+        // We check if it is not before p
+        Point2D nearestChildLocation = nearestNodeAfterThisPoint.getLocation();
+        if (y > nearestChildLocation.getY()) {
+            return null;
+        }
+        // Step 4 : we return the closest node after p
+        return nearestNodeAfterThisPoint;
     }
 
     public Point2D getConnectionPoint(Direction d)
