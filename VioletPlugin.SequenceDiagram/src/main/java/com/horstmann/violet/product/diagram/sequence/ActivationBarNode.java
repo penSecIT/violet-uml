@@ -41,6 +41,126 @@ public class ActivationBarNode extends RectangularNode
 {
 
     @Override
+    public boolean addChildNode(INode n, Point2D p)
+    {
+        boolean isActivationBarNode = n instanceof ActivationBarNode;
+        if (isActivationBarNode)
+        {
+            ActivationBarNode newChildNode = (ActivationBarNode) n;
+            newChildNode.setParent(this);
+            newChildNode.setGraph(getGraph());
+            newChildNode.setLocation(p);
+            newChildNode.setImplicitParameter(this.getImplicitParameter());
+            return getChildren().add(newChildNode);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
+    {
+        INode endingNode = edge.getEnd();
+        INode startingNode = edge.getStart();
+        if (startingNode == null || endingNode == null)
+        {
+            return false;
+        }
+        if (startingNode == endingNode)
+        {
+            return false;
+        }
+        if (edge instanceof CallEdge)
+        {
+            return isCallEdgeAcceptable((CallEdge) edge, endingNodePoint);
+    
+        }
+        else if (edge instanceof ReturnEdge)
+        {
+            return isReturnEdgeAcceptable((ReturnEdge) edge);
+        }
+    
+        return false;
+    }
+
+    @Override
+    public void checkRemoveNode(INode n)
+    {
+        getChildren().remove(n);
+    }
+
+    @Override
+    public void checkRemoveEdge(IEdge e)
+    {
+        if (e.getStart() == this) removeChild(e.getEnd());
+    }
+
+    @Override
+    public Point2D getConnectionPoint(Direction d)
+    {
+        if (d.getX() > 0) {
+            double y = getBounds().getMinY() + CALL_YGAP / 2;
+            double x = getBounds().getMaxX();
+            return new Point2D.Double(x, y);
+        } else {
+            double y = getBounds().getMinY();
+            double x = getBounds().getX();
+            return new Point2D.Double(x, y);
+        }
+    }
+
+    @Override
+    public Point2D getLocation()
+    {
+        double x = getHorizontalLocation();
+        double y = getVerticalLocation() + this.verticalLocationAdjustment;
+        return new Point2D.Double(x, y);
+    }
+    
+    private boolean isEndingNode() {
+        for (IEdge edge : getGraph().getEdges()) {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+                continue;
+            }
+            if (edge.getEnd() == this) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Rectangle2D getBounds()
+    {
+        Point2D nodeLocation = getLocation();
+        // Height
+        double height = DEFAULT_HEIGHT;
+        int childVisibleNodesCounter = 0;
+        for (INode aNode : getChildren())
+        {
+            if (aNode instanceof ActivationBarNode)
+            {
+                childVisibleNodesCounter++;
+            }
+        }
+        if (childVisibleNodesCounter > 0)
+        {
+            height = CALL_YGAP;
+            for (INode aNode : getChildren())
+            {
+                if (aNode instanceof ActivationBarNode)
+                {
+                    Rectangle2D aNodeBounds = aNode.getBounds();
+                    height = height + aNodeBounds.getHeight() + CALL_YGAP;
+                }
+            }
+        }
+        // TODO : manage openbottom
+        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    @Override
     public void draw(Graphics2D g2)
     {
         adjustedVerticalLocation();
@@ -92,40 +212,6 @@ public class ActivationBarNode extends RectangularNode
         }
     }
 
-    @Override
-    public Point2D getConnectionPoint(Direction d)
-    {
-        if (d.getX() > 0) return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + CALL_YGAP / 2);
-        else return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + CALL_YGAP / 2);
-    }
-
-
-    @Override
-    public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
-    {
-        INode endingNode = edge.getEnd();
-        INode startingNode = edge.getStart();
-        if (startingNode == null || endingNode == null)
-        {
-            return false;
-        }
-        if (startingNode == endingNode)
-        {
-            return false;
-        }
-        if (edge instanceof CallEdge)
-        {
-            return isCallEdgeAcceptable((CallEdge) edge, endingNodePoint);
-
-        }
-        else if (edge instanceof ReturnEdge)
-        {
-            return isReturnEdgeAcceptable((ReturnEdge) edge);
-        }
-
-        return false;
-    }
-
     private boolean isReturnEdgeAcceptable(ReturnEdge edge)
     {
         INode endingNode = edge.getEnd();
@@ -162,19 +248,6 @@ public class ActivationBarNode extends RectangularNode
     }
 
 
-    @Override
-    public void checkRemoveEdge(IEdge e)
-    {
-        if (e.getStart() == this) removeChild(e.getEnd());
-    }
-
-
-    @Override
-    public void checkRemoveNode(INode n)
-    {
-        getChildren().remove(n);
-    }
-
     /**
      * Finds an edge in the graph connected to start and end nodes
      * 
@@ -190,14 +263,6 @@ public class ActivationBarNode extends RectangularNode
             if (e.getStart() == start && e.getEnd() == end) return e;
         }
         return null;
-    }
-
-    @Override
-    public Point2D getLocation()
-    {
-        double x = getHorizontalLocation();
-        double y = getVerticalLocation();
-        return new Point2D.Double(x, y + this.verticalLocationAdjustment);
     }
 
     /**
@@ -227,7 +292,7 @@ public class ActivationBarNode extends RectangularNode
                     Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
                     Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
                     double startingY = startingNodeLocationOnGraph.getY();
-                    double endingY = endingNodeLocationOnGraph.getY();
+                    double endingY = endingNodeLocationOnGraph.getY() - CALL_YGAP / 2;
                     if (startingNode == this && endingY > startingY) {
                         this.verticalLocationAdjustment = endingY - startingY;
                     }
@@ -307,55 +372,6 @@ public class ActivationBarNode extends RectangularNode
         return 0;
     }
     Point2D currentLocation = getLocation();
-
-    @Override
-    public Rectangle2D getBounds()
-    {
-        Point2D nodeLocation = getLocation();
-        // Height
-        double height = DEFAULT_HEIGHT;
-        int childVisibleNodesCounter = 0;
-        for (INode aNode : getChildren())
-        {
-            if (aNode instanceof ActivationBarNode)
-            {
-                childVisibleNodesCounter++;
-            }
-        }
-        if (childVisibleNodesCounter > 0)
-        {
-            height = CALL_YGAP;
-            for (INode aNode : getChildren())
-            {
-                if (aNode instanceof ActivationBarNode)
-                {
-                    Rectangle2D aNodeBounds = aNode.getBounds();
-                    height = height + aNodeBounds.getHeight() + CALL_YGAP;
-                }
-            }
-        }
-        // TODO : manage openbottom
-        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
-        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
-        return snappedBounds;
-    }
-
-
-    @Override
-    public boolean addChildNode(INode n, Point2D p)
-    {
-        boolean isActivationBarNode = n instanceof ActivationBarNode;
-        if (isActivationBarNode)
-        {
-            ActivationBarNode newChildNode = (ActivationBarNode) n;
-            newChildNode.setParent(this);
-            newChildNode.setGraph(getGraph());
-            newChildNode.setLocation(p);
-            newChildNode.setImplicitParameter(this.getImplicitParameter());
-            return getChildren().add(newChildNode);
-        }
-        return false;
-    }
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
