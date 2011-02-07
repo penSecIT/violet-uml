@@ -116,6 +116,26 @@ public class ActivationBarNode extends RectangularNode
         return new Point2D.Double(x, y);
     }
     
+    /**
+     * 
+     * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation bar is the STARTING node of this edge 
+     */
+    private boolean isStartingNode() {
+        for (IEdge edge : getGraph().getEdges()) {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+                continue;
+            }
+            if (edge.getStart() == this) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation bar is the ENDING node of this edge 
+     */
     private boolean isEndingNode() {
         for (IEdge edge : getGraph().getEdges()) {
             if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
@@ -133,6 +153,46 @@ public class ActivationBarNode extends RectangularNode
     {
         Point2D nodeLocation = getLocation();
         // Height
+        double height = DEFAULT_HEIGHT;
+        boolean isStartingNode = isStartingNode();
+        if (isStartingNode) {
+            height = getHeightWhenLinked();
+        }
+        if (!isStartingNode) {
+            height = getHeightWhenHasChildren();
+        }
+        // TODO : manage openbottom
+        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    
+    /**
+     * If this activation bar calls another activation bar on another life line, its height must be
+     * greater than the activation bar which is called
+     * @return h
+     */
+    private double getHeightWhenLinked() {
+        for (IEdge edge : getGraph().getEdges()) {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+                continue;
+            }
+            if (edge.getStart() == this) {
+                INode endingNode = edge.getEnd();
+                Rectangle2D endingNodeBounds = endingNode.getBounds();
+                return CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
+                
+            }
+        }
+        return DEFAULT_HEIGHT;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    private double getHeightWhenHasChildren() {
         double height = DEFAULT_HEIGHT;
         int childVisibleNodesCounter = 0;
         for (INode aNode : getChildren())
@@ -154,12 +214,9 @@ public class ActivationBarNode extends RectangularNode
                 }
             }
         }
-        // TODO : manage openbottom
-        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
-        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
-        return snappedBounds;
+        return height;
     }
-
+    
     @Override
     public void draw(Graphics2D g2)
     {
