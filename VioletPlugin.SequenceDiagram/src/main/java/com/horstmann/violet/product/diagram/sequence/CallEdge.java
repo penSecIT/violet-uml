@@ -66,11 +66,7 @@ public class CallEdge extends SegmentedLineEdge
         else setEndArrowHead(ArrowHead.BLACK_TRIANGLE);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.SegmentedLineEdge#getPoints()
-     */
+    @Override
     public ArrayList<Point2D> getPoints()
     {
         INode endingNode = getEnd();
@@ -97,12 +93,14 @@ public class CallEdge extends SegmentedLineEdge
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
         Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
         Point2D endPoint = getEnd().getConnectionPoint(d);
-        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endPoint.getY() + endingNodeLocationOnGraph.getY() - endingNodeBounds.getY());
+        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingNodeLocationOnGraph.getY());
         if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
-            a.add(new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY()));
+            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY());
+            a.add(startPointOnGraph);
         }
         else {
-            a.add(new Point2D.Double(startNodeBoundsOnGraph.getX(), endPointOnGraph.getY()));
+            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getX(), endPointOnGraph.getY());
+            a.add(startPointOnGraph);
         }
         a.add(endPointOnGraph);
         return a;

@@ -90,7 +90,6 @@ public class LifelineNode extends RectangularNode
         if (nearestNodeBeforePoint != null) {
             pos = getChildren().indexOf(nearestNodeBeforePoint);
         }
-        System.out.println(pos);
         addChildNode(n, pos);
         return true;
     }

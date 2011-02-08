@@ -61,10 +61,6 @@ public class ActivationBarNode extends RectangularNode
     {
         INode endingNode = edge.getEnd();
         INode startingNode = edge.getStart();
-        if (startingNode == null || endingNode == null)
-        {
-            return false;
-        }
         if (startingNode == endingNode)
         {
             return false;
@@ -98,7 +94,7 @@ public class ActivationBarNode extends RectangularNode
     public Point2D getConnectionPoint(Direction d)
     {
         if (d.getX() > 0) {
-            double y = getBounds().getMinY() + CALL_YGAP / 2;
+            double y = getBounds().getMinY();
             double x = getBounds().getMaxX();
             return new Point2D.Double(x, y);
         } else {
@@ -120,30 +116,48 @@ public class ActivationBarNode extends RectangularNode
      * 
      * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation bar is the STARTING node of this edge 
      */
-    private boolean isStartingNode() {
+    private boolean isCallingNode() {
+        LifelineNode currentLifelineNode = getImplicitParameter();
         for (IEdge edge : getGraph().getEdges()) {
+            if (edge.getStart() != this) {
+                continue;
+            }
             if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
                 continue;
             }
-            if (edge.getStart() == this) {
-                return true;
+            INode endingNode = edge.getEnd();
+            if (!endingNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+                continue;
             }
+            if (((ActivationBarNode) endingNode).getImplicitParameter() == currentLifelineNode) {
+                continue;
+            }
+            return true;
         }
         return false;
     }
 
     /**
      * 
-     * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation bar is the ENDING node of this edge 
+     * @return true if this activation bar has been called by another activation bar
      */
-    private boolean isEndingNode() {
+    private boolean isCalledNode() {
+        LifelineNode currentLifelineNode = getImplicitParameter();
         for (IEdge edge : getGraph().getEdges()) {
+            if (edge.getEnd() != this) {
+                continue;
+            }
             if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
                 continue;
             }
-            if (edge.getEnd() == this) {
-                return true;
+            INode startingNode = edge.getStart();
+            if (!startingNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+                continue;
             }
+            if (((ActivationBarNode) startingNode).getImplicitParameter() == currentLifelineNode) {
+                continue;
+            }
+            return true;
         }
         return false;
     }
@@ -154,11 +168,11 @@ public class ActivationBarNode extends RectangularNode
         Point2D nodeLocation = getLocation();
         // Height
         double height = DEFAULT_HEIGHT;
-        boolean isStartingNode = isStartingNode();
-        if (isStartingNode) {
+        boolean isCallingNode = isCallingNode();
+        if (isCallingNode) {
             height = getHeightWhenLinked();
         }
-        if (!isStartingNode) {
+        if (!isCallingNode) {
             height = getHeightWhenHasChildren();
         }
         // TODO : manage openbottom
@@ -275,11 +289,19 @@ public class ActivationBarNode extends RectangularNode
         INode startingNode = edge.getStart();
         Class<? extends INode> startingNodeClass = startingNode.getClass();
         Class<? extends INode> endingNodeClass = endingNode.getClass();
-        if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(ActivationBarNode.class))
+        if (!startingNodeClass.isAssignableFrom(ActivationBarNode.class) || !endingNodeClass.isAssignableFrom(ActivationBarNode.class))
         {
-            return true;
+            return false;
         }
-        return false;
+        ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
+        ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
+        if (startingActivationBarNode.getImplicitParameter() == endingActivationBarNode.getImplicitParameter()) {
+            return false;
+        }
+        if (!isCalledNode()) {
+            return false;
+        }
+        return true;
     }
 
     private boolean isCallEdgeAcceptable(CallEdge edge, Point2D endingNodePoint)
@@ -299,6 +321,17 @@ public class ActivationBarNode extends RectangularNode
             if (topRectangle.contains(endingNodePoint))
             {
                 return true;
+            }
+        }
+        if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
+        {
+            LifelineNode endingLifeLineNode = (LifelineNode) endingNode;
+            Rectangle2D topRectangle = endingLifeLineNode.getTopRectangle();
+            if (!topRectangle.contains(endingNodePoint))
+            {
+                ActivationBarNode newActivationBar = new ActivationBarNode();
+                edge.connect(startingNode, newActivationBar);
+                return getGraph().addNode(newActivationBar, endingNodePoint);
             }
         }
         return false;

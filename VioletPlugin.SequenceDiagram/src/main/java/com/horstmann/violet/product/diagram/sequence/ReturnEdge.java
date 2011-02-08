@@ -25,6 +25,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
@@ -42,7 +43,38 @@ public class ReturnEdge extends SegmentedLineEdge
         setLineStyle(LineStyle.DOTTED);
     }
 
+    
     public ArrayList<Point2D> getPoints()
+    {
+        INode endingNode = getEnd();
+        INode startingNode = getStart();
+        return getPointsForNodesOnDifferentLifeLines(startingNode, endingNode);
+    }
+
+    private ArrayList<Point2D> getPointsForNodesOnDifferentLifeLines(INode startingNode, INode endingNode) {
+        ArrayList<Point2D> a = new ArrayList<Point2D>();
+        Rectangle2D startingNodeBounds = startingNode.getBounds();
+        Rectangle2D endingNodeBounds = endingNode.getBounds();
+        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
+        Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
+        Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
+        Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
+        Point2D endPoint = getEnd().getConnectionPoint(d);
+        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), startingNodeLocationOnGraph.getY() + startingNodeBounds.getHeight());
+        if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
+            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY());
+            a.add(startPointOnGraph);
+        }
+        else {
+            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getX(), endPointOnGraph.getY());
+            a.add(startPointOnGraph);
+        }
+        a.add(endPointOnGraph);
+        return a;
+    }
+    
+    public ArrayList<Point2D> getPoints2()
     {
         ArrayList<Point2D> a = new ArrayList<Point2D>();
         INode n = getEnd();
