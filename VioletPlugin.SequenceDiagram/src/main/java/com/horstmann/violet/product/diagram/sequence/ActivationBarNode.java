@@ -28,6 +28,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 
+import javax.lang.model.type.NullType;
+
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
@@ -54,7 +56,7 @@ public class ActivationBarNode extends RectangularNode
         }
         return false;
     }
-    
+
     @Override
     public boolean addChildNode(INode n, int index)
     {
@@ -70,7 +72,6 @@ public class ActivationBarNode extends RectangularNode
         }
         return false;
     }
-    
 
     @Override
     public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
@@ -84,13 +85,13 @@ public class ActivationBarNode extends RectangularNode
         if (edge instanceof CallEdge)
         {
             return isCallEdgeAcceptable((CallEdge) edge, endingNodePoint);
-    
+
         }
         else if (edge instanceof ReturnEdge)
         {
             return isReturnEdgeAcceptable((ReturnEdge) edge);
         }
-    
+
         return false;
     }
 
@@ -109,11 +110,14 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public Point2D getConnectionPoint(Direction d)
     {
-        if (d.getX() > 0) {
+        if (d.getX() > 0)
+        {
             double y = getBounds().getMinY();
             double x = getBounds().getMaxX();
             return new Point2D.Double(x, y);
-        } else {
+        }
+        else
+        {
             double y = getBounds().getMinY();
             double x = getBounds().getX();
             return new Point2D.Double(x, y);
@@ -127,25 +131,32 @@ public class ActivationBarNode extends RectangularNode
         double y = getVerticalLocation() + this.verticalLocationAdjustment;
         return new Point2D.Double(x, y);
     }
-    
+
     /**
      * 
-     * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation bar is the STARTING node of this edge 
+     * @return true if this activation bar is connected to another one from another lifeline with a CallEdge AND if this activation
+     *         bar is the STARTING node of this edge
      */
-    private boolean isCallingNode() {
+    private boolean isCallingNode()
+    {
         LifelineNode currentLifelineNode = getImplicitParameter();
-        for (IEdge edge : getGraph().getEdges()) {
-            if (edge.getStart() != this) {
+        for (IEdge edge : getGraph().getEdges())
+        {
+            if (edge.getStart() != this)
+            {
                 continue;
             }
-            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class))
+            {
                 continue;
             }
             INode endingNode = edge.getEnd();
-            if (!endingNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            if (!endingNode.getClass().isAssignableFrom(ActivationBarNode.class))
+            {
                 continue;
             }
-            if (((ActivationBarNode) endingNode).getImplicitParameter() == currentLifelineNode) {
+            if (((ActivationBarNode) endingNode).getImplicitParameter() == currentLifelineNode)
+            {
                 continue;
             }
             return true;
@@ -157,20 +168,26 @@ public class ActivationBarNode extends RectangularNode
      * 
      * @return true if this activation bar has been called by another activation bar
      */
-    private boolean isCalledNode() {
+    private boolean isCalledNode()
+    {
         LifelineNode currentLifelineNode = getImplicitParameter();
-        for (IEdge edge : getGraph().getEdges()) {
-            if (edge.getEnd() != this) {
+        for (IEdge edge : getGraph().getEdges())
+        {
+            if (edge.getEnd() != this)
+            {
                 continue;
             }
-            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class))
+            {
                 continue;
             }
             INode startingNode = edge.getStart();
-            if (!startingNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            if (!startingNode.getClass().isAssignableFrom(ActivationBarNode.class))
+            {
                 continue;
             }
-            if (((ActivationBarNode) startingNode).getImplicitParameter() == currentLifelineNode) {
+            if (((ActivationBarNode) startingNode).getImplicitParameter() == currentLifelineNode)
+            {
                 continue;
             }
             return true;
@@ -185,10 +202,12 @@ public class ActivationBarNode extends RectangularNode
         // Height
         double height = DEFAULT_HEIGHT;
         boolean isCallingNode = isCallingNode();
-        if (isCallingNode) {
+        if (isCallingNode)
+        {
             height = getHeightWhenLinked();
         }
-        if (!isCallingNode) {
+        if (!isCallingNode)
+        {
             height = getHeightWhenHasChildren();
         }
         // TODO : manage openbottom
@@ -197,32 +216,37 @@ public class ActivationBarNode extends RectangularNode
         return snappedBounds;
     }
 
-    
     /**
-     * If this activation bar calls another activation bar on another life line, its height must be
-     * greater than the activation bar which is called
+     * If this activation bar calls another activation bar on another life line, its height must be greater than the activation bar
+     * which is called
+     * 
      * @return h
      */
-    private double getHeightWhenLinked() {
-        for (IEdge edge : getGraph().getEdges()) {
-            if (!edge.getClass().isAssignableFrom(CallEdge.class)) {
+    private double getHeightWhenLinked()
+    {
+        for (IEdge edge : getGraph().getEdges())
+        {
+            if (!edge.getClass().isAssignableFrom(CallEdge.class))
+            {
                 continue;
             }
-            if (edge.getStart() == this) {
+            if (edge.getStart() == this)
+            {
                 INode endingNode = edge.getEnd();
                 Rectangle2D endingNodeBounds = endingNode.getBounds();
                 return CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
-                
+
             }
         }
         return DEFAULT_HEIGHT;
     }
-    
+
     /**
      * 
      * @return
      */
-    private double getHeightWhenHasChildren() {
+    private double getHeightWhenHasChildren()
+    {
         double height = DEFAULT_HEIGHT;
         int childVisibleNodesCounter = 0;
         for (INode aNode : getChildren())
@@ -246,7 +270,7 @@ public class ActivationBarNode extends RectangularNode
         }
         return height;
     }
-    
+
     @Override
     public void draw(Graphics2D g2)
     {
@@ -311,10 +335,12 @@ public class ActivationBarNode extends RectangularNode
         }
         ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
         ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
-        if (startingActivationBarNode.getImplicitParameter() == endingActivationBarNode.getImplicitParameter()) {
+        if (startingActivationBarNode.getImplicitParameter() == endingActivationBarNode.getImplicitParameter())
+        {
             return false;
         }
-        if (!isCalledNode()) {
+        if (!isCalledNode())
+        {
             return false;
         }
         return true;
@@ -324,12 +350,14 @@ public class ActivationBarNode extends RectangularNode
     {
         INode endingNode = edge.getEnd();
         INode startingNode = edge.getStart();
-        Class<? extends INode> startingNodeClass = startingNode.getClass();
-        Class<? extends INode> endingNodeClass = endingNode.getClass();
+        Class<?> startingNodeClass = (startingNode != null ? startingNode.getClass() : NullType.class);
+        Class<?> endingNodeClass = (endingNode != null ? endingNode.getClass() : NullType.class);
+        // Case 1 : classic connection between activation bars
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(ActivationBarNode.class))
         {
             return true;
         }
+        // Case 2 : an activation bar creates a new class instance
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
         {
             ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
@@ -338,13 +366,10 @@ public class ActivationBarNode extends RectangularNode
             Rectangle2D topRectangle = endingLifeLineNode.getTopRectangle();
             if (startingLifeLineNode != endingLifeLineNode && topRectangle.contains(endingNodePoint))
             {
-                ActivationBarNode newActivationBar = new ActivationBarNode();
-                int lastNodePos = endingNode.getChildren().size();
-                endingNode.addChildNode(newActivationBar, lastNodePos);
-                edge.connect(startingNode, newActivationBar);
                 return true;
             }
         }
+        // Case 3 : classic connection between activation bars but the ending bar doesn't exist and need to be automatically created
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
         {
             ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
@@ -360,6 +385,7 @@ public class ActivationBarNode extends RectangularNode
                 return true;
             }
         }
+        // Case 4 : self call on an activation bar
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
         {
             ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
@@ -375,9 +401,17 @@ public class ActivationBarNode extends RectangularNode
                 return true;
             }
         }
+        // Case 5 : self call on an activation bar but its child which is called doesn"t exist and need to be created automatically
+        if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(NullType.class))
+        {
+            ActivationBarNode newActivationBar = new ActivationBarNode();
+            int lastNodePos = startingNode.getChildren().size();
+            startingNode.addChildNode(newActivationBar, lastNodePos);
+            edge.connect(startingNode, newActivationBar);
+            return true;
+        }
         return false;
     }
-
 
     /**
      * Finds an edge in the graph connected to start and end nodes
@@ -397,8 +431,8 @@ public class ActivationBarNode extends RectangularNode
     }
 
     /**
-     * Adjust vertical location to be able to align ActivationBarNodes that are connected
-     * This method is called when nodes are painted. 
+     * Adjust vertical location to be able to align ActivationBarNodes that are connected This method is called when nodes are
+     * painted.
      */
     private void adjustedVerticalLocation()
     {
@@ -410,7 +444,8 @@ public class ActivationBarNode extends RectangularNode
         Collection<IEdge> edges = currentGraph.getEdges();
         for (IEdge edge : edges)
         {
-            if (edge.getClass().isAssignableFrom(CallEdge.class) && edge.getStart().getClass().isAssignableFrom(ActivationBarNode.class) && edge.getEnd().getClass().isAssignableFrom(ActivationBarNode.class))
+            if (edge.getClass().isAssignableFrom(CallEdge.class) && edge.getStart().getClass().isAssignableFrom(ActivationBarNode.class)
+                    && edge.getEnd().getClass().isAssignableFrom(ActivationBarNode.class))
             {
                 ActivationBarNode startingNode = (ActivationBarNode) edge.getStart();
                 ActivationBarNode endingNode = (ActivationBarNode) edge.getEnd();
@@ -424,10 +459,12 @@ public class ActivationBarNode extends RectangularNode
                     Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
                     double startingY = startingNodeLocationOnGraph.getY();
                     double endingY = endingNodeLocationOnGraph.getY() - CALL_YGAP / 2;
-                    if (startingNode == this && endingY > startingY) {
+                    if (startingNode == this && endingY > startingY)
+                    {
                         this.verticalLocationAdjustment = endingY - startingY;
                     }
-                    if (endingNode == this && startingY > endingY) {
+                    if (endingNode == this && startingY > endingY)
+                    {
                         this.verticalLocationAdjustment = startingY - endingY;
                     }
                     return;
@@ -437,7 +474,6 @@ public class ActivationBarNode extends RectangularNode
         // If there's no edge connected
         this.verticalLocationAdjustment = 0;
     }
-
 
     /**
      * @return x location relative to the parent
@@ -502,14 +538,15 @@ public class ActivationBarNode extends RectangularNode
         }
         return 0;
     }
+
     Point2D currentLocation = getLocation();
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
 
     /** Adjust y to align connected nodes */
-    private transient double verticalLocationAdjustment = 0; 
-    
+    private transient double verticalLocationAdjustment = 0;
+
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
 
