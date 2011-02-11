@@ -37,7 +37,6 @@ import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.diagram.common.PointNode;
 
 /**
  * An object node in a scenario diagram.
@@ -78,6 +77,7 @@ public class LifelineNode extends RectangularNode
         return false;
     }
 
+    @Override
     public boolean addChildNode(INode n, Point2D p)
     {
         if (!n.getClass().isAssignableFrom(ActivationBarNode.class)) {
@@ -90,8 +90,18 @@ public class LifelineNode extends RectangularNode
         if (nearestNodeBeforePoint != null) {
             pos = getChildren().indexOf(nearestNodeBeforePoint);
         }
-        addChildNode(n, pos);
-        return true;
+        return super.addChildNode(n, pos);
+    }
+    
+    @Override
+    public boolean addChildNode(INode n, int index)
+    {
+        if (!n.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            return false;
+        }
+        ((ActivationBarNode) n).setImplicitParameter(this);
+        n.setGraph(getGraph());
+        return super.addChildNode(n, index);
     }
     
     /**

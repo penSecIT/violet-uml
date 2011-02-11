@@ -60,6 +60,7 @@ public abstract class AbstractNode implements INode
             {
                 return new INode[0];
             }
+
             @Override
             public IEdge[] getEdgePrototypes()
             {
@@ -68,88 +69,58 @@ public abstract class AbstractNode implements INode
         };
     }
 
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getLocation()
-     */
+    @Override
     public Point2D getLocation()
     {
         return this.location;
     }
 
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.node.INode#getLocationOnGraph()
-     */
     @Override
     public Point2D getLocationOnGraph()
     {
         INode parentNode = getParent();
-        if (parentNode == null) {
+        if (parentNode == null)
+        {
             return getLocation();
         }
         Point2D parentLocationOnGraph = parentNode.getLocationOnGraph();
         Point2D relativeLocation = getLocation();
-        Point2D result = new Point2D.Double(parentLocationOnGraph.getX() + relativeLocation.getX(), parentLocationOnGraph.getY() + relativeLocation.getY());
+        Point2D result = new Point2D.Double(parentLocationOnGraph.getX() + relativeLocation.getX(), parentLocationOnGraph.getY()
+                + relativeLocation.getY());
         return result;
     }
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.node.INode#setLocation(java.awt.geom.Point2D)
-     */
+
     @Override
-    public void setLocation(Point2D aPoint) {
+    public void setLocation(Point2D aPoint)
+    {
         this.location = aPoint;
     }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getId()
-     */
+
+    @Override
     public Id getId()
     {
         return this.id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#setId(com.horstmann.violet.product.diagram.abstracts.Id)
-     */
+    @Override
     public void setId(Id id)
     {
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getRevision()
-     */
+    @Override
     public Integer getRevision()
     {
         return this.revision;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#setRevision(java.lang.Integer)
-     */
+    @Override
     public void setRevision(Integer newRevisionNumber)
     {
         this.revision = newRevisionNumber;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#incrementRevision()
-     */
+    @Override
     public void incrementRevision()
     {
         int i = this.revision.intValue();
@@ -157,139 +128,67 @@ public abstract class AbstractNode implements INode
         this.revision = new Integer(i);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#translate(double, double) Note that we don't translate the children since that is
-     *      not always appropriate and hard to un-inherit.
-     */
+    @Override
     public void translate(double dx, double dy)
     {
-        Point2D newLocation = new Point2D.Double(location.getX() +  dx, location.getY() + dy);
+        Point2D newLocation = new Point2D.Double(location.getX() + dx, location.getY() + dy);
         setLocation(newLocation);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addEdge(com.horstmann.violet.framework.Edge, java.awt.geom.Point2D,
-     *      java.awt.geom.Point2D)
-     */
+    @Override
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
         return e.getEnd() != null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#removeEdge(com.horstmann.violet.framework.Graph,
-     *      com.horstmann.violet.framework.Edge)
-     */
+    @Override
     public void checkRemoveEdge(IEdge e)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#removeNode(com.horstmann.violet.framework.Graph,
-     *      com.horstmann.violet.framework.Node)
-     */
+    @Override
     public void checkRemoveNode(INode node)
     {
         if (node.getParent() != this) return;
         children.remove(node);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addNode(com.horstmann.violet.framework.Node, java.awt.geom.Point2D)
-     */
+    @Override
     public boolean addChildNode(INode n, Point2D p)
     {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#getAncestors()
-     */
-    public List<INode> getAncestors()
-    {
-        List<INode> result = new ArrayList<INode>();
-        INode parent = this.getParent();
-        while (parent != null)
-        {
-            result.add(parent);
-            parent = parent.getParent();
-        }
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#getParent()
-     */
+    @Override
     public INode getParent()
     {
         return parent;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#setParent(com.horstmann.violet.framework.Node)
-     */
+    @Override
     public void setParent(INode node)
     {
         parent = node;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getChildren()
-     */
+    @Override
     public List<INode> getChildren()
     {
         return children;
     }
 
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#addChild(int, com.horstmann.violet.framework.Node)
-     */
-    public void addChildNode(INode node, int index)
+    @Override
+    public boolean addChildNode(INode node, int index)
     {
         INode oldParent = node.getParent();
         if (oldParent != null) oldParent.checkRemoveNode(node);
         children.add(index, node);
         node.setParent(this);
         node.setGraph(getGraph());
+        return true;
     }
 
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#removeChild(com.horstmann.violet.framework.Node)
-     */
-    public void removeChild(INode node)
-    {
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#draw(java.awt.Graphics2D)
-     */
+    @Override
     public void draw(Graphics2D g2)
     {
         Shape shape = getShape();
@@ -312,16 +211,10 @@ public abstract class AbstractNode implements INode
      */
     public Shape getShape()
     {
-        return new Rectangle2D.Double(0,0,0,0);
+        return new Rectangle2D.Double(0, 0, 0, 0);
     }
 
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#clone()
-     */
+    @Override
     public AbstractNode clone()
     {
         try
@@ -343,41 +236,25 @@ public abstract class AbstractNode implements INode
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#setGraph(com.horstmann.violet.product.diagram.abstracts.Graph)
-     */
+    @Override
     public void setGraph(IGraph g)
     {
         graph = g;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getGraph()
-     */
+    @Override
     public IGraph getGraph()
     {
         return graph;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getZ()
-     */
+    @Override
     public int getZ()
     {
         return z;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#setZ(int)
-     */
+    @Override
     public void setZ(int z)
     {
         this.z = z;
@@ -385,22 +262,20 @@ public abstract class AbstractNode implements INode
 
     /**
      * Sets node tool tip
+     * 
      * @param label
      */
-    public void setToolTip(String s) {
+    public void setToolTip(String s)
+    {
         this.toolTip = s;
     }
-    
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.Node#getToolTip()
-     */
+    @Override
     public String getToolTip()
     {
         return this.toolTip;
     }
 
-    
     private static final Color SHADOW_COLOR = Color.LIGHT_GRAY;
     protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
     public static final double SHADOW_GAP = 4;
@@ -408,7 +283,7 @@ public abstract class AbstractNode implements INode
     private ArrayList<INode> children;
     private INode parent;
     private IGraph graph;
-    private Point2D location = new Point2D.Double(0, 0); 
+    private Point2D location = new Point2D.Double(0, 0);
     private transient String toolTip;
     private transient int z;
 

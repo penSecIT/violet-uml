@@ -25,14 +25,12 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.workspace.editorpart.IGrid;
 
 /**
  * A node in a graph. To be more precise, a node is an graphical entity that represents a class, a sequence, a state or all other
@@ -51,13 +49,12 @@ public interface INode extends Serializable, Cloneable
      */
     void draw(Graphics2D g2);
     
+
     /**
-     * Translates the node by a given amount
-     * 
-     * @param dx the amount to translate in the x-direction
-     * @param dy the amount to translate in the y-direction
+     * Set or change node location 
+     * @param aPoint
      */
-    void translate(double dx, double dy);
+    void setLocation(Point2D aPoint);
     
     /**
      * Gets the location of this node on its parent (i.e. relative location)
@@ -72,10 +69,12 @@ public interface INode extends Serializable, Cloneable
     Point2D getLocationOnGraph();
     
     /**
-     * Set or change node location 
-     * @param aPoint
+     * Translates the node by a given amount
+     * 
+     * @param dx the amount to translate in the x-direction
+     * @param dy the amount to translate in the y-direction
      */
-    void setLocation(Point2D aPoint);
+    void translate(double dx, double dy);
     
     /**
      * Tests whether the node contains a point.
@@ -135,8 +134,9 @@ public interface INode extends Serializable, Cloneable
      * Adds a child node and fires the graph modification event.
      * @param node the child node to add
      * @param index the position at which to add the child
+     * @return true if this node accepts the given node as a child
      */
-    void addChildNode(INode node, int index);
+    boolean addChildNode(INode node, int index);
 
 
     
@@ -155,8 +155,6 @@ public interface INode extends Serializable, Cloneable
      * @param n the node to be removed
      */
     void checkRemoveNode(INode n);
-
-
 
 
     /**

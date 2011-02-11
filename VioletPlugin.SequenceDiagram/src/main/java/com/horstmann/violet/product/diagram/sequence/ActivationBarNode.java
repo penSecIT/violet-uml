@@ -49,12 +49,28 @@ public class ActivationBarNode extends RectangularNode
             ActivationBarNode newChildNode = (ActivationBarNode) n;
             newChildNode.setParent(this);
             newChildNode.setGraph(getGraph());
-            newChildNode.setLocation(p);
             newChildNode.setImplicitParameter(this.getImplicitParameter());
             return getChildren().add(newChildNode);
         }
         return false;
     }
+    
+    @Override
+    public boolean addChildNode(INode n, int index)
+    {
+        boolean isActivationBarNode = n instanceof ActivationBarNode;
+        if (isActivationBarNode)
+        {
+            ActivationBarNode newChildNode = (ActivationBarNode) n;
+            newChildNode.setParent(this);
+            newChildNode.setGraph(getGraph());
+            newChildNode.setImplicitParameter(this.getImplicitParameter());
+            getChildren().add(index, newChildNode);
+            return true;
+        }
+        return false;
+    }
+    
 
     @Override
     public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
@@ -87,7 +103,7 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public void checkRemoveEdge(IEdge e)
     {
-        if (e.getStart() == this) removeChild(e.getEnd());
+        if (e.getStart() == this) checkRemoveNode(e.getEnd());
     }
 
     @Override
@@ -316,22 +332,47 @@ public class ActivationBarNode extends RectangularNode
         }
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
         {
+            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
+            LifelineNode startingLifeLineNode = startingActivationBarNode.getImplicitParameter();
             LifelineNode endingLifeLineNode = (LifelineNode) endingNode;
             Rectangle2D topRectangle = endingLifeLineNode.getTopRectangle();
-            if (topRectangle.contains(endingNodePoint))
+            if (startingLifeLineNode != endingLifeLineNode && topRectangle.contains(endingNodePoint))
             {
+                ActivationBarNode newActivationBar = new ActivationBarNode();
+                int lastNodePos = endingNode.getChildren().size();
+                endingNode.addChildNode(newActivationBar, lastNodePos);
+                edge.connect(startingNode, newActivationBar);
                 return true;
             }
         }
         if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
         {
+            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
+            LifelineNode startingLifeLineNode = startingActivationBarNode.getImplicitParameter();
             LifelineNode endingLifeLineNode = (LifelineNode) endingNode;
             Rectangle2D topRectangle = endingLifeLineNode.getTopRectangle();
-            if (!topRectangle.contains(endingNodePoint))
+            if (startingLifeLineNode != endingLifeLineNode && !topRectangle.contains(endingNodePoint))
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
+                int lastNodePos = endingNode.getChildren().size();
+                endingNode.addChildNode(newActivationBar, lastNodePos);
                 edge.connect(startingNode, newActivationBar);
-                return getGraph().addNode(newActivationBar, endingNodePoint);
+                return true;
+            }
+        }
+        if (startingNodeClass.isAssignableFrom(ActivationBarNode.class) && endingNodeClass.isAssignableFrom(LifelineNode.class))
+        {
+            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
+            LifelineNode startingLifeLineNode = startingActivationBarNode.getImplicitParameter();
+            LifelineNode endingLifeLineNode = (LifelineNode) endingNode;
+            Rectangle2D topRectangle = endingLifeLineNode.getTopRectangle();
+            if (startingLifeLineNode == endingLifeLineNode && !topRectangle.contains(endingNodePoint))
+            {
+                ActivationBarNode newActivationBar = new ActivationBarNode();
+                int lastNodePos = startingNode.getChildren().size();
+                startingNode.addChildNode(newActivationBar, lastNodePos);
+                edge.connect(startingNode, newActivationBar);
+                return true;
             }
         }
         return false;
