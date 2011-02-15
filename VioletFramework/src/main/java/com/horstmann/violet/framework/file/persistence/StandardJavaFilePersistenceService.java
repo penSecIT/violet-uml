@@ -234,7 +234,9 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                     {
                             e,
                             e.getStart(),
-                            e.getEnd()
+                            e.getStartLocation(),
+                            e.getEnd(),
+                            e.getEndLocation()
                     }));
                 }
             }
