@@ -104,14 +104,20 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
             {
                 INode startNode = graph.findNode(startPoint);
                 INode endNode = graph.findNode(endPoint);
-                Point2D startNodeLocationOnGraph = startNode.getLocationOnGraph();
-                Point2D endNodeLocationOnGraph = endNode.getLocationOnGraph();
-                double relativeStartX = startPoint.getX() - startNodeLocationOnGraph.getX();
-                double relativeStartY = startPoint.getY() - startNodeLocationOnGraph.getY();
-                double relativeEndX = endPoint.getX() - endNodeLocationOnGraph.getX();
-                double relativeEndY = endPoint.getY() - endNodeLocationOnGraph.getY();
-                Point2D relativeStartPoint = new Point2D.Double(relativeStartX, relativeStartY);
-                Point2D relativeEndPoint = new Point2D.Double(relativeEndX, relativeEndY);
+                Point2D relativeStartPoint = null;
+                Point2D relativeEndPoint = null;
+                if (startNode != null) {
+                    Point2D startNodeLocationOnGraph = startNode.getLocationOnGraph();
+                    double relativeStartX = startPoint.getX() - startNodeLocationOnGraph.getX();
+                    double relativeStartY = startPoint.getY() - startNodeLocationOnGraph.getY();
+                    relativeStartPoint = new Point2D.Double(relativeStartX, relativeStartY);
+                }
+                if (endNode != null) {
+                    Point2D endNodeLocationOnGraph = endNode.getLocationOnGraph();
+                    double relativeEndX = endPoint.getX() - endNodeLocationOnGraph.getX();
+                    double relativeEndY = endPoint.getY() - endNodeLocationOnGraph.getY();
+                    relativeEndPoint = new Point2D.Double(relativeEndX, relativeEndY);
+                }
                 if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint));
                 {
                     newEdge.incrementRevision();

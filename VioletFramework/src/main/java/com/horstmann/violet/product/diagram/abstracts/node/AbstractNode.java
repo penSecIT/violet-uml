@@ -136,7 +136,7 @@ public abstract class AbstractNode implements INode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
+    public boolean checkAddEdge(IEdge e)
     {
         return e.getEnd() != null;
     }

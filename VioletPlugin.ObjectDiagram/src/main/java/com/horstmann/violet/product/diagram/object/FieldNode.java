@@ -129,7 +129,7 @@ public class FieldNode extends RectangularNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
+    public boolean checkAddEdge(IEdge e)
     {
         INode endingINode = e.getEnd();
         if (e.getClass().isAssignableFrom(ObjectReferenceEdge.class) && endingINode.getClass().isAssignableFrom(ObjectNode.class))
@@ -149,7 +149,7 @@ public class FieldNode extends RectangularNode
             }
             e.setStart(startingNode);
             e.setEnd(endingNode);
-            return getParent().checkAddEdge(e, p1, p2);
+            return getParent().checkAddEdge(e);
         }
         return false;
     }

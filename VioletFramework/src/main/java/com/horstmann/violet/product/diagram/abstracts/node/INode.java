@@ -103,12 +103,10 @@ public interface INode extends Serializable, Cloneable
     /**
      * Checks whether to add an edge that originates at this node.
      * 
-     * @param p1 a point in the starting node
-     * @param p2 a point in the ending node
      * @param e the edge to add
      * @return true if the edge was added
      */
-    boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2);
+    boolean checkAddEdge(IEdge e);
 
     
     /**

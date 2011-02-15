@@ -74,7 +74,7 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge edge, Point2D startingNodePoint, Point2D endingNodePoint)
+    public boolean checkAddEdge(IEdge edge)
     {
         INode endingNode = edge.getEnd();
         INode startingNode = edge.getStart();
@@ -84,7 +84,7 @@ public class ActivationBarNode extends RectangularNode
         }
         if (edge instanceof CallEdge)
         {
-            return isCallEdgeAcceptable((CallEdge) edge, endingNodePoint);
+            return isCallEdgeAcceptable((CallEdge) edge);
 
         }
         else if (edge instanceof ReturnEdge)
@@ -346,10 +346,11 @@ public class ActivationBarNode extends RectangularNode
         return true;
     }
 
-    private boolean isCallEdgeAcceptable(CallEdge edge, Point2D endingNodePoint)
+    private boolean isCallEdgeAcceptable(CallEdge edge)
     {
         INode endingNode = edge.getEnd();
         INode startingNode = edge.getStart();
+        Point2D endingNodePoint = edge.getEndLocation();
         Class<?> startingNodeClass = (startingNode != null ? startingNode.getClass() : NullType.class);
         Class<?> endingNodeClass = (endingNode != null ? endingNode.getClass() : NullType.class);
         // Case 1 : classic connection between activation bars

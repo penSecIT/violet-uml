@@ -320,13 +320,13 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation)
     {
         // Step 1 : find if nodes exist
-        if (!nodes.contains(start)) addNode(start, start.getLocation());
-        if (!nodes.contains(end)) addNode(end, start.getLocation());
+        if (start != null && !nodes.contains(start)) addNode(start, start.getLocation());
+        if (end != null && !nodes.contains(end)) addNode(end, end.getLocation());
         e.setStart(start);
         e.setStartLocation(startLocation);
         e.setEnd(end);
         e.setEndlocation(endLocation);
-        if (start.checkAddEdge(e, startLocation, endLocation))
+        if (start.checkAddEdge(e))
         {
             edges.add(e);
             return true;

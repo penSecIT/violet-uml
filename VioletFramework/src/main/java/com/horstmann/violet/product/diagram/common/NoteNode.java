@@ -69,12 +69,12 @@ public class NoteNode extends RectangularNode
         return INFINITE_Z_LEVEL;
     }
 
-    public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
+    public boolean checkAddEdge(IEdge e)
     {
         if (e.getStart() == e.getEnd()) {
             return false;
         }
-        return super.checkAddEdge(e, p1, p2);
+        return super.checkAddEdge(e);
     }
 
     public void checkRemoveEdge(IEdge e)

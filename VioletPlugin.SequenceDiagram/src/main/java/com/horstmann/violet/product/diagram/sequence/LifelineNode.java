@@ -23,7 +23,6 @@ package com.horstmann.violet.product.diagram.sequence;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -72,7 +71,7 @@ public class LifelineNode extends RectangularNode
         return name;
     }
 
-    public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
+    public boolean checkAddEdge(IEdge e)
     {
         return false;
     }
@@ -155,13 +154,11 @@ public class LifelineNode extends RectangularNode
     public Point2D getConnectionPoint(Direction d)
     {
         Rectangle2D bounds = getBounds();
-        Rectangle2D topRectangle = getTopRectangle();
-        double topMinY = topRectangle.getMinY();
         if (d.getX() > 0)
         {
-            return new Point2D.Double(bounds.getMaxX(), topMinY + ActivationBarNode.CALL_YGAP / 2);
+            return new Point2D.Double(bounds.getMaxX(), bounds.getMinY() + ActivationBarNode.CALL_YGAP / 2);
         }
-        return new Point2D.Double(bounds.getX(), topMinY + ActivationBarNode.CALL_YGAP / 2);
+        return new Point2D.Double(bounds.getX(), bounds.getMinY() + ActivationBarNode.CALL_YGAP / 2);
     }
 
     @Override
@@ -183,7 +180,8 @@ public class LifelineNode extends RectangularNode
                     INode startingNode = edge.getStart();
                     Point2D locationOnGraph = startingNode.getLocationOnGraph();
                     Point2D realLocation = super.getLocation();
-                    Point2D fixedLocation = new Point2D.Double(realLocation.getX(), locationOnGraph.getY() - getTopRectangleHeight() / 2 + ActivationBarNode.CALL_YGAP / 2);
+                    Point2D fixedLocation = new Point2D.Double(realLocation.getX(), locationOnGraph.getY()
+                            - getTopRectangleHeight() / 2 + ActivationBarNode.CALL_YGAP / 2);
                     return fixedLocation;
                 }
             }
@@ -200,12 +198,9 @@ public class LifelineNode extends RectangularNode
      */
     public Rectangle2D getTopRectangle()
     {
-        Point2D nodeLocation = getLocation();
-        double topX = nodeLocation.getX();
-        double topY = nodeLocation.getY();
         double topWidth = getTopRectangleWidth();
         double topHeight = getTopRectangleHeight();
-        Rectangle2D topRectangle = new Rectangle2D.Double(topX, topY, topWidth, topHeight);
+        Rectangle2D topRectangle = new Rectangle2D.Double(0, 0, topWidth, topHeight);
         Rectangle2D snappedRectangle = getGraph().getGrid().snap(topRectangle);
         return snappedRectangle;
     }
@@ -261,15 +256,22 @@ public class LifelineNode extends RectangularNode
         return new Rectangle2D.Double(x, y, w, h);
     }
 
-    public Shape getShape()
+    @Override
+    public Rectangle2D getShape()
     {
-        return getTopRectangle();
+        Point2D currentLocation = getLocation();
+        Rectangle2D topRectangle = getTopRectangle();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
+        double w = topRectangle.getWidth();
+        double h = topRectangle.getHeight();
+        return new Rectangle2D.Double(x, y, w, h);
     }
 
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        Rectangle2D top = getTopRectangle();
+        Rectangle2D top = getShape();
         g2.draw(top);
         name.draw(g2, top);
         double xmid = top.getCenterX();
