@@ -39,42 +39,55 @@ public abstract class AbstractEdge implements IEdge
         this.id = new Id();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Edge#connect(com.horstmann.violet.framework.Node, com.horstmann.violet.framework.Node)
-     */
-    public final void connect(INode s, INode e)
+    @Override
+    public void setStart(INode startingNode)
     {
-        start = s;
-        end = e;
+        this.start = startingNode;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Edge#getStart()
-     */
+    @Override
     public INode getStart()
     {
         return start;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Edge#getEnd()
-     */
+    @Override
+    public void setEnd(INode endingNode)
+    {
+        this.end = endingNode;
+    }
+
+    @Override
     public INode getEnd()
     {
         return end;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Edge#getBounds()
-     */
+    @Override
+    public void setStartLocation(Point2D startLocation)
+    {
+        this.startLocation = startLocation;
+    }
+
+    @Override
+    public Point2D getStartLocation()
+    {
+        return startLocation;
+    }
+
+    @Override
+    public void setEndlocation(Point2D endLocation)
+    {
+        this.endLocation = endLocation;
+    }
+
+    @Override
+    public Point2D getEndLocation()
+    {
+        return this.endLocation;
+    }
+
+    @Override
     public Rectangle2D getBounds()
     {
         Line2D conn = getConnectionPoints();
@@ -83,11 +96,7 @@ public abstract class AbstractEdge implements IEdge
         return r;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Edge#getConnectionPoints()
-     */
+    @Override
     public Line2D getConnectionPoints()
     {
         Rectangle2D startBounds = start.getBounds();
@@ -98,32 +107,19 @@ public abstract class AbstractEdge implements IEdge
         return new Line2D.Double(start.getConnectionPoint(toEnd), end.getConnectionPoint(toEnd.turn(180)));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#getId()
-     */
+    @Override
     public Id getId()
     {
         return this.id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#setId(com.horstmann.violet.product.diagram.abstracts.Id)
-     */
+    @Override
     public void setId(Id id)
     {
         this.id = id;
     }
 
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#clone()
-     */
+    @Override
     public AbstractEdge clone()
     {
         try
@@ -138,31 +134,19 @@ public abstract class AbstractEdge implements IEdge
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#getRevision()
-     */
+    @Override
     public Integer getRevision()
     {
         return this.revision;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#setRevision(java.lang.Integer)
-     */
+    @Override
     public void setRevision(Integer newRevisionNumber)
     {
         this.revision = newRevisionNumber;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#incrementRevision()
-     */
+    @Override
     public void incrementRevision()
     {
         int i = this.revision.intValue();
@@ -172,34 +156,38 @@ public abstract class AbstractEdge implements IEdge
 
     /**
      * Sets edge tool tip
+     * 
      * @param s
      */
-    public void setToolTip(String s) {
+    public void setToolTip(String s)
+    {
         this.toolTip = s;
     }
-    
 
-
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.Edge#getToolTip()
-     */
+    @Override
     public String getToolTip()
     {
         return this.toolTip;
     }
-    
+
     /** The node where the edge starts */
     private INode start;
 
     /** The node where the edge ends */
     private INode end;
 
+    /** The point inside the starting node where this edge begins */
+    private Point2D startLocation;
+
+    /** The point inside the ending node where this edge ends */
+    private Point2D endLocation;
+
     /** Edge's current id (unique in all the graph) */
     private Id id;
 
     /** Edge's current revision */
     private Integer revision = new Integer(0);
-    
+
     /** Edge tool tip */
-    private transient String toolTip; 
+    private transient String toolTip;
 }

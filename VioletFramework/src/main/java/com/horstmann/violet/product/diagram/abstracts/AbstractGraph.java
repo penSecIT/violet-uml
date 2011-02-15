@@ -56,38 +56,8 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         grid = new EmptyGrid();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#addEdgeAtPoints(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      java.awt.geom.Point2D, java.awt.geom.Point2D)
-     */
-    public boolean addEdgeAtPoints(IEdge e, Point2D p1, Point2D p2)
-    {
-        INode n1 = findNode(p1);
-        INode n2 = findNode(p2);
-        if (n1 != null)
-        {
-            e.connect(n1, n2);
-            if (n1.checkAddEdge(e, p1, p2) && e.getEnd() != null)
-            {
-                if (!getAllNodes().contains(e.getEnd()))
-                {
-                    addNode(e.getEnd(), e.getEnd().getLocation());
-                }
-                edges.add(e);
-                return true;
-            }
-        }
-        return false;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Graph#moveNode(com.horstmann.violet.product.diagram.abstracts.Node,
-     *      java.awt.geom.Point2D)
-     */
+    @Override
     public void moveNode(INode existingNode, Point2D dest)
     {
         existingNode.translate(dest.getX(), dest.getY());
@@ -95,11 +65,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
 
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#findNode(java.awt.geom.Point2D)
-     */
+    @Override
     public INode findNode(Point2D p)
     {
         for (INode n : getAllNodes()) {
@@ -129,11 +95,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         return allNodes;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Graph#findNode(com.horstmann.violet.product.diagram.abstracts.Id)
-     */
+    @Override
     public INode findNode(Id id)
     {
         for (INode n : getAllNodes())
@@ -143,11 +105,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#findEdge(java.awt.geom.Point2D)
-     */
+    @Override
     public IEdge findEdge(Point2D p)
     {
         for (IEdge e : edges)
@@ -157,11 +115,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.Graph#findEdge(com.horstmann.violet.product.diagram.abstracts.Id)
-     */
+    @Override
     public IEdge findEdge(Id id)
     {
         for (IEdge e : edges)
@@ -171,11 +125,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#draw(java.awt.Graphics2D, com.horstmann.violet.product.diagram.abstracts.Grid)
-     */
+    @Override
     public void draw(Graphics2D g2)
     {
         List<INode> specialNodes = new ArrayList<INode>();
@@ -244,57 +194,32 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                 + AbstractNode.SHADOW_GAP, r.getHeight() + AbstractNode.SHADOW_GAP);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#setMinBounds(java.awt.geom.Rectangle2D)
-     */
+    @Override
     public void setBounds(Rectangle2D newValue)
     {
         minBounds = newValue;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getNodePrototypes()
-     */
+    @Override
     public abstract INode[] getNodePrototypes();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getEdgePrototypes()
-     */
+    @Override
     public abstract IEdge[] getEdgePrototypes();
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getNodes()
-     */
+    @Override
     public Collection<INode> getNodes()
     {
         return Collections.unmodifiableCollection(getAllNodes());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getEdges()
-     */
+    @Override
     public Collection<IEdge> getEdges()
     {
         return Collections.unmodifiableCollection(edges);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#addNode(com.horstmann.violet.product.diagram.abstracts.Node,
-     *      java.awt.geom.Point2D)
-     */
+    @Override
     public boolean addNode(INode newNode, Point2D p)
     {
         // Case 1 : Note node always attached to the graph
@@ -319,9 +244,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     }
 
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeNode(com.horstmann.violet.product.diagram.abstracts.node.INode[])
-     */
+    @Override
     public void removeNode(INode... nodesToRemove)
     {
         // Notify all nodes of removals. This might trigger recursive invocations.
@@ -392,26 +315,27 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#connect(com.horstmann.violet.product.diagram.abstracts.Edge,
-     *      com.horstmann.violet.product.diagram.abstracts.Node, com.horstmann.violet.product.diagram.abstracts.Node)
-     */
-    public void connect(IEdge e, INode start, INode end)
+    
+    @Override
+    public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation)
     {
-        // Re-attaches nodes to list
+        // Step 1 : find if nodes exist
         if (!nodes.contains(start)) addNode(start, start.getLocation());
         if (!nodes.contains(end)) addNode(end, start.getLocation());
-        // Registers nodes to edge
-        e.connect(start, end);
-        edges.add(e);
+        e.setStart(start);
+        e.setStartLocation(startLocation);
+        e.setEnd(end);
+        e.setEndlocation(endLocation);
+        if (start.checkAddEdge(e, startLocation, endLocation))
+        {
+            edges.add(e);
+            return true;
+        }
+        return false;
     }
 
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#removeEdge(com.horstmann.violet.product.diagram.abstracts.edge.IEdge[])
-     */
+    @Override
     public void removeEdge(IEdge... edgesToRemove)
     {
         if (edgesToRemove != null)
@@ -439,9 +363,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     }
 
     
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.diagram.abstracts.IGraph#getGrid()
-     */
+    @Override
     public IGrid getGrid()
     {
         return grid;

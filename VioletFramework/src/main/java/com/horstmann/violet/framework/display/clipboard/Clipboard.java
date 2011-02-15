@@ -112,7 +112,10 @@ public class Clipboard extends AbstractGraph
             if ((start = originalAndClonedNodes.get(e.getStart())) != null && (end = originalAndClonedNodes.get(e.getEnd())) != null)
             {
                 IEdge e2 = e.clone();
-                e2.connect(start, end);
+                e2.setStart(start);
+                e2.setEnd(end);
+                e2.setStartLocation((Point2D) e.getStartLocation().clone());
+                e2.setEndlocation((Point2D) e.getEndLocation().clone());
                 newEdges.add(e2);
             }
         }
@@ -145,7 +148,7 @@ public class Clipboard extends AbstractGraph
          * Add edges to target.
          */
         for (IEdge e : newEdges)
-            graphOut.connect(e, e.getStart(), e.getEnd());
+            graphOut.connect(e, e.getStart(), e.getStartLocation(), e.getEnd(), e.getEndLocation());
         
         if (selectedOut != null) {
             Collection<INode> nodes = originalAndClonedNodes.values();

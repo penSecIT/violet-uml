@@ -159,7 +159,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
                 public void undo() throws CannotUndoException
                 {
                     IGraph graph = editorPart.getGraph();
-                    graph.connect(aSelectedEdge, aSelectedEdge.getStart(), aSelectedEdge.getEnd());
+                    graph.connect(aSelectedEdge, aSelectedEdge.getStart(), aSelectedEdge.getStartLocation(), aSelectedEdge.getEnd(), aSelectedEdge.getEndLocation());
                     super.undo();
                 }
 
@@ -245,7 +245,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
             {
                 super.redo();
                 IGraph graph = editorPart.getGraph();
-                graph.addEdgeAtPoints(edge, startPoint, endPoint);
+                graph.connect(edge, edge.getStart(), edge.getStartLocation(), edge.getEnd(), edge.getEndLocation());
             }
         };
         capturedEdit.addEdit(edit);

@@ -134,7 +134,6 @@ public class FieldNode extends RectangularNode
         INode endingINode = e.getEnd();
         if (e.getClass().isAssignableFrom(ObjectReferenceEdge.class) && endingINode.getClass().isAssignableFrom(ObjectNode.class))
         {
-            Object oldValue = value.clone();
             value.setText("");
             return true;
         }
@@ -148,7 +147,8 @@ public class FieldNode extends RectangularNode
             if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
                 endingNode = endingNode.getParent();
             }
-            e.connect(startingNode, endingNode);
+            e.setStart(startingNode);
+            e.setEnd(endingNode);
             return getParent().checkAddEdge(e, p1, p2);
         }
         return false;

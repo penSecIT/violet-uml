@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -72,8 +73,11 @@ public class GraphTool
                 p.translate(OFFSET, OFFSET);
                 PointNode q = new PointNode();
                 q.translate(ICON_SIZE - OFFSET, ICON_SIZE - OFFSET);
-                e.connect(p, q);
-
+                e.setStart(p);
+                e.setStartLocation(new Point2D.Double(0, 0));
+                e.setEnd(q);
+                e.setEndlocation(new Point2D.Double(0, 0));
+  
                 Rectangle2D bounds = new Rectangle2D.Double();
                 bounds.add(p.getBounds());
                 bounds.add(q.getBounds());

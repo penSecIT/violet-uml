@@ -76,31 +76,17 @@ public interface IGraph
      */
     public abstract void moveNode(INode existingNode, Point2D dest);
 
- 
     /**
-     * Adds an edge to the graph that joins the nodes containing the given points. If the points aren't both inside nodes, then no
-     * edge is added.
+     * Adds an edge to this graph. 
      * 
-     * @param e the edge to add
-     * @param p1 a point in the starting node
-     * @param p2 a point in the ending node
-     */
-    public abstract boolean addEdgeAtPoints(IEdge e, Point2D p1, Point2D p2);
-
-
-    /**
-     * Adds an edge to this graph. This method should only be called by a decoder when reading a data file.
-     * 
-     * @param e the edge to add
+     * @param e the new edge to add (don't forget to populate it withs the following nodes and points!)
      * @param start the start node of the edge
+     * @param startLocation the point inside the start node where the edge begins
      * @param end the end node of the edge
+     * @param endLocation the point inside the end node where the edge ends
      * @return isOK as true if successfully connected
      */
-    public abstract void connect(IEdge e, INode start, INode end);
-
-
-
-
+    public abstract boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation);
 
 
     /**

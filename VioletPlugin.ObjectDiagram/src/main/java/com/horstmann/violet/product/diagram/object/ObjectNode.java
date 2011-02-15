@@ -125,7 +125,8 @@ public class ObjectNode extends RectangularNode
         if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
             endingNode = endingNode.getParent();
         }
-        e.connect(startingNode, endingNode);
+        e.setStart(startingNode);
+        e.setEnd(endingNode);
         return true;
     }
 

@@ -381,7 +381,7 @@ public class ActivationBarNode extends RectangularNode
                 ActivationBarNode newActivationBar = new ActivationBarNode();
                 int lastNodePos = endingNode.getChildren().size();
                 endingNode.addChildNode(newActivationBar, lastNodePos);
-                edge.connect(startingNode, newActivationBar);
+                edge.setEnd(newActivationBar);
                 return true;
             }
         }
@@ -397,7 +397,7 @@ public class ActivationBarNode extends RectangularNode
                 ActivationBarNode newActivationBar = new ActivationBarNode();
                 int lastNodePos = startingNode.getChildren().size();
                 startingNode.addChildNode(newActivationBar, lastNodePos);
-                edge.connect(startingNode, newActivationBar);
+                edge.setEnd(newActivationBar);
                 return true;
             }
         }
@@ -407,7 +407,7 @@ public class ActivationBarNode extends RectangularNode
             ActivationBarNode newActivationBar = new ActivationBarNode();
             int lastNodePos = startingNode.getChildren().size();
             startingNode.addChildNode(newActivationBar, lastNodePos);
-            edge.connect(startingNode, newActivationBar);
+            edge.setEnd(newActivationBar);
             return true;
         }
         return false;

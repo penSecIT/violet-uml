@@ -36,11 +36,63 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 public interface IEdge extends Serializable, Cloneable
 {
     /**
-     * Draw the edge.
+     * Sets the starting node
      * 
-     * @param g2 the graphics context
+     * @param startingNode
      */
-    void draw(Graphics2D g2);
+    void setStart(INode startingNode);
+
+    /**
+     * Gets the starting node.
+     * 
+     * @return the starting node
+     */
+    INode getStart();
+
+    /**
+     * Sets the ending node
+     * 
+     * @param endingNode
+     */
+    void setEnd(INode endingNode);
+
+    /**
+     * Gets the ending node.
+     * 
+     * @return the ending node
+     */
+    INode getEnd();
+
+    /**
+     * Sets the point from where this edge begins (relative to the starting node)
+     * 
+     * @param startingLocation
+     */
+    void setStartLocation(Point2D startingLocation);
+
+    /**
+     * @return the point from where this end begins location (relative to the starting node)
+     */
+    Point2D getStartLocation();
+
+    /**
+     * Sets the point where this node ends (relative to the ending node)
+     * 
+     * @param endingLocation
+     */
+    void setEndlocation(Point2D endingLocation);
+
+    /**
+     * @return the point where this node ends (relative to the ending node)
+     */
+    Point2D getEndLocation();
+
+    /**
+     * Gets the points at which this edge is connected to its nodes.
+     * 
+     * @return a line joining the two connection points
+     */
+    Line2D getConnectionPoints();
 
     /**
      * Tests whether the edge contains a point.
@@ -51,35 +103,6 @@ public interface IEdge extends Serializable, Cloneable
     boolean contains(Point2D aPoint);
 
     /**
-     * Connect this edge to two nodes.
-     * 
-     * @param aStart the starting node
-     * @param anEnd the ending node
-     */
-    void connect(INode aStart, INode anEnd);
-
-    /**
-     * Gets the starting node.
-     * 
-     * @return the starting node
-     */
-    INode getStart();
-
-    /**
-     * Gets the ending node.
-     * 
-     * @return the ending node
-     */
-    INode getEnd();
-
-    /**
-     * Gets the points at which this edge is connected to its nodes.
-     * 
-     * @return a line joining the two connection points
-     */
-    Line2D getConnectionPoints();
-
-    /**
      * Gets the smallest rectangle that bounds this edge. The bounding rectangle contains all labels.
      * 
      * @return the bounding rectangle
@@ -87,12 +110,19 @@ public interface IEdge extends Serializable, Cloneable
     Rectangle2D getBounds();
 
     /**
+     * Draw the edge.
+     * 
+     * @param g2 the graphics context
+     */
+    void draw(Graphics2D g2);
+
+    /**
      * Returns a unique id of this edge to make it easier to identify
      * 
      * @return a unique id
      */
     Id getId();
-    
+
     /**
      * Sets unique id to this edge to make it easier to identify
      * 
@@ -100,30 +130,33 @@ public interface IEdge extends Serializable, Cloneable
      */
     void setId(Id id);
 
-    
     /**
      * Returns current edge revision
      */
     Integer getRevision();
-    
-    
+
     /**
      * Updates current edge revision number
+     * 
      * @param newRevisionNumber n
      */
-    void setRevision(Integer newRevisionNumber);    
-    
+    void setRevision(Integer newRevisionNumber);
+
     /**
      * Auto-increments revision number
      */
-    void incrementRevision();    
-    
+    void incrementRevision();
+
     /**
      * Gets current edge tool tip
+     * 
      * @return s
      */
     String getToolTip();
 
+    /**
+     * @return a deep copy of this object
+     */
     IEdge clone();
-    
+
 }

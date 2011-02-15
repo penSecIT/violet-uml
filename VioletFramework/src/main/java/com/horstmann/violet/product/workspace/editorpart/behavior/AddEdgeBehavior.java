@@ -102,7 +102,17 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
             this.behaviorManager.fireBeforeAddingEdgeAtPoints(newEdge, startPoint, endPoint);
             try
             {
-                if (graph.addEdgeAtPoints(newEdge, startPoint, endPoint))
+                INode startNode = graph.findNode(startPoint);
+                INode endNode = graph.findNode(endPoint);
+                Point2D startNodeLocationOnGraph = startNode.getLocationOnGraph();
+                Point2D endNodeLocationOnGraph = endNode.getLocationOnGraph();
+                double relativeStartX = startPoint.getX() - startNodeLocationOnGraph.getX();
+                double relativeStartY = startPoint.getY() - startNodeLocationOnGraph.getY();
+                double relativeEndX = endPoint.getX() - endNodeLocationOnGraph.getX();
+                double relativeEndY = endPoint.getY() - endNodeLocationOnGraph.getY();
+                Point2D relativeStartPoint = new Point2D.Double(relativeStartX, relativeStartY);
+                Point2D relativeEndPoint = new Point2D.Double(relativeEndX, relativeEndY);
+                if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint));
                 {
                     newEdge.incrementRevision();
                     isAdded = true;

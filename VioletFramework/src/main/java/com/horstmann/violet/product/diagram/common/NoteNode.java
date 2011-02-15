@@ -71,9 +71,9 @@ public class NoteNode extends RectangularNode
 
     public boolean checkAddEdge(IEdge e, Point2D p1, Point2D p2)
     {
-        PointNode end = new PointNode();
-        end.translate(p2.getX(), p2.getY());
-        e.connect(this, end);
+        if (e.getStart() == e.getEnd()) {
+            return false;
+        }
         return super.checkAddEdge(e, p1, p2);
     }
 
