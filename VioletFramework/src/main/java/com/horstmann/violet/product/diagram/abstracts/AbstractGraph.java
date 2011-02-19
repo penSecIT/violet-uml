@@ -51,8 +51,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     {
         nodes = new ArrayList<INode>();
         edges = new ArrayList<IEdge>();
-        nodesToBeRemoved = new ArrayList<INode>();
-        edgesToBeRemoved = new ArrayList<IEdge>();
         grid = new EmptyGrid();
     }
 
@@ -243,72 +241,36 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     @Override
     public void removeNode(INode... nodesToRemove)
     {
-        // Notify all nodes of removals. This might trigger recursive invocations.
-        if (nodesToRemove != null)
+        // Step 1a : Remove nodes directly attach to the graph
+        for (INode aNodeToRemove : nodesToRemove) {
+            if (this.nodes.contains(aNodeToRemove)) {
+                this.nodes.remove(aNodeToRemove);
+            }
+        }
+        // Step 1b : Remove nodes attach to other nodes as children
+        for (INode aNode : getAllNodes())
         {
-            for (INode n : nodesToRemove)
+            for (INode aNodeToRemove : nodesToRemove)
             {
-                if (!nodesToBeRemoved.contains(n))
-                {
-                    for (INode n2 : getAllNodes())
-                    {
-                        n2.removeChild(n);
-                    }
-                    nodesToBeRemoved.add(n);
+                List<INode> children = aNode.getChildren();
+                if (children.contains(aNodeToRemove)) {
+                    aNode.removeChild(aNodeToRemove);
                 }
             }
         }
-
-        // Traverse all nodes other than the ones to be removed and make sure that none
-        // of their node-valued properties fall into the set of removed nodes. (Null out if necessary.)
-
-        for (INode n : getAllNodes())
-        {
-            if (!nodesToBeRemoved.contains(n))
-            {
-                try
-                {
-                    for (PropertyDescriptor descriptor : Introspector.getBeanInfo(n.getClass()).getPropertyDescriptors())
-                    {
-                        if (INode.class.isAssignableFrom(descriptor.getPropertyType()))
-                        {
-                            INode value = (INode) descriptor.getReadMethod().invoke(n);
-                            if (nodesToBeRemoved.contains(value)) descriptor.getWriteMethod().invoke(n, (Object) null);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                }
+        // Step 2 : Disconnect edges
+        List<IEdge> edgesToRemove = new ArrayList<IEdge>();
+        Collection<INode> allNodes = getAllNodes();
+        for (IEdge anEdge : this.edges) {
+            INode startingNode = anEdge.getStart();
+            INode endingNode = anEdge.getEnd();
+            boolean isEdgeStillConnected = (allNodes.contains(startingNode) && allNodes.contains(endingNode));
+            if (!isEdgeStillConnected) {
+                edgesToRemove.add(anEdge);
             }
         }
-
-        for (INode n : nodesToBeRemoved)
-        {
-            for (int i = n.getChildren().size() - 1; i >= 0; i--)
-                n.removeChild(n.getChildren().get(i));
-        }
-        for (INode n : nodesToBeRemoved)
-        {
-            List<IEdge> edgesToRemove = new ArrayList<IEdge>();
-            for (IEdge edge : getAllEdges())
-            {
-                if (n == edge.getStart() || n == edge.getEnd())
-                {
-                    edgesToRemove.add(edge);
-                }
-            }
-            removeEdge(edgesToRemove.toArray(new IEdge[edgesToRemove.size()]));
-        }
-        for (INode n : nodesToBeRemoved)
-        {
-            if (n.getParent() != null) n.getParent().removeChild(n);
-            n.setGraph(null);
-        }
-        nodes.removeAll(nodesToBeRemoved);
-        nodesToBeRemoved.clear();
-
+        IEdge[] edgesToRemoveAsArray = edgesToRemove.toArray(new IEdge[edgesToRemove.size()]);
+        removeEdge(edgesToRemoveAsArray);
     }
 
     @Override
@@ -332,28 +294,14 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     @Override
     public void removeEdge(IEdge... edgesToRemove)
     {
-        if (edgesToRemove != null)
+        for (IEdge anEdgeToRemove : edgesToRemove)
         {
-            for (IEdge e : edgesToRemove)
-            {
-                if (!edgesToBeRemoved.contains(e))
-                {
-                    for (INode n1 : getAllNodes())
-                    {
-                        n1.removeConnection(e);
-                    }
-                    edgesToBeRemoved.add(e);
-                }
-            }
+            INode startingNode = anEdgeToRemove.getStart();
+            INode endingNode = anEdgeToRemove.getEnd();
+            startingNode.removeConnection(anEdgeToRemove);
+            endingNode.removeConnection(anEdgeToRemove);
+            this.edges.remove(anEdgeToRemove);
         }
-
-        for (IEdge e : edges)
-        {
-            if (!edgesToBeRemoved.contains(e) && (nodesToBeRemoved.contains(e.getStart()) || nodesToBeRemoved.contains(e.getEnd()))) edgesToBeRemoved
-                    .add(e);
-        }
-        edges.removeAll(edgesToBeRemoved);
-        edgesToBeRemoved.clear();
     }
 
     @Override
@@ -364,8 +312,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
 
     private ArrayList<INode> nodes;
     private ArrayList<IEdge> edges;
-    private transient ArrayList<INode> nodesToBeRemoved;
-    private transient ArrayList<IEdge> edgesToBeRemoved;
     private transient Rectangle2D minBounds;
     private transient IGrid grid;
 }
