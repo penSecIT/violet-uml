@@ -13,5 +13,19 @@ Require-Bundle: org.eclipse.core.runtime,org.eclipse.core.resources,or
 Eclipse-LazyStart: true
 Product-Version: 2.0.0
 Main-Class: com.horstmann.violet.UMLEditor
-Bundle-ClassPath: .
-
+Bundle-ClassPath: .,
+ antlr-2.7.5.jar,
+ aopalliance-1.0.jar,
+ com.horstmann.violet.framework-1.0-SNAPSHOT.jar,
+ com.horstmann.violet.plugin.classdiagram-1.0-SNAPSHOT.jar,
+ com.horstmann.violet.plugin.sequencediagram-1.0-SNAPSHOT.jar,
+ l2fprod-common-tasks-7.3.jar,
+ commons-httpclient-2.0.2.jar,
+ commons-logging-1.1.1.jar,
+ commons-net-1.4.1.jar,
+ commons-vfs-1.0.jar,
+ javaws-1.6.0.jar,
+ jaxmejs-0.5.jar,
+ pgslookandfeel-1.1.jar,
+ jcifs-1.2.19.jar,
+ oro-2.0.8.jar
