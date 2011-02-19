@@ -112,7 +112,7 @@ public class ObjectNode extends RectangularNode
         return topBounds;
     }
 
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         if (!e.getClass().isAssignableFrom(ObjectRelationshipEdge.class)) {
             return false;
@@ -162,7 +162,7 @@ public class ObjectNode extends RectangularNode
     }
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         List<INode> fields = getChildren();
         if (!(n instanceof FieldNode)) return false;
@@ -170,7 +170,7 @@ public class ObjectNode extends RectangularNode
         int i = 0;
         while (i < fields.size() && fields.get(i).getLocation().getY() < p.getY())
             i++;
-        addChildNode(n, i);
+        addChild(n, i);
         n.setGraph(getGraph());
         n.setParent(this);
         return true;

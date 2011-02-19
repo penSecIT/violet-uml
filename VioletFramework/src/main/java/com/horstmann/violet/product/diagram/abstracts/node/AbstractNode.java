@@ -136,25 +136,25 @@ public abstract class AbstractNode implements INode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         return e.getEnd() != null;
     }
 
     @Override
-    public void checkRemoveEdge(IEdge e)
+    public void removeConnection(IEdge e)
     {
     }
 
     @Override
-    public void checkRemoveNode(INode node)
+    public void removeChild(INode node)
     {
         if (node.getParent() != this) return;
         children.remove(node);
     }
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         return false;
     }
@@ -178,10 +178,10 @@ public abstract class AbstractNode implements INode
     }
 
     @Override
-    public boolean addChildNode(INode node, int index)
+    public boolean addChild(INode node, int index)
     {
         INode oldParent = node.getParent();
-        if (oldParent != null) oldParent.checkRemoveNode(node);
+        if (oldParent != null) oldParent.removeChild(node);
         children.add(index, node);
         node.setParent(this);
         node.setGraph(getGraph());

@@ -39,7 +39,7 @@ public class SynchronizationBarNode extends RectangularNode
 {
 
     @Override
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         return e.getEnd() != null && this != e.getEnd();
     }
@@ -98,7 +98,7 @@ public class SynchronizationBarNode extends RectangularNode
     {
         List<INode> connectedNodes = new ArrayList<INode>();
         // needs to contain all incoming and outgoing edges
-        for (IEdge e : getGraph().getEdges())
+        for (IEdge e : getGraph().getAllEdges())
         {
             if (e.getStart() == this) connectedNodes.add(e.getEnd());
             if (e.getEnd() == this) connectedNodes.add(e.getStart());

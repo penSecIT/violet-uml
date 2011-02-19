@@ -56,43 +56,21 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         grid = new EmptyGrid();
     }
 
-
-    @Override
-    public void moveNode(INode existingNode, Point2D dest)
-    {
-        existingNode.translate(dest.getX(), dest.getY());
-    }
-
-
-
     @Override
     public INode findNode(Point2D p)
     {
-        for (INode n : getAllNodes()) {
+        for (INode n : getAllNodes())
+        {
             Point2D locationOnGraph = n.getLocationOnGraph();
             Rectangle2D bounds = n.getBounds();
-            Rectangle2D boundsToCheck = new Rectangle2D.Double(locationOnGraph.getX(), locationOnGraph.getY(), bounds.getWidth(), bounds.getHeight());
-            if (boundsToCheck.contains(p)) {
+            Rectangle2D boundsToCheck = new Rectangle2D.Double(locationOnGraph.getX(), locationOnGraph.getY(), bounds.getWidth(),
+                    bounds.getHeight());
+            if (boundsToCheck.contains(p))
+            {
                 return n;
             }
         }
         return null;
-    }
-    
-    private List<INode> getAllNodes() {
-        List<INode> fifo = new ArrayList<INode>();
-        List<INode> allNodes = new ArrayList<INode>();
-        fifo.addAll(nodes);
-        allNodes.addAll(nodes);
-        while (!fifo.isEmpty()) {
-            INode nodeToInspect = fifo.remove(0);
-            List<INode> children = nodeToInspect.getChildren();
-            fifo.addAll(children);
-            allNodes.addAll(children);
-        }
-        // Let's have children first 
-        Collections.reverse(allNodes);
-        return allNodes;
     }
 
     @Override
@@ -129,20 +107,23 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public void draw(Graphics2D g2)
     {
         List<INode> specialNodes = new ArrayList<INode>();
-        
+
         int count = 0;
         int z = 0;
-        Collection<INode> nodes = getNodes();
+        Collection<INode> nodes = getAllNodes();
         while (count < nodes.size())
         {
             for (INode n : nodes)
             {
-                
+
                 if (n.getZ() == z)
                 {
-                    if (n instanceof NoteNode) {
+                    if (n instanceof NoteNode)
+                    {
                         specialNodes.add(n);
-                    } else {
+                    }
+                    else
+                    {
                         n.draw(g2);
                     }
                     count++;
@@ -157,20 +138,21 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             e.draw(g2);
         }
         // Special nodes are always drawn upon other elements
-        for (INode n : specialNodes) {
+        for (INode n : specialNodes)
+        {
             // Translate g2 if node has parent
             INode p = n.getParent();
             Point2D nodeLocationOnGraph = n.getLocationOnGraph();
             Point2D nodeLocation = n.getLocation();
-            Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+            Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY()
+                    - nodeLocation.getY());
             g2.translate(g2Location.getX(), g2Location.getY());
             n.draw(g2);
             // Restore g2 original location
             g2.translate(-g2Location.getX(), -g2Location.getY());
         }
-        
-    }
 
+    }
 
     /*
      * (non-Javadoc)
@@ -206,15 +188,27 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     @Override
     public abstract IEdge[] getEdgePrototypes();
 
-
     @Override
-    public Collection<INode> getNodes()
+    public Collection<INode> getAllNodes()
     {
-        return Collections.unmodifiableCollection(getAllNodes());
+        List<INode> fifo = new ArrayList<INode>();
+        List<INode> allNodes = new ArrayList<INode>();
+        fifo.addAll(nodes);
+        allNodes.addAll(nodes);
+        while (!fifo.isEmpty())
+        {
+            INode nodeToInspect = fifo.remove(0);
+            List<INode> children = nodeToInspect.getChildren();
+            fifo.addAll(children);
+            allNodes.addAll(children);
+        }
+        // Let's have children first
+        Collections.reverse(allNodes);
+        return Collections.unmodifiableCollection(allNodes);
     }
 
     @Override
-    public Collection<IEdge> getEdges()
+    public Collection<IEdge> getAllEdges()
     {
         return Collections.unmodifiableCollection(edges);
     }
@@ -223,7 +217,8 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public boolean addNode(INode newNode, Point2D p)
     {
         // Case 1 : Note node always attached to the graph
-        if (newNode instanceof NoteNode) {
+        if (newNode instanceof NoteNode)
+        {
             newNode.setGraph(this);
             newNode.setLocation(p);
             nodes.add(newNode);
@@ -231,10 +226,12 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         }
         // Case 2 : attached to an existing node
         INode potentialParentNode = findNode(p);
-        if (potentialParentNode != null) {
+        if (potentialParentNode != null)
+        {
             Point2D parentLocationOnGraph = potentialParentNode.getLocationOnGraph();
-            Point2D relativeLocation = new Point2D.Double(p.getX() - parentLocationOnGraph.getX(), p.getY() - parentLocationOnGraph.getY());
-            return potentialParentNode.addChildNode(newNode, relativeLocation);
+            Point2D relativeLocation = new Point2D.Double(p.getX() - parentLocationOnGraph.getX(), p.getY()
+                    - parentLocationOnGraph.getY());
+            return potentialParentNode.addChild(newNode, relativeLocation);
         }
         // Case 3 : attached directly to the graph
         newNode.setGraph(this);
@@ -242,7 +239,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         nodes.add(newNode);
         return true;
     }
-
 
     @Override
     public void removeNode(INode... nodesToRemove)
@@ -256,13 +252,12 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                 {
                     for (INode n2 : getAllNodes())
                     {
-                        n2.checkRemoveNode(n);
+                        n2.removeChild(n);
                     }
                     nodesToBeRemoved.add(n);
                 }
             }
         }
-        
 
         // Traverse all nodes other than the ones to be removed and make sure that none
         // of their node-valued properties fall into the set of removed nodes. (Null out if necessary.)
@@ -292,13 +287,15 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         for (INode n : nodesToBeRemoved)
         {
             for (int i = n.getChildren().size() - 1; i >= 0; i--)
-                n.checkRemoveNode(n.getChildren().get(i));
+                n.removeChild(n.getChildren().get(i));
         }
         for (INode n : nodesToBeRemoved)
         {
             List<IEdge> edgesToRemove = new ArrayList<IEdge>();
-            for (IEdge edge : getEdges()) {
-                if (n == edge.getStart() || n == edge.getEnd()) {
+            for (IEdge edge : getAllEdges())
+            {
+                if (n == edge.getStart() || n == edge.getEnd())
+                {
                     edgesToRemove.add(edge);
                 }
             }
@@ -306,16 +303,14 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         }
         for (INode n : nodesToBeRemoved)
         {
-            if (n.getParent() != null) n.getParent().checkRemoveNode(n);
+            if (n.getParent() != null) n.getParent().removeChild(n);
             n.setGraph(null);
         }
         nodes.removeAll(nodesToBeRemoved);
         nodesToBeRemoved.clear();
-        
-        
+
     }
 
-    
     @Override
     public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation)
     {
@@ -326,14 +321,13 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         e.setStartLocation(startLocation);
         e.setEnd(end);
         e.setEndlocation(endLocation);
-        if (start.checkAddEdge(e))
+        if (start.addConnection(e))
         {
             edges.add(e);
             return true;
         }
         return false;
     }
-
 
     @Override
     public void removeEdge(IEdge... edgesToRemove)
@@ -346,7 +340,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
                 {
                     for (INode n1 : getAllNodes())
                     {
-                        n1.checkRemoveEdge(e);
+                        n1.removeConnection(e);
                     }
                     edgesToBeRemoved.add(e);
                 }
@@ -362,13 +356,11 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         edgesToBeRemoved.clear();
     }
 
-    
     @Override
     public IGrid getGrid()
     {
         return grid;
     }
-
 
     private ArrayList<INode> nodes;
     private ArrayList<IEdge> edges;

@@ -219,7 +219,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 super.initialize(type, oldInstance, newInstance, out);
                 AbstractGraph g = (AbstractGraph) oldInstance;
 
-                for ( INode n : g.getNodes())
+                for ( INode n : g.getAllNodes())
                 {
                     Point2D p = n.getLocation();
                     out.writeStatement(new Statement(oldInstance, "addNode", new Object[]
@@ -228,7 +228,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                             p
                     }));
                 }
-                for (IEdge e : g.getEdges())
+                for (IEdge e : g.getAllEdges())
                 {
                     out.writeStatement(new Statement(oldInstance, "connect", new Object[]
                     {

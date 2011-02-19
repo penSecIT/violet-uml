@@ -62,7 +62,7 @@ public class SelectByLassoBehavior extends AbstractEditorPartBehavior
         double x2 = mousePoint.getX();
         double y2 = mousePoint.getY();
         Rectangle2D.Double lasso = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
-        Iterator<INode> iter = graph.getNodes().iterator();
+        Iterator<INode> iter = graph.getAllNodes().iterator();
         while (iter.hasNext())
         {
             INode n = (INode) iter.next();

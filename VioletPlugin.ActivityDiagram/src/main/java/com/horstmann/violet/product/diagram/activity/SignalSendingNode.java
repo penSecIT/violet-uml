@@ -45,7 +45,7 @@ public class SignalSendingNode extends RectangularNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         if (e.getEnd() != null && this != e.getEnd())
         {

@@ -29,19 +29,19 @@ public interface IGraph
 
 
     /**
-     * Gets the nodes of this graph.
+     * Gets ALL the nodes of this graph.
      * 
      * @return an unmodifiable collection of the nodes
      */
-    public abstract Collection<INode> getNodes();
+    public abstract Collection<INode> getAllNodes();
 
 
     /**
-     * Gets the edges of this graph.
+     * Gets ALL the edges of this graph.
      * 
      * @return an unmodifiable collection of the edges
      */
-    public abstract Collection<IEdge> getEdges();
+    public abstract Collection<IEdge> getAllEdges();
 
 
     /**
@@ -67,14 +67,6 @@ public interface IGraph
      */
     public abstract boolean addNode(INode n, Point2D p);
 
-
-    /**
-     * Moves a node to a new location
-     * 
-     * @param existingNode e
-     * @param dest d
-     */
-    public abstract void moveNode(INode existingNode, Point2D dest);
 
     /**
      * Adds an edge to this graph. 

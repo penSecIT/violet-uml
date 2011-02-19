@@ -146,7 +146,6 @@ public abstract class AbstractEdge implements IEdge
         this.revision = newRevisionNumber;
     }
 
-    @Override
     public void incrementRevision()
     {
         int i = this.revision.intValue();

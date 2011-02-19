@@ -29,7 +29,7 @@ import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
-import com.horstmann.violet.product.diagram.abstracts.Id;
+import com.horstmann.violet.product.diagram.abstracts.IIdentifiable;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 
 /**
@@ -38,36 +38,83 @@ import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
  * 
  * @author Cay Horstmann
  */
-public interface INode extends Serializable, Cloneable
+public interface INode extends Serializable, Cloneable, IIdentifiable
 {
     
     /**
-     * Draw the node.
+     * Checks whether to add an edge that originates at this node.
      * 
-     * @param g2 the graphics context
-     * @param grid the grid to snap to
+     * @param e the edge to add
+     * @return true if the edge was added
      */
-    void draw(Graphics2D g2);
-    
+    boolean addConnection(IEdge e);
 
     /**
-     * Set or change node location 
-     * @param aPoint
+     * Notifies this node that an edge is being removed.
+     * 
+     * @param g the ambient graph
+     * @param e the edge to be removed
      */
-    void setLocation(Point2D aPoint);
-    
+    void removeConnection(IEdge e);
+
     /**
-     * Gets the location of this node on its parent (i.e. relative location)
-     * @return the location
+     * Adds a node as a child node to this node.
+     * 
+     * @param n the child node
+     * @param p the point at which the node is being added
+     * @return true if this node accepts the given node as a child
      */
-    Point2D getLocation();
-    
+    boolean addChild(INode n, Point2D p);
+
     /**
-     * Gets the location of this node on the whole graph. (i.e. absolute location)
+     * Adds a child node and fires the graph modification event.
+     * @param node the child node to add
+     * @param index the position at which to add the child
+     * @return true if this node accepts the given node as a child
+     */
+    boolean addChild(INode node, int index);
+
+    /**
+     * Notifies this node that a node is being removed.
+     * 
+     * @param g the ambient graph
+     * @param n the node to be removed
+     */
+    void removeChild(INode n);
+
+    /**
+     * Gets the children of this node.
+     * 
+     * @return an unmodifiable list of the children
+     */
+    List<INode> getChildren();
+
+    /**
+     * Gets the parent of this node.
+     * 
+     * @return the parent node, or null if the node has no parent
+     */
+    INode getParent();
+
+    /**
+     * Sets node's parent (for decoder)
+     * 
+     * @param parentNode p
+     */
+    void setParent(INode parentNode);
+
+    /**
+     * Sets the graph that contains this node.
+     * @param g the graph
+     */
+    void setGraph(IGraph g);
+
+    /**
+     * Gets the graph that contains this node, or null if this node is not contained in any graph.
      * @return
      */
-    Point2D getLocationOnGraph();
-    
+    IGraph getGraph();
+
     /**
      * Translates the node by a given amount
      * 
@@ -94,6 +141,24 @@ public interface INode extends Serializable, Cloneable
     Point2D getConnectionPoint(Direction d);
 
     /**
+     * Set or change node location 
+     * @param aPoint
+     */
+    void setLocation(Point2D aPoint);
+
+    /**
+     * Gets the location of this node on its parent (i.e. relative location)
+     * @return the location
+     */
+    Point2D getLocation();
+
+    /**
+     * Gets the location of this node on the whole graph. (i.e. absolute location)
+     * @return
+     */
+    Point2D getLocationOnGraph();
+
+    /**
      * Get the visual bounding rectangle of the shape of this node
      * 
      * @return the bounding rectangle
@@ -101,73 +166,13 @@ public interface INode extends Serializable, Cloneable
     Rectangle2D getBounds();
 
     /**
-     * Checks whether to add an edge that originates at this node.
+     * Draw the node.
      * 
-     * @param e the edge to add
-     * @return true if the edge was added
+     * @param g2 the graphics context
+     * @param grid the grid to snap to
      */
-    boolean checkAddEdge(IEdge e);
+    void draw(Graphics2D g2);
 
-    
-    /**
-     * Notifies this node that an edge is being removed.
-     * 
-     * @param g the ambient graph
-     * @param e the edge to be removed
-     */
-    void checkRemoveEdge(IEdge e);
-
-
-    /**
-     * Adds a node as a child node to this node.
-     * 
-     * @param n the child node
-     * @param p the point at which the node is being added
-     * @return true if this node accepts the given node as a child
-     */
-    boolean addChildNode(INode n, Point2D p);
-
-    
-    /**
-     * Adds a child node and fires the graph modification event.
-     * @param node the child node to add
-     * @param index the position at which to add the child
-     * @return true if this node accepts the given node as a child
-     */
-    boolean addChildNode(INode node, int index);
-
-
-    
-    /**
-     * Gets the children of this node.
-     * 
-     * @return an unmodifiable list of the children
-     */
-    List<INode> getChildren();
-
-
-    /**
-     * Notifies this node that a node is being removed.
-     * 
-     * @param g the ambient graph
-     * @param n the node to be removed
-     */
-    void checkRemoveNode(INode n);
-
-
-    /**
-     * Gets the parent of this node.
-     * 
-     * @return the parent node, or null if the node has no parent
-     */
-    INode getParent();
-    
-    /**
-     * Sets node's parent (for decoder)
-     * 
-     * @param parentNode p
-     */
-    void setParent(INode parentNode);
 
     /**
         
@@ -184,54 +189,13 @@ public interface INode extends Serializable, Cloneable
     
     
     /**
-     * Returns a unique id of this node to make it easier to identify
-     * 
-     * @return a unique id
-     */
-    Id getId();
-    
-    
-    /**
-     * Sets unique id to this node to make it easier to identify
-     * 
-     * @param id new unique id
-     */
-    void setId(Id id);
-    
-    /**
-     * Returns current node revision
-     */
-    Integer getRevision();    
-    
-    /**
-     * Updates current node revision number
-     * @param newRevisionNumber n
-     */
-    void setRevision(Integer newRevisionNumber);
-        
-    /**
-     * Increments revision number
-     */
-    void incrementRevision();
-    
-
-    /**
-     * Sets the graph that contains this node.
-     * @param g the graph
-     */
-    void setGraph(IGraph g);
-    
-    /**
-     * Gets the graph that contains this node, or null if this node is not contained in any graph.
-     * @return
-     */
-    IGraph getGraph();
-    
-    /**
      * Gets current node tool tip
      * @return
      */
     String getToolTip();
     
+    /**
+     * @return a deep copy of this object
+     */
     INode clone();
 }

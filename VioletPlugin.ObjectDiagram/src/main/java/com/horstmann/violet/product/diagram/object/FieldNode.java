@@ -129,7 +129,7 @@ public class FieldNode extends RectangularNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         INode endingINode = e.getEnd();
         if (e.getClass().isAssignableFrom(ObjectReferenceEdge.class) && endingINode.getClass().isAssignableFrom(ObjectNode.class))
@@ -149,7 +149,7 @@ public class FieldNode extends RectangularNode
             }
             e.setStart(startingNode);
             e.setEnd(endingNode);
-            return getParent().checkAddEdge(e);
+            return getParent().addConnection(e);
         }
         return false;
     }
@@ -162,7 +162,7 @@ public class FieldNode extends RectangularNode
      * so we accept to deal with this bug.
      */
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         if (!n.getClass().isAssignableFrom(FieldNode.class)) {
             return false;
@@ -170,7 +170,7 @@ public class FieldNode extends RectangularNode
         INode parent = getParent();
         List<INode> parentChildren = parent.getChildren();
         int currentPosition = parentChildren.indexOf(this);
-        parent.addChildNode(n, currentPosition + 1);
+        parent.addChild(n, currentPosition + 1);
         return true;
     }
 

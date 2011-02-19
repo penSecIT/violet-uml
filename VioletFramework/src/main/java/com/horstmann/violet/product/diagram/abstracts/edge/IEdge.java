@@ -27,13 +27,13 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
-import com.horstmann.violet.product.diagram.abstracts.Id;
+import com.horstmann.violet.product.diagram.abstracts.IIdentifiable;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 
 /**
  * An edge in a graph.
  */
-public interface IEdge extends Serializable, Cloneable
+public interface IEdge extends Serializable, Cloneable, IIdentifiable
 {
     /**
      * Sets the starting node
@@ -115,37 +115,6 @@ public interface IEdge extends Serializable, Cloneable
      * @param g2 the graphics context
      */
     void draw(Graphics2D g2);
-
-    /**
-     * Returns a unique id of this edge to make it easier to identify
-     * 
-     * @return a unique id
-     */
-    Id getId();
-
-    /**
-     * Sets unique id to this edge to make it easier to identify
-     * 
-     * @param id new unique id
-     */
-    void setId(Id id);
-
-    /**
-     * Returns current edge revision
-     */
-    Integer getRevision();
-
-    /**
-     * Updates current edge revision number
-     * 
-     * @param newRevisionNumber n
-     */
-    void setRevision(Integer newRevisionNumber);
-
-    /**
-     * Auto-increments revision number
-     */
-    void incrementRevision();
 
     /**
      * Gets current edge tool tip

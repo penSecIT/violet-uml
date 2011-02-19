@@ -69,15 +69,15 @@ public class NoteNode extends RectangularNode
         return INFINITE_Z_LEVEL;
     }
 
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         if (e.getStart() == e.getEnd()) {
             return false;
         }
-        return super.checkAddEdge(e);
+        return super.addConnection(e);
     }
 
-    public void checkRemoveEdge(IEdge e)
+    public void removeConnection(IEdge e)
     {
         if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }

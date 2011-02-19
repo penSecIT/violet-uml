@@ -98,7 +98,7 @@ public class InterfaceNode extends RectangularNode
 
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         if (n  instanceof PointNode)
         {

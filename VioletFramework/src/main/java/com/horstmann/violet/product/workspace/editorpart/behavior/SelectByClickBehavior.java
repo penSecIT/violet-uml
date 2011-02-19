@@ -109,7 +109,7 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         List<INode> nodes = selectionHandler.getSelectedNodes();
         for (INode n : nodes)
         {
-            if (graph.getNodes().contains(n))
+            if (graph.getAllNodes().contains(n))
             {
                 Point2D nodeLocationOnGraph = n.getLocationOnGraph();
                 Rectangle2D nodeBounds = n.getBounds();
@@ -122,7 +122,7 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         List<IEdge> edges = selectionHandler.getSelectedEdges();
         for (IEdge e : edges)
         {
-            if (graph.getEdges().contains(e))
+            if (graph.getAllEdges().contains(e))
             {
                 Line2D line = e.getConnectionPoints();
                 GrabberUtils.drawGrabber(g2, line.getX1(), line.getY1());

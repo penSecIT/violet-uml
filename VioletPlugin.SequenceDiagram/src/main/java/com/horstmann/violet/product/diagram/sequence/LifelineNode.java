@@ -71,13 +71,13 @@ public class LifelineNode extends RectangularNode
         return name;
     }
 
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         return false;
     }
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         if (!n.getClass().isAssignableFrom(ActivationBarNode.class))
         {
@@ -91,11 +91,11 @@ public class LifelineNode extends RectangularNode
         {
             pos = getChildren().indexOf(nearestNodeBeforePoint);
         }
-        return super.addChildNode(n, pos);
+        return super.addChild(n, pos);
     }
 
     @Override
-    public boolean addChildNode(INode n, int index)
+    public boolean addChild(INode n, int index)
     {
         if (!n.getClass().isAssignableFrom(ActivationBarNode.class))
         {
@@ -103,7 +103,7 @@ public class LifelineNode extends RectangularNode
         }
         ((ActivationBarNode) n).setImplicitParameter(this);
         n.setGraph(getGraph());
-        return super.addChildNode(n, index);
+        return super.addChild(n, index);
     }
 
     /**
@@ -169,7 +169,7 @@ public class LifelineNode extends RectangularNode
         {
             return new Point2D.Double(0, 0);
         }
-        Collection<IEdge> edges = currentGraph.getEdges();
+        Collection<IEdge> edges = currentGraph.getAllEdges();
         for (IEdge edge : edges)
         {
             if (edge instanceof CallEdge)
@@ -299,7 +299,7 @@ public class LifelineNode extends RectangularNode
         {
             return maxY;
         }
-        Collection<INode> nodes = graph.getNodes();
+        Collection<INode> nodes = graph.getAllNodes();
         for (INode node : nodes)
         {
             if (!node.getClass().isAssignableFrom(LifelineNode.class))

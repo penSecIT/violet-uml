@@ -108,14 +108,14 @@ public class PackageNode extends RectangularNode
     }
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         if (n instanceof ClassNode || n instanceof InterfaceNode || n instanceof PackageNode)
         {
             n.setParent(this);
             n.setGraph(this.getGraph());
             n.setLocation(p);
-            addChildNode(n, getChildren().size());
+            addChild(n, getChildren().size());
             return true;
         }
         return false;

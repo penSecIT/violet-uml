@@ -37,8 +37,8 @@ public class SelectByDistanceBehavior extends AbstractEditorPartBehavior
     public void selectAnotherGraphElement(int distanceFromCurrentElement)
     {
         ArrayList<Object> selectables = new ArrayList<Object>();
-        selectables.addAll(graph.getNodes());
-        selectables.addAll(graph.getEdges());
+        selectables.addAll(graph.getAllNodes());
+        selectables.addAll(graph.getAllEdges());
         if (selectables.size() == 0) return;
         java.util.Collections.sort(selectables, new java.util.Comparator<Object>()
         {

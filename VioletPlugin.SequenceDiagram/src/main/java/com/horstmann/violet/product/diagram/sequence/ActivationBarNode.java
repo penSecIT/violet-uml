@@ -43,7 +43,7 @@ public class ActivationBarNode extends RectangularNode
 {
 
     @Override
-    public boolean addChildNode(INode n, Point2D p)
+    public boolean addChild(INode n, Point2D p)
     {
         boolean isActivationBarNode = n instanceof ActivationBarNode;
         if (isActivationBarNode)
@@ -58,7 +58,7 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public boolean addChildNode(INode n, int index)
+    public boolean addChild(INode n, int index)
     {
         boolean isActivationBarNode = n instanceof ActivationBarNode;
         if (isActivationBarNode)
@@ -74,7 +74,7 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge edge)
+    public boolean addConnection(IEdge edge)
     {
         INode endingNode = edge.getEnd();
         INode startingNode = edge.getStart();
@@ -96,15 +96,15 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public void checkRemoveNode(INode n)
+    public void removeChild(INode n)
     {
         getChildren().remove(n);
     }
 
     @Override
-    public void checkRemoveEdge(IEdge e)
+    public void removeConnection(IEdge e)
     {
-        if (e.getStart() == this) checkRemoveNode(e.getEnd());
+        if (e.getStart() == this) removeChild(e.getEnd());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ActivationBarNode extends RectangularNode
     private boolean isCallingNode()
     {
         LifelineNode currentLifelineNode = getImplicitParameter();
-        for (IEdge edge : getGraph().getEdges())
+        for (IEdge edge : getGraph().getAllEdges())
         {
             if (edge.getStart() != this)
             {
@@ -171,7 +171,7 @@ public class ActivationBarNode extends RectangularNode
     private boolean isCalledNode()
     {
         LifelineNode currentLifelineNode = getImplicitParameter();
-        for (IEdge edge : getGraph().getEdges())
+        for (IEdge edge : getGraph().getAllEdges())
         {
             if (edge.getEnd() != this)
             {
@@ -224,7 +224,7 @@ public class ActivationBarNode extends RectangularNode
      */
     private double getHeightWhenLinked()
     {
-        for (IEdge edge : getGraph().getEdges())
+        for (IEdge edge : getGraph().getAllEdges())
         {
             if (!edge.getClass().isAssignableFrom(CallEdge.class))
             {
@@ -381,7 +381,7 @@ public class ActivationBarNode extends RectangularNode
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
                 int lastNodePos = endingNode.getChildren().size();
-                endingNode.addChildNode(newActivationBar, lastNodePos);
+                endingNode.addChild(newActivationBar, lastNodePos);
                 edge.setEnd(newActivationBar);
                 return true;
             }
@@ -397,7 +397,7 @@ public class ActivationBarNode extends RectangularNode
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
                 int lastNodePos = startingNode.getChildren().size();
-                startingNode.addChildNode(newActivationBar, lastNodePos);
+                startingNode.addChild(newActivationBar, lastNodePos);
                 edge.setEnd(newActivationBar);
                 return true;
             }
@@ -407,7 +407,7 @@ public class ActivationBarNode extends RectangularNode
         {
             ActivationBarNode newActivationBar = new ActivationBarNode();
             int lastNodePos = startingNode.getChildren().size();
-            startingNode.addChildNode(newActivationBar, lastNodePos);
+            startingNode.addChild(newActivationBar, lastNodePos);
             edge.setEnd(newActivationBar);
             return true;
         }
@@ -424,7 +424,7 @@ public class ActivationBarNode extends RectangularNode
      */
     private IEdge findEdge(INode start, INode end)
     {
-        for (IEdge e : getGraph().getEdges())
+        for (IEdge e : getGraph().getAllEdges())
         {
             if (e.getStart() == start && e.getEnd() == end) return e;
         }
@@ -442,7 +442,7 @@ public class ActivationBarNode extends RectangularNode
         {
             return;
         }
-        Collection<IEdge> edges = currentGraph.getEdges();
+        Collection<IEdge> edges = currentGraph.getAllEdges();
         for (IEdge edge : edges)
         {
             if (edge.getClass().isAssignableFrom(CallEdge.class) && edge.getStart().getClass().isAssignableFrom(ActivationBarNode.class)

@@ -91,7 +91,7 @@ public class ImageNode extends RectangularNode
      * 
      * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#checkRemoveEdge(com.horstmann.violet.product.diagram.abstracts.Edge)
      */
-    public void checkRemoveEdge(IEdge e)
+    public void removeConnection(IEdge e)
     {
         if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }

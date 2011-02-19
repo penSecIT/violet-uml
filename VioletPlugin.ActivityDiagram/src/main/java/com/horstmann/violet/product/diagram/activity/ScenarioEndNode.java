@@ -49,7 +49,7 @@ public class ScenarioEndNode extends EllipticalNode
     }
 
     @Override
-    public boolean checkAddEdge(IEdge e)
+    public boolean addConnection(IEdge e)
     {
         return e.getEnd() != null && this != e.getEnd();
     }

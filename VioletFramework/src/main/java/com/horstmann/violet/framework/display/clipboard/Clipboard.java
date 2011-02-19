@@ -36,8 +36,8 @@ public class Clipboard extends AbstractGraph
         for (INode n : selectedNodes) addDependents(n, includedNodes);
         
         // empty old contents
-        List<IEdge> edges = new ArrayList<IEdge>(getEdges());
-        List<INode> nodes = new ArrayList<INode>(getNodes());
+        List<IEdge> edges = new ArrayList<IEdge>(getAllEdges());
+        List<INode> nodes = new ArrayList<INode>(getAllNodes());
         IEdge[] edgesArray = edges.toArray(new IEdge[edges.size()]);
         INode[] nodesArray = nodes.toArray(new INode[nodes.size()]);
         removeEdge(edgesArray);
@@ -72,7 +72,7 @@ public class Clipboard extends AbstractGraph
 
     public Collection<INode> pasteOut(IGraph g, INode selectedNode)
     {
-        return copyStructure(this, getNodes(), g, selectedNode, 0, 0);
+        return copyStructure(this, getAllNodes(), g, selectedNode, 0, 0);
     }
 
     private static Collection<INode> copyStructure(IGraph graphIn, Collection<INode> selectedIn, IGraph graphOut, INode selectedOut, double dx, double dy)
@@ -105,7 +105,7 @@ public class Clipboard extends AbstractGraph
          * Clone all edges that join copied nodes
          */
         List<IEdge> newEdges = new ArrayList<IEdge>();
-        for (IEdge e : graphIn.getEdges())
+        for (IEdge e : graphIn.getAllEdges())
         {
             INode start = null;
             INode end = null;            
@@ -153,7 +153,7 @@ public class Clipboard extends AbstractGraph
         if (selectedOut != null) {
             Collection<INode> nodes = originalAndClonedNodes.values();
             for (INode aNode : nodes) {
-                selectedOut.addChildNode(aNode, aNode.getLocation());
+                selectedOut.addChild(aNode, aNode.getLocation());
             }
         }
         
@@ -165,7 +165,7 @@ public class Clipboard extends AbstractGraph
                 if (child2 != null)
                 {
                     INode n2 = originalAndClonedNodes.get(n);
-                    n2.addChildNode(child2, n2.getChildren().size());
+                    n2.addChild(child2, n2.getChildren().size());
                 }
             }
             try
