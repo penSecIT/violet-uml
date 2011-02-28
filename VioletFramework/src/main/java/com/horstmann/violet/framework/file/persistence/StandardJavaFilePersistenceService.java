@@ -267,19 +267,19 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 }
             }
         });
-        encoder.setPersistenceDelegate(AbstractEdge.class, new DefaultPersistenceDelegate()
-        {
-            protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
-            {
-                super.initialize(type, oldInstance, newInstance, out);
-                IEdge e = (IEdge) oldInstance;
-                out.writeStatement(new Statement(oldInstance, "connect", new Object[]
-                {
-                        e.getStart(),
-                        e.getEnd()
-                }));
-            }
-        });
+//        encoder.setPersistenceDelegate(AbstractEdge.class, new DefaultPersistenceDelegate()
+//        {
+//            protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
+//            {
+//                super.initialize(type, oldInstance, newInstance, out);
+//                IEdge e = (IEdge) oldInstance;
+//                out.writeStatement(new Statement(oldInstance, "connect", new Object[]
+//                {
+//                        e.getStart(),
+//                        e.getEnd()
+//                }));
+//            }
+//        });
         encoder.setPersistenceDelegate(ImageNode.class, new DefaultPersistenceDelegate()
         {
             protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
