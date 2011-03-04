@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.horstmann.violet.framework.file.IFile;
-import com.horstmann.violet.framework.file.persistence.IFileWriter;
+import com.horstmann.violet.framework.file.chooser.IFileSaver;
 
-public class EclipseFileSaver implements IFileWriter {
+public class EclipseFileSaver implements IFileSaver {
 
 	private org.eclipse.core.resources.IFile eclipseFile;
 

@@ -173,7 +173,7 @@ public class VioletUMLEditor extends EditorPart
         if (this.UMLWorkspace == null)
         {
             try {
-            	IGraphFile graphFile = new GraphFile(fileChooserService.chooseAndGetFileReader().getFileDefinition());
+            	IGraphFile graphFile = new GraphFile(fileChooserService.getFileOpener().getFileDefinition());
                 this.UMLWorkspace = new Workspace(graphFile);
                 this.UMLWorkspace.addListener(new IWorkspaceListener() {
     				@Override
