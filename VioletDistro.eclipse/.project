@@ -1,0 +1,27 @@
+<projectDescription>
+  <name>com.horstmann.violet.distro.eclipse</name>
+  <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.pde.ManifestBuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.pde.SchemaBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+    <nature>org.eclipse.pde.PluginNature</nature>
+  </natures>
+  <linkedResources>
+    <link>
+      <name>com.horstmann.violet.distro.swing-0.23.0-SNAPSHOT.jar</name>
+      <type>1</type>
+      <location>/home/alexdp/.m2/repository/com/horstmann/violet/distro/com.horstmann.violet.distro.swing/0.23.0-SNAPSHOT/com.horstmann.violet.distro.swing-0.23.0-SNAPSHOT.jar</location>
+    </link>
+  </linkedResources>
+</projectDescription>
