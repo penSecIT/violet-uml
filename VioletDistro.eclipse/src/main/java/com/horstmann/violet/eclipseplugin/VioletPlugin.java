@@ -111,7 +111,7 @@ public class VioletPlugin extends AbstractUIPlugin
         {
                 "classpath*:applicationContext*.xml",
                 "classpath:applicationContext-framework.xml",
-                "classpath:dedicatedApplicationContext-application.xml"
+                "classpath:dedicatedApplicationContext-eclipse.xml"
         };
         ApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
         return context;
