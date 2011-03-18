@@ -96,12 +96,6 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public void removeChild(INode n)
-    {
-        getChildren().remove(n);
-    }
-
-    @Override
     public void removeConnection(IEdge e)
     {
         if (e.getStart() == this) removeChild(e.getEnd());
