@@ -7,13 +7,14 @@
     <groupId>com.horstmann.violet.plugin</groupId>
     <artifactId>com.horstmann.violet.plugin.objectdiagram</artifactId>
     <name>Violet UML Editor Object Diagram Plugin</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <description></description>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.horstmann.violet.core</groupId>
+            <groupId>com.horstmann.violet.framework</groupId>
             <artifactId>com.horstmann.violet.framework</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
