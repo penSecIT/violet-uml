@@ -3,11 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.horstmann.violet.core</groupId>
+    <groupId>com.horstmann.violet.framework</groupId>
     <artifactId>com.horstmann.violet.framework</artifactId>
     <name>Violet UML Editor Framework</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.23.0-SNAPSHOT</version>
     <description></description>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>antlr</groupId>
