@@ -21,15 +21,13 @@
 
 package com.horstmann.violet.framework.display.propertyeditor.customeditor;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorSupport;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -51,36 +49,46 @@ public class MultiLineStringEditor extends PropertyEditorSupport
 
     public Component getCustomEditor()
     {
-        final MultiLineString mls = (MultiLineString) getValue();
+        this.source = (MultiLineString) getValue();
         final JPanel panel = new JPanel();
-        final JTextArea textArea = new JTextArea(ROWS, COLUMNS);
-
-        textArea.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, tab);
-        textArea.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, shiftTab);
-
-        textArea.setText(mls.getText());
-        textArea.getDocument().addDocumentListener(new DocumentListener()
-        {
-            public void insertUpdate(DocumentEvent e)
-            {
-                mls.setText(textArea.getText());
-                firePropertyChange();
-            }
-
-            public void removeUpdate(DocumentEvent e)
-            {
-                mls.setText(textArea.getText());
-                firePropertyChange();
-            }
-
-            public void changedUpdate(DocumentEvent e)
-            {
-            }
-        });
-        panel.add(new JScrollPane(textArea));
+        panel.add(getTextEditorComponent());
         return panel;
     }
+    
+    private JComponent getTextEditorComponent() {
+        if (this.textEditorComponent == null) {
+            final JTextArea textArea = new JTextArea(ROWS, COLUMNS);
 
+            textArea.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, tab);
+            textArea.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, shiftTab);
+
+            textArea.setText(source.getText());
+            textArea.getDocument().addDocumentListener(new DocumentListener()
+            {
+                public void insertUpdate(DocumentEvent e)
+                {
+                    source.setText(textArea.getText());
+                    firePropertyChange();
+                }
+
+                public void removeUpdate(DocumentEvent e)
+                {
+                    source.setText(textArea.getText());
+                    firePropertyChange();
+                }
+
+                public void changedUpdate(DocumentEvent e)
+                {
+                }
+            });
+            this.textEditorComponent = new JScrollPane(textArea);
+        }
+        return this.textEditorComponent;
+    }
+
+    private MultiLineString source;
+    private JComponent textEditorComponent;
+    
     private static final int ROWS = 5;
     private static final int COLUMNS = 30;
 
