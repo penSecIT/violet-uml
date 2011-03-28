@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.abstracts.property;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -47,6 +48,7 @@ public class MultiLineString implements Serializable, Cloneable
         justification = CENTER;
         size = NORMAL;
         underlined = false;
+        color = Color.BLACK;
     }
 
     /**
@@ -135,6 +137,26 @@ public class MultiLineString implements Serializable, Cloneable
     public int getSize()
     {
         return size;
+    }
+    
+    /**
+     * Gets the value of the color property.
+     * 
+     * @return the background color of the note
+     */
+    public Color getColor()
+    {
+        return color;
+    }
+
+    /**
+     * Sets the value of the color property.
+     * 
+     * @param newValue the background color of the note
+     */
+    public void setColor(Color newValue)
+    {
+        color = newValue;
     }
 
     public String toString()
@@ -251,6 +273,7 @@ public class MultiLineString implements Serializable, Cloneable
         label.setFont(g2.getFont());
         label.setBounds(0, 0, (int) r.getWidth(), (int) r.getHeight());
         g2.translate(r.getX(), r.getY());
+        label.setForeground(this.color);
         label.paint(g2);
         g2.translate(-r.getX(), -r.getY());
     }
@@ -278,6 +301,7 @@ public class MultiLineString implements Serializable, Cloneable
     public static final int SMALL = 5;
 
     private String text;
+    private Color color;
     private int justification;
     private int size;
     private boolean underlined;

@@ -21,12 +21,16 @@
 
 package com.horstmann.violet.framework.display.propertyeditor.customeditor;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditorSupport;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -47,24 +51,25 @@ public class MultiLineStringEditor extends PropertyEditorSupport
 
     public Component getCustomEditor()
     {
-        final MultiLineString value = (MultiLineString) getValue();
+        final MultiLineString mls = (MultiLineString) getValue();
+        final JPanel panel = new JPanel();
         final JTextArea textArea = new JTextArea(ROWS, COLUMNS);
 
         textArea.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, tab);
         textArea.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, shiftTab);
 
-        textArea.setText(value.getText());
+        textArea.setText(mls.getText());
         textArea.getDocument().addDocumentListener(new DocumentListener()
         {
             public void insertUpdate(DocumentEvent e)
             {
-                value.setText(textArea.getText());
+                mls.setText(textArea.getText());
                 firePropertyChange();
             }
 
             public void removeUpdate(DocumentEvent e)
             {
-                value.setText(textArea.getText());
+                mls.setText(textArea.getText());
                 firePropertyChange();
             }
 
@@ -72,7 +77,8 @@ public class MultiLineStringEditor extends PropertyEditorSupport
             {
             }
         });
-        return new JScrollPane(textArea);
+        panel.add(new JScrollPane(textArea));
+        return panel;
     }
 
     private static final int ROWS = 5;

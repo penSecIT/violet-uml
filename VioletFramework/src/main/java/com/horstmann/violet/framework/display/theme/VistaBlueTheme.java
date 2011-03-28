@@ -98,7 +98,7 @@ public class VistaBlueTheme extends AbstractTheme
 
     public Color getGridColor()
     {
-        return new Color(220, 220, 220);
+        return new Color(240, 240, 240);
     }
 
     public Color getBackgroundColor()
