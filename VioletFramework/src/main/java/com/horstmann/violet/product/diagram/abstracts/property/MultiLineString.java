@@ -23,7 +23,6 @@ package com.horstmann.violet.product.diagram.abstracts.property;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -48,7 +47,7 @@ public class MultiLineString implements Serializable, Cloneable
         justification = CENTER;
         size = NORMAL;
         underlined = false;
-        color = Color.BLACK;
+        color = Color.WHITE;
     }
 
     /**
@@ -273,7 +272,10 @@ public class MultiLineString implements Serializable, Cloneable
         label.setFont(g2.getFont());
         label.setBounds(0, 0, (int) r.getWidth(), (int) r.getHeight());
         g2.translate(r.getX(), r.getY());
-        label.setForeground(this.color);
+        Color oldColor = g2.getColor();
+        g2.setColor(color);
+        g2.fillRect(1, 1, (int) r.getWidth() - 1, (int) r.getHeight() - 1);
+        g2.setColor(oldColor);
         label.paint(g2);
         g2.translate(-r.getX(), -r.getY());
     }

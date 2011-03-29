@@ -51,6 +51,7 @@ public abstract class AbstractNode implements INode
         children = new ArrayList<INode>();
         parent = null;
         this.id = new Id();
+        this.bgColor = BACKGROUND_COLOR;
         // Empty graph used to avoid null pointer while drawing elements not attached
         // to a graph such as diagram tools
         this.graph = new AbstractGraph()
@@ -275,6 +276,26 @@ public abstract class AbstractNode implements INode
     {
         return this.toolTip;
     }
+    
+    /**
+     * Gets the value of the color property.
+     * 
+     * @return the background color of the note
+     */
+    public Color getBgColor()
+    {
+        return bgColor;
+    }
+
+    /**
+     * Sets the value of the color property.
+     * 
+     * @param newValue the background color of the note
+     */
+    public void setBgColor(Color newValue)
+    {
+        bgColor = newValue;
+    }
 
     private static final Color SHADOW_COLOR = Color.LIGHT_GRAY;
     protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
@@ -292,4 +313,7 @@ public abstract class AbstractNode implements INode
 
     /** Node's current revision */
     protected Integer revision = new Integer(0);
+    
+    /** Background color */
+    private Color bgColor;
 }

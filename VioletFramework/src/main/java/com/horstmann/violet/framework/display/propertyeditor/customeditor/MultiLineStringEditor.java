@@ -21,17 +21,21 @@
 
 package com.horstmann.violet.framework.display.propertyeditor.customeditor;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyEditorSupport;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -53,6 +57,21 @@ public class MultiLineStringEditor extends PropertyEditorSupport
         final JPanel panel = new JPanel();
         panel.add(getTextEditorComponent());
         return panel;
+    }
+    
+    private JColorChooser getColorChooserComponent() {
+        if (this.colorChooserComponent == null) {
+            this.colorChooserComponent = new JColorChooser(this.source.getColor());
+            this.colorChooserComponent.getSelectionModel().addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    Color selectedColor = colorChooserComponent.getColor();
+                    source.setColor(selectedColor);
+                    firePropertyChange();
+                }
+            });
+        }
+        return this.colorChooserComponent;
     }
     
     private JComponent getTextEditorComponent() {
@@ -88,6 +107,7 @@ public class MultiLineStringEditor extends PropertyEditorSupport
 
     private MultiLineString source;
     private JComponent textEditorComponent;
+    private JColorChooser colorChooserComponent;
     
     private static final int ROWS = 5;
     private static final int COLUMNS = 30;

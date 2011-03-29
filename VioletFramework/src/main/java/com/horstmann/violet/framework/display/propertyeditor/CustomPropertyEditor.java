@@ -37,9 +37,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -64,6 +67,7 @@ import com.horstmann.violet.framework.display.propertyeditor.customeditor.MultiL
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.StringEditor;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.util.SerializableEnumeration;
+import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.ChoiceList;
@@ -102,6 +106,15 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
                     return p1.intValue() - p2.intValue();
                 }
             });
+            if (AbstractNode.class.isInstance(bean)) {
+                BeanInfo abstractNodeBeaninfo = Introspector.getBeanInfo(AbstractNode.class);
+                PropertyDescriptor[] commonNodeDescriptors = (PropertyDescriptor[]) abstractNodeBeaninfo.getPropertyDescriptors().clone();
+                List<PropertyDescriptor> nodeDescriptors = new ArrayList<PropertyDescriptor>(Arrays.asList(descriptors));
+                List<PropertyDescriptor> nodeDescriptorsAsList = Arrays.asList(commonNodeDescriptors);
+                nodeDescriptors.addAll(nodeDescriptorsAsList);
+                descriptors = nodeDescriptors.toArray(new PropertyDescriptor[nodeDescriptors.size()]);
+            }
+            
             panel.setLayout(new CustomPropertyEditorLayout());
 
             ResourceBundle rs = ResourceBundle.getBundle(ResourceBundleConstant.NODE_AND_EDGE_STRINGS, Locale.getDefault());
