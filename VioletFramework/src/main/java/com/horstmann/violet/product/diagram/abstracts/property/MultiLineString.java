@@ -21,7 +21,6 @@
 
 package com.horstmann.violet.product.diagram.abstracts.property;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -47,7 +46,6 @@ public class MultiLineString implements Serializable, Cloneable
         justification = CENTER;
         size = NORMAL;
         underlined = false;
-        color = Color.WHITE;
     }
 
     /**
@@ -137,26 +135,6 @@ public class MultiLineString implements Serializable, Cloneable
     {
         return size;
     }
-    
-    /**
-     * Gets the value of the color property.
-     * 
-     * @return the background color of the note
-     */
-    public Color getColor()
-    {
-        return color;
-    }
-
-    /**
-     * Sets the value of the color property.
-     * 
-     * @param newValue the background color of the note
-     */
-    public void setColor(Color newValue)
-    {
-        color = newValue;
-    }
 
     public String toString()
     {
@@ -241,18 +219,20 @@ public class MultiLineString implements Serializable, Cloneable
     {
         label.setFont(g2.getFont());
         label.validate();
-        if (text.length() == 0) return new Rectangle2D.Double(0,0,0,0);
+        if (text.length() == 0) return new Rectangle2D.Double(0, 0, 0, 0);
         Dimension dim = label.getPreferredSize();
         return new Rectangle2D.Double(0, 0, dim.getWidth(), dim.getHeight());
     }
 
     /**
      * Gets the bounding rectangle for this multiline string.
+     * 
      * @return the bounding rectangle (with top left corner (0,0))
      */
     public Rectangle2D getBounds()
     {
-        if (this.isBoundsDirty || this.bounds == null) {
+        if (this.isBoundsDirty || this.bounds == null)
+        {
             BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2 = (Graphics2D) image.getGraphics();
             this.bounds = getBounds(g2);
@@ -272,10 +252,6 @@ public class MultiLineString implements Serializable, Cloneable
         label.setFont(g2.getFont());
         label.setBounds(0, 0, (int) r.getWidth(), (int) r.getHeight());
         g2.translate(r.getX(), r.getY());
-        Color oldColor = g2.getColor();
-        g2.setColor(color);
-        g2.fillRect(1, 1, (int) r.getWidth() - 1, (int) r.getHeight() - 1);
-        g2.setColor(oldColor);
         label.paint(g2);
         g2.translate(-r.getX(), -r.getY());
     }
@@ -303,7 +279,6 @@ public class MultiLineString implements Serializable, Cloneable
     public static final int SMALL = 5;
 
     private String text;
-    private Color color;
     private int justification;
     private int size;
     private boolean underlined;

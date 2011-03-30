@@ -68,6 +68,7 @@ import com.horstmann.violet.framework.display.propertyeditor.customeditor.String
 import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.util.SerializableEnumeration;
 import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.ChoiceList;
@@ -106,8 +107,8 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
                     return p1.intValue() - p2.intValue();
                 }
             });
-            if (AbstractNode.class.isInstance(bean)) {
-                BeanInfo abstractNodeBeaninfo = Introspector.getBeanInfo(AbstractNode.class);
+            if (RectangularNode.class.isInstance(bean)) {
+                BeanInfo abstractNodeBeaninfo = Introspector.getBeanInfo(RectangularNode.class);
                 PropertyDescriptor[] commonNodeDescriptors = (PropertyDescriptor[]) abstractNodeBeaninfo.getPropertyDescriptors().clone();
                 List<PropertyDescriptor> nodeDescriptors = new ArrayList<PropertyDescriptor>(Arrays.asList(descriptors));
                 List<PropertyDescriptor> nodeDescriptorsAsList = Arrays.asList(commonNodeDescriptors);

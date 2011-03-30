@@ -24,8 +24,6 @@ package com.horstmann.violet.product.diagram.abstracts;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,8 +31,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
-import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.common.NoteNode;
 import com.horstmann.violet.product.workspace.editorpart.EmptyGrid;
 import com.horstmann.violet.product.workspace.editorpart.IGrid;
@@ -171,7 +169,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             r.add(e.getBounds());
         }
         return r == null ? new Rectangle2D.Double() : new Rectangle2D.Double(r.getX(), r.getY(), r.getWidth()
-                + AbstractNode.SHADOW_GAP, r.getHeight() + AbstractNode.SHADOW_GAP);
+                + RectangularNode.SHADOW_GAP, r.getHeight() + RectangularNode.SHADOW_GAP);
     }
 
     @Override
@@ -242,8 +240,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public void removeNode(INode... nodesToRemove)
     {
         // Step 1a : Remove nodes directly attach to the graph
-        for (INode aNodeToRemove : nodesToRemove) {
-            if (this.nodes.contains(aNodeToRemove)) {
+        for (INode aNodeToRemove : nodesToRemove)
+        {
+            if (this.nodes.contains(aNodeToRemove))
+            {
                 this.nodes.remove(aNodeToRemove);
             }
         }
@@ -253,7 +253,8 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
             for (INode aNodeToRemove : nodesToRemove)
             {
                 List<INode> children = aNode.getChildren();
-                if (children.contains(aNodeToRemove)) {
+                if (children.contains(aNodeToRemove))
+                {
                     aNode.removeChild(aNodeToRemove);
                 }
             }
@@ -261,11 +262,13 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         // Step 2 : Disconnect edges
         List<IEdge> edgesToRemove = new ArrayList<IEdge>();
         Collection<INode> allNodes = getAllNodes();
-        for (IEdge anEdge : this.edges) {
+        for (IEdge anEdge : this.edges)
+        {
             INode startingNode = anEdge.getStart();
             INode endingNode = anEdge.getEnd();
             boolean isEdgeStillConnected = (allNodes.contains(startingNode) && allNodes.contains(endingNode));
-            if (!isEdgeStillConnected) {
+            if (!isEdgeStillConnected)
+            {
                 edgesToRemove.add(anEdge);
             }
         }

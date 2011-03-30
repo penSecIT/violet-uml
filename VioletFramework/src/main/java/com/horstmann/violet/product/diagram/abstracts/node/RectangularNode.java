@@ -21,9 +21,15 @@
 
 package com.horstmann.violet.product.diagram.abstracts.node;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import javax.swing.UIManager;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 
@@ -33,12 +39,17 @@ import com.horstmann.violet.product.diagram.abstracts.Direction;
 public abstract class RectangularNode extends AbstractNode
 {
 
+    public RectangularNode()
+    {
+        super();
+        this.bgColor = BACKGROUND_COLOR;
+    }
+
     public boolean contains(Point2D p)
     {
         return getBounds().contains(p);
     }
 
-    
     public Point2D getConnectionPoint(Direction d)
     {
         Rectangle2D b = getBounds();
@@ -79,61 +90,58 @@ public abstract class RectangularNode extends AbstractNode
         return new Point2D.Double(x, y);
     }
 
-//    private void writeObject(ObjectOutputStream out) throws IOException
-//    {
-//        out.defaultWriteObject();
-//        writeRectangularShape(out, getBounds());
-//    }
-
-//    /**
-//     * A helper method to overcome the problem that the 2D shapes aren't serializable. It writes x, y, width and height to the
-//     * stream.
-//     * 
-//     * @param out the stream
-//     * @param s the shape
-//     */
-//    private static void writeRectangularShape(ObjectOutputStream out, RectangularShape s) throws IOException
-//    {
-//        out.writeDouble(s.getX());
-//        out.writeDouble(s.getY());
-//        out.writeDouble(s.getWidth());
-//        out.writeDouble(s.getHeight());
-//    }
-
-//    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-//    {
-//        in.defaultReadObject();
-//        bounds = new Rectangle2D.Double();
-//        readRectangularShape(in, bounds);
-//    }
-
-//    /**
-//     * A helper method to overcome the problem that the 2D shapes aren't serializable. It reads x, y, width and height from the
-//     * stream.
-//     * 
-//     * @param in the stream
-//     * @param s the shape whose frame is set from the stream values
-//     */
-//    private static void readRectangularShape(ObjectInputStream in, RectangularShape s) throws IOException
-//    {
-//        double x = in.readDouble();
-//        double y = in.readDouble();
-//        double width = in.readDouble();
-//        double height = in.readDouble();
-//        s.setFrame(x, y, width, height);
-//    }
 
     public Shape getShape()
     {
         return getBounds();
     }
 
-//    public RectangularNode clone()
-//    {
-//        RectangularNode cloned = (RectangularNode) super.clone();
-//        cloned.bounds = (Rectangle2D.Double) bounds.clone();
-//        return cloned;
-//    }
-//
-//    private transient Rectangle2D.Double bounds;
+    @Override
+    public void draw(Graphics2D g2)
+    {
+        Shape shape = getShape();
+        Color oldColor = g2.getColor();
+        g2.translate(SHADOW_GAP, SHADOW_GAP);
+        g2.setColor(SHADOW_COLOR);
+        g2.fill(shape);
+        g2.translate(-SHADOW_GAP, -SHADOW_GAP);
+        Rectangle bounds = shape.getBounds();
+        GradientPaint gradientPaint = new GradientPaint( (float) bounds.getCenterX(), (float)bounds.getMinY(), this.bgColor.brighter(), (float)bounds.getCenterX(), (float) bounds.getMaxY(), this.bgColor);
+        g2.setPaint(gradientPaint);
+        //g2.setColor(this.bgColor);
+        g2.fill(shape);
+        g2.setColor(oldColor);
+    }
+
+    
+    
+    
+    /**
+     * Gets the value of the color property.
+     * 
+     * @return the background color of the note
+     */
+    public Color getBgColor()
+    {
+        return bgColor;
+    }
+
+    /**
+     * Sets the value of the color property.
+     * 
+     * @param newValue the background color of the note
+     */
+    public void setBgColor(Color newValue)
+    {
+        bgColor = newValue;
+    }
+
+
+
+    private static final Color SHADOW_COLOR = new Color(210,210,210);
+    protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
+    public static final double SHADOW_GAP = 4;
+
+    /** Background color */
+    private Color bgColor;
 }

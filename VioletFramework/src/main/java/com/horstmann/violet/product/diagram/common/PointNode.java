@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.common;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -70,4 +71,10 @@ public class PointNode extends AbstractNode
     private Point2D.Double tempLocation = new Point2D.Double(); 
     // Legacy grief--some versions of the XML encoder wrote calls to setBounds
     // We use the location set by setBounds until the first call to translate.
+
+    @Override
+    public void draw(Graphics2D g2)
+    {
+        // Invisible node
+    }
 }

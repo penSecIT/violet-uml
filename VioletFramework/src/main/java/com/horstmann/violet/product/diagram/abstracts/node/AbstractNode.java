@@ -21,15 +21,11 @@
 
 package com.horstmann.violet.product.diagram.abstracts.node;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.UIManager;
 
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -51,7 +47,6 @@ public abstract class AbstractNode implements INode
         children = new ArrayList<INode>();
         parent = null;
         this.id = new Id();
-        this.bgColor = BACKGROUND_COLOR;
         // Empty graph used to avoid null pointer while drawing elements not attached
         // to a graph such as diagram tools
         this.graph = new AbstractGraph()
@@ -189,23 +184,6 @@ public abstract class AbstractNode implements INode
         return true;
     }
 
-    @Override
-    public void draw(Graphics2D g2)
-    {
-        Shape shape = getShape();
-        /*
-         * Area shadow = new Area(shape); shadow.transform(AffineTransform.getTranslateInstance(SHADOW_GAP, SHADOW_GAP));
-         * shadow.subtract(new Area(shape));
-         */
-        Color oldColor = g2.getColor();
-        g2.translate(SHADOW_GAP, SHADOW_GAP);
-        g2.setColor(SHADOW_COLOR);
-        g2.fill(shape);
-        g2.translate(-SHADOW_GAP, -SHADOW_GAP);
-        g2.setColor(BACKGROUND_COLOR);
-        g2.fill(shape);
-        g2.setColor(oldColor);
-    }
 
     /**
      * @return the shape to be used for computing the drop shadow
@@ -277,29 +255,7 @@ public abstract class AbstractNode implements INode
         return this.toolTip;
     }
     
-    /**
-     * Gets the value of the color property.
-     * 
-     * @return the background color of the note
-     */
-    public Color getBgColor()
-    {
-        return bgColor;
-    }
-
-    /**
-     * Sets the value of the color property.
-     * 
-     * @param newValue the background color of the note
-     */
-    public void setBgColor(Color newValue)
-    {
-        bgColor = newValue;
-    }
-
-    private static final Color SHADOW_COLOR = Color.LIGHT_GRAY;
-    protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
-    public static final double SHADOW_GAP = 4;
+   
 
     private ArrayList<INode> children;
     private INode parent;
@@ -313,7 +269,4 @@ public abstract class AbstractNode implements INode
 
     /** Node's current revision */
     protected Integer revision = new Integer(0);
-    
-    /** Background color */
-    private Color bgColor;
 }
