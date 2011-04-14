@@ -22,9 +22,7 @@
 package com.horstmann.violet.product.diagram.abstracts.node;
 
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -42,7 +40,6 @@ public abstract class RectangularNode extends AbstractNode
     public RectangularNode()
     {
         super();
-        this.bgColor = BACKGROUND_COLOR;
     }
 
     public boolean contains(Point2D p)
@@ -105,10 +102,7 @@ public abstract class RectangularNode extends AbstractNode
         g2.setColor(SHADOW_COLOR);
         g2.fill(shape);
         g2.translate(-SHADOW_GAP, -SHADOW_GAP);
-        Rectangle bounds = shape.getBounds();
-        GradientPaint gradientPaint = new GradientPaint( (float) bounds.getCenterX(), (float)bounds.getMinY(), this.bgColor.brighter(), (float)bounds.getCenterX(), (float) bounds.getMaxY(), this.bgColor);
-        g2.setPaint(gradientPaint);
-        //g2.setColor(this.bgColor);
+        g2.setColor(BACKGROUND_COLOR);
         g2.fill(shape);
         g2.setColor(oldColor);
     }
@@ -116,25 +110,7 @@ public abstract class RectangularNode extends AbstractNode
     
     
     
-    /**
-     * Gets the value of the color property.
-     * 
-     * @return the background color of the note
-     */
-    public Color getBgColor()
-    {
-        return bgColor;
-    }
 
-    /**
-     * Sets the value of the color property.
-     * 
-     * @param newValue the background color of the note
-     */
-    public void setBgColor(Color newValue)
-    {
-        bgColor = newValue;
-    }
 
 
 
@@ -142,6 +118,4 @@ public abstract class RectangularNode extends AbstractNode
     protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
     public static final double SHADOW_GAP = 4;
 
-    /** Background color */
-    private Color bgColor;
 }

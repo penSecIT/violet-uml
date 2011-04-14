@@ -37,12 +37,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -57,18 +54,16 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.horstmann.violet.framework.display.propertyeditor.customeditor.AbstractDiagramLinkEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.ArrowHeadEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.BentStyleEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.ChoiceListEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.ColorEditor;
-import com.horstmann.violet.framework.display.propertyeditor.customeditor.AbstractDiagramLinkEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.LineStyleEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.MultiLineStringEditor;
 import com.horstmann.violet.framework.display.propertyeditor.customeditor.StringEditor;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.util.SerializableEnumeration;
-import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
-import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.ChoiceList;
@@ -107,15 +102,7 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
                     return p1.intValue() - p2.intValue();
                 }
             });
-            if (RectangularNode.class.isInstance(bean)) {
-                BeanInfo abstractNodeBeaninfo = Introspector.getBeanInfo(RectangularNode.class);
-                PropertyDescriptor[] commonNodeDescriptors = (PropertyDescriptor[]) abstractNodeBeaninfo.getPropertyDescriptors().clone();
-                List<PropertyDescriptor> nodeDescriptors = new ArrayList<PropertyDescriptor>(Arrays.asList(descriptors));
-                List<PropertyDescriptor> nodeDescriptorsAsList = Arrays.asList(commonNodeDescriptors);
-                nodeDescriptors.addAll(nodeDescriptorsAsList);
-                descriptors = nodeDescriptors.toArray(new PropertyDescriptor[nodeDescriptors.size()]);
-            }
-            
+
             panel.setLayout(new CustomPropertyEditorLayout());
 
             ResourceBundle rs = ResourceBundle.getBundle(ResourceBundleConstant.NODE_AND_EDGE_STRINGS, Locale.getDefault());
@@ -154,7 +141,9 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.horstmann.violet.framework.display.clipboard.IPropertyEditor#getAWTComponent()
      */
     public JComponent getAWTComponent()
@@ -185,9 +174,9 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
             else editor = PropertyEditorManager.findEditor(type);
             if (editor == null) return null;
 
-            Object value = getter.invoke(bean);            
+            Object value = getter.invoke(bean);
             editor.setValue(value);
-            
+
             if (!isKnownImmutable(type))
             {
                 try
@@ -206,7 +195,7 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
                 {
                     try
                     {
-                        Object newValue = editor.getValue(); 
+                        Object newValue = editor.getValue();
                         setter.invoke(bean, newValue);
                         firePropertyStateChanged(new PropertyChangeEvent(bean, descriptor.getName(), oldValue, newValue));
                     }
@@ -238,17 +227,14 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
             return null;
         }
     }
-    
+
     private static boolean isKnownImmutable(Class<?> type)
     {
         if (type.isPrimitive()) return true;
-        if (knownImmutables.contains(type))
-            return true;
+        if (knownImmutables.contains(type)) return true;
         if (SerializableEnumeration.class.isAssignableFrom(type)) return true;
         return false;
     }
-    
-    
 
     /**
      * Wraps a property editor into a component.
@@ -271,8 +257,8 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
              * public void paintIcon(Component c, Graphics g, int x, int y) { g.translate(x, y); Rectangle r = new Rectangle(0, 0,
              * getIconWidth(), getIconHeight()); Color oldColor = g.getColor(); g.setColor(Color.BLACK); editor.paintValue(g, r);
              * g.setColor(oldColor); g.translate(-x, -y); } }); } else button.setText(buttonText(text)); // pop up custom editor
-             * when button is clicked button.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent event) {
-             * final Component customEditor = editor.getCustomEditor();
+             * when button is clicked button.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent event)
+             * { final Component customEditor = editor.getCustomEditor();
              * 
              * JOptionPane.showMessageDialog(parent, customEditor); // This should really be showInternalMessageDialog, // but then
              * you get awful focus behavior with JDK 5.0 // (i.e. the property sheet retains focus). In // particular, the color
@@ -338,8 +324,11 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
      * MAX_TEXT_LENGTH) + "..."; return text; }
      */
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.display.clipboard.IPropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.horstmann.violet.framework.display.clipboard.IPropertyEditor#addPropertyChangeListener(java.beans.PropertyChangeListener)
      */
     public void addPropertyChangeListener(PropertyChangeListener listener)
     {
@@ -348,9 +337,13 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
             listeners.add(listener);
         }
     }
-    
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.display.clipboard.IPropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.horstmann.violet.framework.display.clipboard.IPropertyEditor#removePropertyChangeListener(java.beans.PropertyChangeListener
+     * )
      */
     public void removePropertyChangeListener(PropertyChangeListener listener)
     {
@@ -359,7 +352,6 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
             listeners.remove(listener);
         }
     }
-    
 
     /**
      * Notifies all listeners of a state change.
@@ -375,7 +367,9 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.horstmann.violet.framework.display.clipboard.IPropertyEditor#isEditable()
      */
     public boolean isEditable()
@@ -390,12 +384,10 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
      */
     private boolean isEditable = false;
 
-    
-
     private JPanel panel;
 
     private static Map<Class<?>, Class<? extends PropertyEditor>> editors;
-    
+
     static
     {
         editors = new HashMap<Class<?>, Class<? extends PropertyEditor>>();
@@ -408,14 +400,14 @@ public class CustomPropertyEditor implements ICustomPropertyEditor
         editors.put(MultiLineString.class, MultiLineStringEditor.class);
         editors.put(String.class, StringEditor.class);
     }
-    
+
     private static Set<Class<?>> knownImmutables = new HashSet<Class<?>>();
-    
+
     static
     {
         knownImmutables.add(String.class);
         knownImmutables.add(Integer.class);
         knownImmutables.add(Boolean.class);
-        knownImmutables.add(Double.class);       
+        knownImmutables.add(Double.class);
     }
 }

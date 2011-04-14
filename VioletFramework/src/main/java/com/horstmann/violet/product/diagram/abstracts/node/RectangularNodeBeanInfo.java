@@ -21,7 +21,6 @@
 
 package com.horstmann.violet.product.diagram.abstracts.node;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
@@ -37,19 +36,6 @@ public class RectangularNodeBeanInfo extends SimpleBeanInfo
      */
     public PropertyDescriptor[] getPropertyDescriptors()
     {
-        try
-        {
-            PropertyDescriptor bgColorDescriptor = new PropertyDescriptor("bgColor", AbstractNode.class);
-            bgColorDescriptor.setValue("priority", new Integer(1));
-            return new PropertyDescriptor[]
-            {
-                    bgColorDescriptor,
-            };
-        }
-        catch (IntrospectionException exception)
-        {
-            return null;
-        }
+        return new PropertyDescriptor[] {};
     }
-
 }
