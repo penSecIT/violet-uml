@@ -31,6 +31,21 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMousePressed(MouseEvent event)
     {
+        this.isDragGesture = false;
+    }
+    
+    @Override
+    public void onMouseDragged(MouseEvent event)
+    {
+        this.isDragGesture = true;
+    }
+    
+    @Override
+    public void onMouseReleased(MouseEvent event)
+    {
+        if (this.isDragGesture) {
+            return;
+        }
         if (event.getClickCount() > 1) {
             return;
         }
@@ -59,6 +74,8 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         }
     }
 
+    
+    
     private boolean isMouseOnNodeOrEdge(Point2D mouseLocation)
     {
         INode node = this.graph.findNode(mouseLocation);
@@ -139,5 +156,7 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
     private IEditorPartSelectionHandler selectionHandler;
     
     private IGraphToolsBar graphToolsBar;
+    
+    private boolean isDragGesture = false;
 
 }
