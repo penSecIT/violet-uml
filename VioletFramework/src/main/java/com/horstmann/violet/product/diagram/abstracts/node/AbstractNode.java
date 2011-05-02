@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
+import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
@@ -65,6 +66,41 @@ public abstract class AbstractNode implements INode
         };
     }
 
+    /**
+     * @return list of directions
+     */
+    protected List<Direction> getEdgeDirections() {
+        List<Direction> edgeDirections = new ArrayList<Direction>();
+        for (IEdge anEdge : getConnectedEdges()) {
+            INode start = anEdge.getStart();
+            INode end = anEdge.getEnd();
+            Rectangle2D startBounds = start.getBounds();
+            Rectangle2D endBounds = end.getBounds();
+            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
+            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
+            Direction toEnd = new Direction(startCenter, endCenter);
+            edgeDirections.add(toEnd);
+        }
+        return edgeDirections;
+    }
+
+    
+    /**
+     * @return currently connected edges
+     */
+    protected List<IEdge> getConnectedEdges() {
+        List<IEdge> connectedEdges = new ArrayList<IEdge>();
+        IGraph currentGraph = getGraph();
+        for (IEdge anEdge : currentGraph.getAllEdges()) {
+            INode start = anEdge.getStart();
+            INode end = anEdge.getEnd();
+            if (this.equals(start) || this.equals(end)) {
+                connectedEdges.add(anEdge);
+            }
+        }
+        return connectedEdges;
+    }
+    
     @Override
     public Point2D getLocation()
     {
