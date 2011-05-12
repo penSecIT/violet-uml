@@ -34,6 +34,7 @@ import java.util.List;
 import javax.swing.UIManager;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 
 /**
  * A node that has a rectangular shape.
@@ -51,55 +52,87 @@ public abstract class RectangularNode extends AbstractNode
         return getBounds().contains(p);
     }
 
-    /**
-     * Look for other edges with same kind of cardinal direction
-     * 
-     * @param d
-     * @return
-     */
-    private List<Direction> getDirectionsOnSameCardinality(Direction d) {
-        List<Direction> result = new ArrayList<Direction>();
-        Direction cardinalDirectionToSearch = d.getNearestCardinalDirection();
-        for (Direction aDirection :getEdgeDirections()) {
-            Direction cardinalDirection = aDirection.getNearestCardinalDirection();
-            if (cardinalDirection.equals(cardinalDirectionToSearch)) {
-                result.add(aDirection);
-            }
-        }
-        return result;
-    }
     
     /**
-     * Compare all directions to d and return the position of d
+     * List edges connected to the same side
      * 
-     * @param d
-     * @param directionWithSameCardinality list of constant (Direction.NORTH, SOUTH, EAST or WEST only!!!) 
-     * @return
+     * @param edge
+     * @return ordered list of edges 
      */
-    private int getCardinalPosition(Direction d, List<Direction> directionWithSameCardinality) {
+    private List<IEdge> getEdgesOnSameSide(IEdge edge) {
+        // Step 1 : look for edges
+        List<IEdge> result = new ArrayList<IEdge>();
+        Direction d = edge.getDirection(this);
+        if (d == null) return result;
         Direction cardinalDirectionToSearch = d.getNearestCardinalDirection();
+        for (IEdge anEdge : getConnectedEdges()) {
+            Direction edgeDirection = anEdge.getDirection(this);
+            Direction nearestCardinalDirection = edgeDirection.getNearestCardinalDirection();
+            if (cardinalDirectionToSearch.equals(nearestCardinalDirection)) {
+                result.add(anEdge);
+            }
+        }
+        // Step 2: sort them
         if (Direction.NORTH.equals(cardinalDirectionToSearch) || Direction.SOUTH.equals(cardinalDirectionToSearch)) {
-            Collections.sort(directionWithSameCardinality, new Comparator<Direction>() {
+            Collections.sort(result, new Comparator<IEdge>() {
                 @Override
-                public int compare(Direction o1, Direction o2) {
-                    double x1 = o1.getX();
-                    double x2 = o2.getX();
+                public int compare(IEdge e1, IEdge e2) {
+                    Direction d1 = e1.getDirection(RectangularNode.this);
+                    Direction d2 = e2.getDirection(RectangularNode.this);
+                    double x1 = d1.getX();
+                    double x2 = d2.getX();
                     return Double.compare(x1, x2);
                 }
             });
         }
         if (Direction.EAST.equals(cardinalDirectionToSearch) || Direction.WEST.equals(cardinalDirectionToSearch)) {
-            Collections.sort(directionWithSameCardinality, new Comparator<Direction>() {
+            Collections.sort(result, new Comparator<IEdge>() {
                 @Override
-                public int compare(Direction o1, Direction o2) {
-                    double y1 = o1.getY();
-                    double y2 = o2.getY();
+                public int compare(IEdge e1, IEdge e2) {
+                    Direction d1 = e1.getDirection(RectangularNode.this);
+                    Direction d2 = e2.getDirection(RectangularNode.this);
+                    double y1 = d1.getY();
+                    double y2 = d2.getY();
                     return Double.compare(y1, y2);
                 }
             });
         }
-        return directionWithSameCardinality.indexOf(d);
+        return result;
     }
+    
+    public Point2D getConnectionPoint(IEdge e)
+    {
+        List<IEdge> edgesOnSameSide = getEdgesOnSameSide(e);
+        int position = edgesOnSameSide.indexOf(e);
+        int size = edgesOnSameSide.size();
+        
+        Rectangle2D b = getBounds();
+        
+        double x = b.getCenterX();
+        double y = b.getCenterY();
+
+        Direction d = e.getDirection(this);
+        
+        Direction nearestCardinalDirection = d.getNearestCardinalDirection();
+        if (Direction.NORTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
+            y = b.getMaxY();
+        }
+        if (Direction.SOUTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
+            y = b.getMinY();
+        }
+        if (Direction.EAST.equals(nearestCardinalDirection)) {
+            x = b.getMinX();
+            y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
+        }
+        if (Direction.WEST.equals(nearestCardinalDirection)) {
+            x = b.getMaxX();
+            y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
+        }
+        return new Point2D.Double(x, y);
+    }
+    
     
     
     public Point2D getConnectionPoint(Direction d)

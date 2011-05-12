@@ -26,10 +26,10 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 
 /**
@@ -85,9 +85,20 @@ public class ObjectReferenceEdge extends ShapeEdge
 
     public Line2D getConnectionPoints()
     {
-        Point2D p = getStart().getConnectionPoint(Direction.EAST);
-        if (isSShaped()) return new Line2D.Double(p, getEnd().getConnectionPoint(Direction.WEST));
-        else return new Line2D.Double(p, getEnd().getConnectionPoint(Direction.EAST));
+        return new Line2D.Double(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
+    }
+    
+    @Override
+    public Direction getDirection(INode node) {
+        // Case 1 : start node
+        if (node.equals(getStart())) {
+            return Direction.EAST;
+        }
+        // Case 2 : end node
+        if (isSShaped()) {
+            return Direction.WEST;
+        }
+        return Direction.EAST;
     }
 
     /**
@@ -97,9 +108,11 @@ public class ObjectReferenceEdge extends ShapeEdge
      */
     private boolean isSShaped()
     {
-        Rectangle2D b = getEnd().getBounds();
-        Point2D p = getStart().getConnectionPoint(Direction.EAST);
-        return b.getX() >= p.getX() + 2 * ENDSIZE;
+        // FIXME
+        return false;
+//        Rectangle2D b = getEnd().getBounds();
+//        Point2D p = getStart().getConnectionPoint(Direction.EAST);
+//        return b.getX() >= p.getX() + 2 * ENDSIZE;
     }
 
     private static final int ENDSIZE = 10;

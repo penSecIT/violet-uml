@@ -1,11 +1,10 @@
 package com.horstmann.violet.product.diagram.classes;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
-import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
@@ -48,18 +47,29 @@ public class ClassRelationshipEdge extends SegmentedLineEdge
      */
     public ArrayList<Point2D> getPoints()
     {
-        INode startingNode = getStart();
-        Rectangle2D startingNodeBounds = startingNode.getBounds();
-        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
-        Rectangle2D startingNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(),
-                startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
-        INode endingNode = getEnd();
-        Rectangle2D endingNodeBounds = endingNode.getBounds();
-        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
-        Rectangle2D endingNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(),
-                endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        return bentStyle.getPath(startingNodeBoundsOnGraph, endingNodeBoundsOnGraph);
+        Point2D startingPoint = getStart().getConnectionPoint(this);
+        Point2D endingPoint = getEnd().getConnectionPoint(this);
+        if (!BentStyle.AUTO.equals(bentStyle)) {
+            return bentStyle.getPath(startingPoint, endingPoint);
+        }
+        
+        Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
+        Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.VHV.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.VH.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.HV.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.HVH.getPath(startingPoint, endingPoint);
+        }
+        return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
     }
+    
 
     private BentStyle bentStyle;
 }

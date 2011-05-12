@@ -138,7 +138,7 @@ public interface INode extends Serializable, Cloneable, IIdentifiable
      * @param d the direction from the center of the bounding rectangle towards the boundary
      * @return the recommended connection point
      */
-    Point2D getConnectionPoint(Direction d);
+    Point2D getConnectionPoint(IEdge e);
 
     /**
      * Set or change node location 

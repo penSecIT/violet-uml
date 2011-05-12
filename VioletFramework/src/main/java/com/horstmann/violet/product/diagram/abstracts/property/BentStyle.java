@@ -60,28 +60,28 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle the ending rectangle
      * @return an array list of points at which to bend the segmented line joining the two rectangles
      */
-    public ArrayList<Point2D> getPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    public ArrayList<Point2D> getPath(Point2D startingPoint, Point2D endingPoint)
     {
         ArrayList<Point2D> r = null;
 
         // Try to get current path
-        if (this == STRAIGHT) r = getStraightPath(startingRectangle, endingRectangle);
-        else if (this == HV) r = getHVPath(startingRectangle, endingRectangle);
-        else if (this == VH) r = getVHPath(startingRectangle, endingRectangle);
-        else if (this == HVH) r = getHVHPath(startingRectangle, endingRectangle);
-        else if (this == VHV) r = getVHVPath(startingRectangle, endingRectangle);
+        if (this == STRAIGHT) r = getStraightPath(startingPoint, endingPoint);
+        else if (this == HV) r = getHVPath(startingPoint, endingPoint);
+        else if (this == VH) r = getVHPath(startingPoint, endingPoint);
+        else if (this == HVH) r = getHVHPath(startingPoint, endingPoint);
+        else if (this == VHV) r = getVHVPath(startingPoint, endingPoint);
         if (r != null) return r;
 
         // Try to inverse path
-        if (startingRectangle.equals(endingRectangle)) r = getSelfPath(startingRectangle);
-        else if (this == HVH) r = getVHVPath(startingRectangle, endingRectangle);
-        else if (this == VHV) r = getHVHPath(startingRectangle, endingRectangle);
-        else if (this == HV) r = getVHPath(startingRectangle, endingRectangle);
-        else if (this == VH) r = getHVPath(startingRectangle, endingRectangle);
+        if (startingPoint.equals(endingPoint)) r = getSelfPath(startingPoint);
+        else if (this == HVH) r = getVHVPath(startingPoint, endingPoint);
+        else if (this == VHV) r = getHVHPath(startingPoint, endingPoint);
+        else if (this == HV) r = getVHPath(startingPoint, endingPoint);
+        else if (this == VH) r = getHVPath(startingPoint, endingPoint);
         if (r != null) return r;
 
         // Return default path
-        return getStraightPath(startingRectangle, endingRectangle);
+        return getStraightPath(startingPoint, endingPoint);
     }
 
     /**
@@ -91,23 +91,23 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle
      * @return an array list of points
      */
-    private ArrayList<Point2D> getVHVPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    private ArrayList<Point2D> getVHVPath(Point2D startingPoint, Point2D endingPoint)
     {
 
         ArrayList<Point2D> r = new ArrayList<Point2D>();
-        double x1 = startingRectangle.getCenterX();
-        double x2 = endingRectangle.getCenterX();
+        double x1 = startingPoint.getX();
+        double x2 = endingPoint.getX();
         double y1;
         double y2;
-        if (startingRectangle.getMaxY() + 2 * MIN_SEGMENT <= endingRectangle.getY())
+        if (startingPoint.getY() + 2 * MIN_SEGMENT <= endingPoint.getY())
         {
-            y1 = startingRectangle.getMaxY();
-            y2 = endingRectangle.getY();
+            y1 = startingPoint.getY();
+            y2 = endingPoint.getY();
         }
-        else if (endingRectangle.getMaxY() + 2 * MIN_SEGMENT <= startingRectangle.getY())
+        else if (endingPoint.getY() + 2 * MIN_SEGMENT <= startingPoint.getY())
         {
-            y1 = startingRectangle.getY();
-            y2 = endingRectangle.getMaxY();
+            y1 = startingPoint.getY();
+            y2 = endingPoint.getY();
 
         }
         else return null;
@@ -133,22 +133,22 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle
      * @return an array list of points
      */
-    private ArrayList<Point2D> getHVHPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    private ArrayList<Point2D> getHVHPath(Point2D startingPoint, Point2D endingPoint)
     {
         ArrayList<Point2D> r = new ArrayList<Point2D>();
         double x1;
         double x2;
-        double y1 = startingRectangle.getCenterY();
-        double y2 = endingRectangle.getCenterY();
-        if (startingRectangle.getMaxX() + 2 * MIN_SEGMENT <= endingRectangle.getX())
+        double y1 = startingPoint.getY();
+        double y2 = endingPoint.getY();
+        if (startingPoint.getX() + 2 * MIN_SEGMENT <= endingPoint.getX())
         {
-            x1 = startingRectangle.getMaxX();
-            x2 = endingRectangle.getX();
+            x1 = startingPoint.getX();
+            x2 = endingPoint.getX();
         }
-        else if (endingRectangle.getMaxX() + 2 * MIN_SEGMENT <= startingRectangle.getX())
+        else if (endingPoint.getX() + 2 * MIN_SEGMENT <= startingPoint.getX())
         {
-            x1 = startingRectangle.getX();
-            x2 = endingRectangle.getMaxX();
+            x1 = startingPoint.getX();
+            x2 = endingPoint.getX();
         }
         else return null;
         if (Math.abs(y1 - y2) <= MIN_SEGMENT)
@@ -173,18 +173,18 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle
      * @return an array list of points
      */
-    private ArrayList<Point2D> getVHPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    private ArrayList<Point2D> getVHPath(Point2D startingPoint, Point2D endingPoint)
     {
         ArrayList<Point2D> r = new ArrayList<Point2D>();
-        double x1 = startingRectangle.getCenterX();
+        double x1 = startingPoint.getX();
         double x2;
         double y1;
-        double y2 = endingRectangle.getCenterY();
-        if (x1 + MIN_SEGMENT <= endingRectangle.getX()) x2 = endingRectangle.getX();
-        else if (x1 - MIN_SEGMENT >= endingRectangle.getMaxX()) x2 = endingRectangle.getMaxX();
+        double y2 = endingPoint.getY();
+        if (x1 + MIN_SEGMENT <= endingPoint.getX()) x2 = endingPoint.getX();
+        else if (x1 - MIN_SEGMENT >= endingPoint.getX()) x2 = endingPoint.getX();
         else return null;
-        if (y2 + MIN_SEGMENT <= startingRectangle.getY()) y1 = startingRectangle.getY();
-        else if (y2 - MIN_SEGMENT >= startingRectangle.getMaxY()) y1 = startingRectangle.getMaxY();
+        if (y2 + MIN_SEGMENT <= startingPoint.getY()) y1 = startingPoint.getY();
+        else if (y2 - MIN_SEGMENT >= startingPoint.getY()) y1 = startingPoint.getY();
         else return null;
         r.add(new Point2D.Double(x1, y1));
         r.add(new Point2D.Double(x1, y2));
@@ -199,18 +199,18 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle
      * @return an array list of points
      */
-    private ArrayList<Point2D> getHVPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    private ArrayList<Point2D> getHVPath(Point2D startingPoint, Point2D endingPoint)
     {
         ArrayList<Point2D> r = new ArrayList<Point2D>();
         double x1;
-        double x2 = endingRectangle.getCenterX();
-        double y1 = startingRectangle.getCenterY();
+        double x2 = endingPoint.getX();
+        double y1 = startingPoint.getY();
         double y2;
-        if (x2 + MIN_SEGMENT <= startingRectangle.getX()) x1 = startingRectangle.getX();
-        else if (x2 - MIN_SEGMENT >= startingRectangle.getMaxX()) x1 = startingRectangle.getMaxX();
+        if (x2 + MIN_SEGMENT <= startingPoint.getX()) x1 = startingPoint.getX();
+        else if (x2 - MIN_SEGMENT >= startingPoint.getX()) x1 = startingPoint.getX();
         else return null;
-        if (y1 + MIN_SEGMENT <= endingRectangle.getY()) y2 = endingRectangle.getY();
-        else if (y1 - MIN_SEGMENT >= endingRectangle.getMaxY()) y2 = endingRectangle.getMaxY();
+        if (y1 + MIN_SEGMENT <= endingPoint.getY()) y2 = endingPoint.getY();
+        else if (y1 - MIN_SEGMENT >= endingPoint.getY()) y2 = endingPoint.getY();
         else return null;
         r.add(new Point2D.Double(x1, y1));
         r.add(new Point2D.Double(x2, y1));
@@ -225,28 +225,11 @@ public class BentStyle extends SerializableEnumeration
      * @param endingRectangle
      * @return an array list of points
      */
-    private ArrayList<Point2D> getStraightPath(Rectangle2D startingRectangle, Rectangle2D endingRectangle)
+    private ArrayList<Point2D> getStraightPath(Point2D startingPoint, Point2D endingPoint)
     {
         ArrayList<Point2D> r = new ArrayList<Point2D>();
-        Point2D[] a = connectionPoints(startingRectangle);
-        Point2D[] b = connectionPoints(endingRectangle);
-        Point2D p = a[0];
-        Point2D q = b[0];
-        double distance = p.distance(q);
-        if (distance == 0) return null;
-        for (int i = 0; i < a.length; i++)
-            for (int j = 0; j < b.length; j++)
-            {
-                double d = a[i].distance(b[j]);
-                if (d < distance)
-                {
-                    p = a[i];
-                    q = b[j];
-                    distance = d;
-                }
-            }
-        r.add(p);
-        r.add(q);
+        r.add(startingPoint);
+        r.add(endingPoint);
         return r;
     }
 
@@ -255,15 +238,15 @@ public class BentStyle extends SerializableEnumeration
      * 
      * @param s the starting and ending rectangle
      */
-    private ArrayList<Point2D> getSelfPath(Rectangle2D s)
+    private ArrayList<Point2D> getSelfPath(Point2D p)
     {
         ArrayList<Point2D> r = new ArrayList<Point2D>();
-        double x1 = s.getX() + s.getWidth() * 3 / 4;
-        double y1 = s.getY();
-        double y2 = s.getY() - SELF_HEIGHT;
-        double x2 = s.getX() + s.getWidth() + SELF_WIDTH;
-        double y3 = s.getY() + s.getHeight() / 4;
-        double x3 = s.getX() + s.getWidth();
+        double x1 = p.getX() + SELF_WIDTH * 3 / 4;
+        double y1 = p.getY();
+        double y2 = p.getY() - SELF_HEIGHT;
+        double x2 = p.getX() + 2 * SELF_WIDTH;
+        double y3 = p.getY() + SELF_HEIGHT / 4;
+        double x3 = p.getX() + SELF_WIDTH;
         r.add(new Point2D.Double(x1, y1));
         r.add(new Point2D.Double(x1, y2));
         r.add(new Point2D.Double(x2, y2));
@@ -289,4 +272,7 @@ public class BentStyle extends SerializableEnumeration
     public static final BentStyle HVH = new BentStyle();
     /** Vertical-Horizontal-Vertical bent style */
     public static final BentStyle VHV = new BentStyle();
+    /** Automatic bent style */
+    public static final BentStyle AUTO = new BentStyle();
+
 }

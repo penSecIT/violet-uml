@@ -25,7 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.AbstractNode;
 
 /**
@@ -56,7 +56,7 @@ public class PointNode extends AbstractNode
         if (tempLocation != null) tempLocation.setLocation(bounds.getX(), bounds.getY());
     }
     
-    public Point2D getConnectionPoint(Direction d)
+    public Point2D getConnectionPoint(IEdge e)
     {
         return getLocation();
     }

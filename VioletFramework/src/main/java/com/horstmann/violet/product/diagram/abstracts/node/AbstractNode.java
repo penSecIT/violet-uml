@@ -66,24 +66,6 @@ public abstract class AbstractNode implements INode
         };
     }
 
-    /**
-     * @return list of directions
-     */
-    protected List<Direction> getEdgeDirections() {
-        List<Direction> edgeDirections = new ArrayList<Direction>();
-        for (IEdge anEdge : getConnectedEdges()) {
-            INode start = anEdge.getStart();
-            INode end = anEdge.getEnd();
-            Rectangle2D startBounds = start.getBounds();
-            Rectangle2D endBounds = end.getBounds();
-            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
-            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
-            Direction toEnd = new Direction(startCenter, endCenter);
-            edgeDirections.add(toEnd);
-        }
-        return edgeDirections;
-    }
-
     
     /**
      * @return currently connected edges

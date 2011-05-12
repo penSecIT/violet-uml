@@ -338,12 +338,6 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         return path;
     }
 
-    public Line2D getConnectionPoints()
-    {
-        ArrayList<Point2D> points = getPoints();
-        return new Line2D.Double((Point2D) points.get(0), (Point2D) points.get(points.size() - 1));
-    }
-
     /**
      * Gets the corner points of this segmented line edge
      * 

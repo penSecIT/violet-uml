@@ -95,16 +95,32 @@ public abstract class AbstractEdge implements IEdge
         r.setFrameFromDiagonal(conn.getX1(), conn.getY1(), conn.getX2(), conn.getY2());
         return r;
     }
+    
+    @Override
+    public Direction getDirection(INode node) {
+        if (node.equals(start)) {
+            Rectangle2D startBounds = start.getBounds();
+            Rectangle2D endBounds = end.getBounds();
+            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
+            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
+            Direction fromStart = new Direction(endCenter, startCenter);
+            return fromStart;
+        }
+        if (node.equals(end)) {
+            Rectangle2D startBounds = start.getBounds();
+            Rectangle2D endBounds = end.getBounds();
+            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
+            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
+            Direction toEnd = new Direction(startCenter, endCenter);
+            return toEnd;
+        }
+        return null;
+    }
 
     @Override
     public Line2D getConnectionPoints()
     {
-        Rectangle2D startBounds = start.getBounds();
-        Rectangle2D endBounds = end.getBounds();
-        Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
-        Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
-        Direction toEnd = new Direction(startCenter, endCenter);
-        return new Line2D.Double(start.getConnectionPoint(toEnd), end.getConnectionPoint(toEnd.turn(180)));
+        return new Line2D.Double(start.getConnectionPoint(this), end.getConnectionPoint(this));
     }
 
     @Override

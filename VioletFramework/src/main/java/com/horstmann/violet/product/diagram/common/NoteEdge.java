@@ -27,9 +27,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 
-import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
 
 /**
@@ -47,11 +45,7 @@ public class NoteEdge extends ShapeEdge
 
     public Line2D getConnectionPoints()
     {
-        Rectangle2D start = getStart().getBounds();
-        Rectangle2D end = getEnd().getBounds();
-        Direction d = new Direction(end.getCenterX() - start.getCenterX(), end.getCenterY() - start.getCenterY());
-
-        return new Line2D.Double(getStart().getConnectionPoint(d), getEnd().getConnectionPoint(d.turn(180)));
+        return new Line2D.Double(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
     }
 
     public Shape getShape()

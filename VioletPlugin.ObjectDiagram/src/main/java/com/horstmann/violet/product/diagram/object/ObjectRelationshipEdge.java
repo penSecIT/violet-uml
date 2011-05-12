@@ -63,7 +63,9 @@ public class ObjectRelationshipEdge extends SegmentedLineEdge
 
     public ArrayList<Point2D> getPoints()
     {
-        return bentStyle.getPath(getStart().getBounds(), getEnd().getBounds());
+        Point2D startingPoint = getStart().getConnectionPoint(this);
+        Point2D endingPoint = getEnd().getConnectionPoint(this);
+        return bentStyle.getPath(startingPoint, endingPoint);
     }
 
     private BentStyle bentStyle;

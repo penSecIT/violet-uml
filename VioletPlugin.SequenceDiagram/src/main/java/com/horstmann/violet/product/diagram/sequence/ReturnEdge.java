@@ -60,7 +60,7 @@ public class ReturnEdge extends SegmentedLineEdge
         Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
         Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
-        Point2D endPoint = getEnd().getConnectionPoint(d);
+        Point2D endPoint = getEnd().getConnectionPoint(this);
         Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), startingNodeLocationOnGraph.getY() + startingNodeBounds.getHeight());
         if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
             Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY());

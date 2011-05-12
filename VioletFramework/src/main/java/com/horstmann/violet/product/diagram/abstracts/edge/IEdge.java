@@ -27,6 +27,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IIdentifiable;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 
@@ -108,6 +109,14 @@ public interface IEdge extends Serializable, Cloneable, IIdentifiable
      * @return the bounding rectangle
      */
     Rectangle2D getBounds();
+    
+    
+    /**
+     * Gets edge's direction for this node 
+     * 
+     * @return direction or null if this edge is not connected to this node
+     */
+    Direction getDirection(INode node);
 
     /**
      * Draw the edge.
