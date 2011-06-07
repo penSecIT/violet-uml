@@ -21,11 +21,11 @@
 
 package com.horstmann.violet.product.diagram.sequence;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
@@ -115,7 +115,6 @@ public class CallEdge extends SegmentedLineEdge
         Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
         Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
         double topMiddleHeight = endingNode.getTopRectangle().getHeight() / 2;
         Point2D endPoint = getEnd().getConnectionPoint(this);
         Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingNodeLocationOnGraph.getY() + topMiddleHeight);
@@ -140,7 +139,6 @@ public class CallEdge extends SegmentedLineEdge
         Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
         Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
         Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        Direction d = new Direction(startNodeBoundsOnGraph.getX() - endNodeBoundsOnGraph.getX(), 0);
         Point2D endPoint = getEnd().getConnectionPoint(this);
         Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingNodeLocationOnGraph.getY());
         if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
@@ -175,6 +173,23 @@ public class CallEdge extends SegmentedLineEdge
         return a;
     }
 
+    @Override
+    public Line2D getConnectionPoints()
+    {
+        Rectangle2D startingNodeBounds = getStart().getBounds();
+        Rectangle2D endingNodeBounds = getEnd().getBounds();
+        Point2D startingNodeLocationOnGraph = getStart().getLocationOnGraph();
+        Point2D endingNodeLocationOnGraph = getEnd().getLocationOnGraph();
+        
+        Point2D endingPoint = getEnd().getConnectionPoint(this);
+        Point2D endingPointOnGraph = new Point2D.Double(endingPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingPoint.getY() + endingNodeLocationOnGraph.getY() - endingNodeBounds.getY());
+        
+        Point2D startingPoint = getStart().getConnectionPoint(this);
+        Point2D startingPointOnGraph = new Point2D.Double(startingPoint.getX() + startingNodeLocationOnGraph.getX() - startingNodeBounds.getX(), startingPoint.getY() + startingNodeLocationOnGraph.getY() - startingNodeBounds.getY());
+        
+        return new Line2D.Double(startingPointOnGraph, endingPointOnGraph);
+    }
+    
     /** Indicate if the node represents an asynchonus signal */
     private boolean signal;
 }

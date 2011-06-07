@@ -27,6 +27,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 
 /**
@@ -34,13 +35,11 @@ import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
  */
 public abstract class EllipticalNode extends RectangularNode
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.Node#getConnectionPoint(com.horstmann.violet.framework.Direction)
-     */
-    public Point2D getConnectionPoint(Direction d)
+
+    @Override
+    public Point2D getConnectionPoint(IEdge e)
     {
+        Direction d = e.getDirection(this).turn(180);
         Rectangle2D bounds = getBounds();
         double a = bounds.getWidth() / 2;
         double b = bounds.getHeight() / 2;

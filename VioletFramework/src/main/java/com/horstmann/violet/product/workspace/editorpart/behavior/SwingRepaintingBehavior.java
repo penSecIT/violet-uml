@@ -48,6 +48,12 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
         this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
+    
+    @Override
+    public void onMouseMoved(MouseEvent event)
+    {
+        // Nothing to do
+    }
 
     @Override
     public void beforeRemovingSelectedElements()

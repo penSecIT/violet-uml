@@ -3,8 +3,11 @@ package com.horstmann.violet.product.diagram.classes;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import javax.xml.datatype.Duration;
+
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
@@ -70,6 +73,31 @@ public class ClassRelationshipEdge extends SegmentedLineEdge
         return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
     }
     
+    
+    @Override
+    public Direction getDirection(INode node)
+    {
+        Direction straightDirection = super.getDirection(node);
+        double x = straightDirection.getX();
+        double y = straightDirection.getY();
+        if (node.equals(getStart())) {
+            if (BentStyle.HV.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+                return (x >= 0) ? Direction.EAST : Direction.WEST;
+            }
+            if (BentStyle.VH.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+                return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
+            }
+        }
+        if (node.equals(getEnd())) {
+            if (BentStyle.HV.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+                return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
+            }
+            if (BentStyle.VH.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+                return (x >= 0) ? Direction.EAST : Direction.WEST;
+            }
+        }
+        return straightDirection;
+    }
 
     private BentStyle bentStyle;
 }

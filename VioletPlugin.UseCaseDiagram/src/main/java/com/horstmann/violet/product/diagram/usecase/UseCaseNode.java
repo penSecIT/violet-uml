@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.EllipticalNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 
@@ -58,6 +59,17 @@ public class UseCaseNode extends EllipticalNode
         Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
         Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
         return snappedBounds;
+    }
+    
+    @Override
+    public Point2D getConnectionPoint(IEdge e)
+    {
+        // if use case node is atatched to an actor node, we force connection point to cardianl points
+        if (e.getStart().getClass().isAssignableFrom(ActorNode.class) || e.getEnd().getClass().isAssignableFrom(ActorNode.class)) {
+            
+        }
+        
+        return super.getConnectionPoint(e);
     }
 
     @Override

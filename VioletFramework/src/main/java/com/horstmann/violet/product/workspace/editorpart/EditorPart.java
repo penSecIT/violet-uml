@@ -81,6 +81,11 @@ public class EditorPart extends JPanel implements IEditorPart
             {
                 behaviorManager.fireOnMouseDragged(event);
             }
+            @Override
+            public void mouseMoved(MouseEvent event)
+            {
+                behaviorManager.fireOnMouseMoved(event);
+            }
         });
 
 

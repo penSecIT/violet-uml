@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 
 /**
@@ -157,17 +158,15 @@ public class StateTransitionEdge extends ShapeEdge
         r.add(getLabelBounds());
         return r;
     }
-
-    public Line2D getConnectionPoints()
+    
+    @Override
+    public Direction getDirection(INode node)
     {
-        Direction d1;
-        Direction d2;
-
         if (getStart() == getEnd())
         {
             angle = 60;
-            d1 = Direction.EAST.turn(-30);
-            d2 = Direction.EAST.turn(30);
+            if (node.equals(getStart())) return Direction.EAST.turn(-30);
+            if (node.equals(getEnd())) return Direction.EAST.turn(30);
         }
         else
         {
@@ -176,12 +175,17 @@ public class StateTransitionEdge extends ShapeEdge
             Rectangle2D end = getEnd().getBounds();
             Point2D startCenter = new Point2D.Double(start.getCenterX(), start.getCenterY());
             Point2D endCenter = new Point2D.Double(end.getCenterX(), end.getCenterY());
-            d1 = new Direction(startCenter, endCenter).turn(-5);
-            d2 = new Direction(endCenter, startCenter).turn(5);
+            if (node.equals(getStart())) return new Direction(startCenter, endCenter).turn(-5);
+            if (node.equals(getEnd())) return new Direction(endCenter, startCenter).turn(5);
         }
-        Point2D p = getStart().getConnectionPoint(d1);
-        Point2D q = getEnd().getConnectionPoint(d2);
+        // Should never happen
+        return super.getDirection(node);
+    }
 
+    public Line2D getConnectionPoints()
+    {
+        Point2D p = getStart().getConnectionPoint(this);
+        Point2D q = getEnd().getConnectionPoint(this);
         return new Line2D.Double(p, q);
     }
 

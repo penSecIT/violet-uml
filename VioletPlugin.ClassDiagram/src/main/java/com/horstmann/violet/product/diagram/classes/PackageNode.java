@@ -7,14 +7,14 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.node.IResizableNode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.diagram.common.NoteNode;
 
 /**
  * A package node in a UML diagram.
  */
-public class PackageNode extends RectangularNode
+public class PackageNode extends RectangularNode implements IResizableNode
 {
     /**
      * Construct a package node with a default size
@@ -24,6 +24,12 @@ public class PackageNode extends RectangularNode
         name = new MultiLineString();
         name.setSize(MultiLineString.LARGE);
         contents = new MultiLineString();
+    }
+    
+    @Override
+    public void setWantedSize(Rectangle2D size)
+    {
+        this.wantedSize = size;
     }
 
     private Rectangle2D getTopRectangleBounds()
@@ -171,11 +177,13 @@ public class PackageNode extends RectangularNode
 
     private MultiLineString name;
     private MultiLineString contents;
+    private Rectangle2D wantedSize;
 
     private static int DEFAULT_TOP_WIDTH = 60;
     private static int DEFAULT_TOP_HEIGHT = 20;
     private static int DEFAULT_WIDTH = 100;
     private static int DEFAULT_HEIGHT = 80;
     private static final int NAME_GAP = 3;
+
 
 }

@@ -27,7 +27,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
@@ -51,16 +50,13 @@ public class SynchronizationBarNode extends RectangularNode
         List<INode> connectedNodes = getConnectedNodes();
         if (connectedNodes.size() > 0)
         {
-            double centerY = b.getCenterY();
             double minX = Double.MAX_VALUE;
             double maxX = Double.MIN_VALUE;
             for (INode n : connectedNodes)
             {
-                double y = n.getBounds().getCenterY();
-                Direction d = y <= centerY ? Direction.NORTH : Direction.SOUTH;
-                Point2D c = n.getConnectionPoint(d);
-                minX = Math.min(minX, c.getX());
-                maxX = Math.max(maxX, c.getX());
+                Rectangle2D b2  = n.getBounds();
+                minX = Math.min(minX, b2.getMinX());
+                maxX = Math.max(maxX, b2.getMaxX());
             }
 
             minX -= EXTRA_WIDTH;

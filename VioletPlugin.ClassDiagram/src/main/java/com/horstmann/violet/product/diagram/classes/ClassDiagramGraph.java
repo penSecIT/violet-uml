@@ -66,32 +66,32 @@ public class ClassDiagramGraph extends AbstractGraph
         EDGE_PROTOTYPES[0] = dependency;
         
         ClassRelationshipEdge inheritance = new ClassRelationshipEdge();
-        inheritance.setBentStyle(BentStyle.VHV);
+        inheritance.setBentStyle(BentStyle.AUTO);
         inheritance.setEndArrowHead(ArrowHead.TRIANGLE);
         inheritance.setToolTip(rs.getString("edge1.tooltip"));
         EDGE_PROTOTYPES[1] = inheritance;
 
         ClassRelationshipEdge interfaceInheritance = new ClassRelationshipEdge();
-        interfaceInheritance.setBentStyle(BentStyle.VHV);
+        interfaceInheritance.setBentStyle(BentStyle.AUTO);
         interfaceInheritance.setLineStyle(LineStyle.DOTTED);
         interfaceInheritance.setEndArrowHead(ArrowHead.TRIANGLE);
         interfaceInheritance.setToolTip(rs.getString("edge2.tooltip"));
         EDGE_PROTOTYPES[2] = interfaceInheritance;
 
         ClassRelationshipEdge association = new ClassRelationshipEdge();
-        association.setBentStyle(BentStyle.HVH);
+        association.setBentStyle(BentStyle.AUTO);
         association.setEndArrowHead(ArrowHead.V);
         association.setToolTip(rs.getString("edge3.tooltip"));
         EDGE_PROTOTYPES[3] = association;
 
         ClassRelationshipEdge aggregation = new ClassRelationshipEdge();
-        aggregation.setBentStyle(BentStyle.HVH);
+        aggregation.setBentStyle(BentStyle.AUTO);
         aggregation.setStartArrowHead(ArrowHead.DIAMOND);
         aggregation.setToolTip(rs.getString("edge4.tooltip"));
         EDGE_PROTOTYPES[4] = aggregation;
 
         ClassRelationshipEdge composition = new ClassRelationshipEdge();
-        composition.setBentStyle(BentStyle.HVH);
+        composition.setBentStyle(BentStyle.AUTO);
         composition.setStartArrowHead(ArrowHead.BLACK_DIAMOND);
         composition.setToolTip(rs.getString("edge5.tooltip"));
         EDGE_PROTOTYPES[5] = composition;

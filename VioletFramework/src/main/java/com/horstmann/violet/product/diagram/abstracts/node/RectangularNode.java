@@ -100,6 +100,8 @@ public abstract class RectangularNode extends AbstractNode
         return result;
     }
     
+    
+    
     public Point2D getConnectionPoint(IEdge e)
     {
         List<IEdge> edgesOnSameSide = getEdgesOnSameSide(e);
@@ -135,72 +137,7 @@ public abstract class RectangularNode extends AbstractNode
     
     
     
-    public Point2D getConnectionPoint(Direction d)
-    {
-        Rectangle2D b = getBounds();
-        double slope = b.getHeight() / b.getWidth();
-        double ex = d.getX();
-        double ey = d.getY();
-        double x = b.getCenterX();
-        double y = b.getCenterY();
 
-        
-        
-        Direction nearestCardinalDirection = d.getNearestCardinalDirection();
-        if (Direction.NORTH.equals(nearestCardinalDirection)) {
-            x = b.getX();
-            y -= (b.getWidth() / 2) * ey / ex;
-            System.out.println("north");
-        }
-        if (Direction.SOUTH.equals(nearestCardinalDirection)) {
-            x = b.getMaxX();
-            y += (b.getWidth() / 2) * ey / ex;
-            System.out.println("south");
-        }
-        if (Direction.EAST.equals(nearestCardinalDirection)) {
-            x += (b.getHeight() / 2) * ex / ey;
-            y = b.getMaxY();
-            System.out.println("east");
-        }
-        if (Direction.WEST.equals(nearestCardinalDirection)) {
-            x -= (b.getHeight() / 2) * ex / ey;
-            y = b.getY();
-            System.out.println("west");
-        }
-        return new Point2D.Double(x, y);
-        
-        
-        
-//        if (ex != 0 && -slope <= ey / ex && ey / ex <= slope)
-//        {
-//            // intersects at left or right boundary
-//            if (ex > 0)
-//            {
-//                x = b.getMaxX();
-//                y += (b.getWidth() / 2) * ey / ex;
-//            }
-//            else
-//            {
-//                x = b.getX();
-//                y -= (b.getWidth() / 2) * ey / ex;
-//            }
-//        }
-//        else if (ey != 0)
-//        {
-//            // intersects at top or bottom
-//            if (ey > 0)
-//            {
-//                x += (b.getHeight() / 2) * ex / ey;
-//                y = b.getMaxY();
-//            }
-//            else
-//            {
-//                x -= (b.getHeight() / 2) * ex / ey;
-//                y = b.getY();
-//            }
-//        }
-//        return new Point2D.Double(x, y);
-    }
     
     
 

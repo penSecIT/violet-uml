@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -102,8 +103,60 @@ public class ActivationBarNode extends RectangularNode
     }
 
     @Override
-    public Point2D getConnectionPoint(Direction d)
+    public Point2D getConnectionPoint(IEdge e)
     {
+        boolean isCallEdge = e.getClass().isAssignableFrom(CallEdge.class);
+        boolean isActivationBarNodeOnStart = e.getStart() != null && e.getStart().getClass().isAssignableFrom(ActivationBarNode.class);
+        boolean isActivationBarNodeOnEnd = e.getEnd() != null && e.getEnd().getClass().isAssignableFrom(ActivationBarNode.class);
+        if (isCallEdge && isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+            ActivationBarNode startingNode = (ActivationBarNode) e.getStart();
+            ActivationBarNode endingNode = (ActivationBarNode) e.getEnd();
+            LifelineNode startingLifelineNode = startingNode.getImplicitParameter();
+            LifelineNode endingLifelineNode = endingNode.getImplicitParameter();
+            boolean isSameLifelineNode = startingLifelineNode != null && endingLifelineNode != null && startingLifelineNode.equals(endingLifelineNode);
+            boolean isDifferentLifelineNodes = startingLifelineNode != null && endingLifelineNode != null && !startingLifelineNode.equals(endingLifelineNode);
+            // Case 1 : connected ot different LifeLines
+            if (isDifferentLifelineNodes) {
+                
+                boolean isStartingNode = this.equals(e.getStart());
+                boolean isEndingNode = this.equals(e.getEnd());
+                if (isStartingNode) {
+                    Point2D endingNodeLocationOnGraph = e.getEnd().getLocationOnGraph();
+                    Direction d = e.getDirection(this);
+                    if (d.getX() > 0)
+                    {
+                        double x = getLocationOnGraph().getX() + DEFAULT_WIDTH; 
+                        double y = endingNodeLocationOnGraph.getY() + CALL_YGAP;
+                        return new Point2D.Double(x, y);
+                    }
+                    else
+                    {
+                        double x = getLocationOnGraph().getX();
+                        double y = endingNodeLocationOnGraph.getY() + CALL_YGAP;
+                        return new Point2D.Double(x, y);
+                    }
+                }
+                if (isEndingNode) {
+                    Point2D endingNodeLocationOnGraph = getLocationOnGraph();
+                    Direction d = e.getDirection(this);
+                    if (d.getX() > 0)
+                    {
+                        double x = endingNodeLocationOnGraph.getX(); 
+                        double y = endingNodeLocationOnGraph.getY();
+                        return new Point2D.Double(x, y);
+                    }
+                    else
+                    {
+                        double x = endingNodeLocationOnGraph.getX() + DEFAULT_WIDTH;
+                        double y = endingNodeLocationOnGraph.getY();
+                        return new Point2D.Double(x, y);
+                    }
+                }
+            }
+            
+        }
+        // Default case
+        Direction d = e.getDirection(this);
         if (d.getX() > 0)
         {
             double y = getBounds().getMinY();
@@ -116,7 +169,11 @@ public class ActivationBarNode extends RectangularNode
             double x = getBounds().getX();
             return new Point2D.Double(x, y);
         }
+
     }
+    
+    
+   
 
     @Override
     public Point2D getLocation()

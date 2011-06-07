@@ -42,6 +42,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.AddNodeBehavio
 import com.horstmann.violet.product.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.FileCouldBeSavedBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.ResizeNodeBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByClickBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByLassoBehavior;
@@ -154,6 +155,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
             behaviorManager.addBehavior(new FileCouldBeSavedBehavior(this.getGraphFile()));
+            behaviorManager.addBehavior(new ResizeNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
         }
         return this.graphEditor;
     }

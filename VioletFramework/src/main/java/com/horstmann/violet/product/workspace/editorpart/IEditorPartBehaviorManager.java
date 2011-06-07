@@ -23,6 +23,8 @@ public interface IEditorPartBehaviorManager
     public abstract void fireOnMouseDragged(MouseEvent event);
 
     public abstract void fireOnMouseReleased(MouseEvent event);
+    
+    public abstract void fireOnMouseMoved(MouseEvent event);
 
     public abstract void fireBeforeEditingNode(INode node);
 

@@ -151,8 +151,9 @@ public class LifelineNode extends RectangularNode
     }
 
     @Override
-    public Point2D getConnectionPoint(Direction d)
+    public Point2D getConnectionPoint(IEdge e)
     {
+        Direction d = e.getDirection(this);
         Rectangle2D bounds = getBounds();
         if (d.getX() > 0)
         {

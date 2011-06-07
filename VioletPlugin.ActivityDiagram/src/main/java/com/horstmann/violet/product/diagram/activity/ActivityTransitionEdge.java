@@ -70,6 +70,8 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
      */
     public ArrayList<Point2D> getPoints()
     {
+        
+        
         Rectangle2D startBounds = getStart().getBounds();
         Rectangle2D endBounds = getEnd().getBounds();
         ArrayList<Point2D> r = new ArrayList<Point2D>();
@@ -79,7 +81,7 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
             double startY = startBounds.getCenterY();
             double endY = endBounds.getCenterY();
             Direction toEnd = startY >= endY ? Direction.NORTH : Direction.SOUTH;
-            Point2D startPoint = getStart().getConnectionPoint(toEnd); 
+            Point2D startPoint = getStart().getConnectionPoint(this); 
             r.add(startPoint);
             r.add(new Point2D.Double(startPoint.getX(), startY >= endY ? endBounds.getMaxY() : endBounds.getY()));
             return r;
@@ -89,14 +91,14 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
             double startY = startBounds.getCenterY();
             double endY = endBounds.getCenterY();
             Direction toStart = startY >= endY ? Direction.SOUTH : Direction.NORTH;
-            Point2D endPoint = getEnd().getConnectionPoint(toStart); 
+            Point2D endPoint = getEnd().getConnectionPoint(this); 
             r.add(new Point2D.Double(endPoint.getX(), startY >= endY ? startBounds.getY() : startBounds.getMaxY()));
             r.add(endPoint);
             return r;
         }
         else if (getStart() instanceof DecisionNode)
-            return BentStyle.HV.getPath(startBounds, endBounds);
-        else return bentStyle.getPath(startBounds, endBounds);
+            return BentStyle.HV.getPath(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
+        else return bentStyle.getPath(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
     }
 
     /**

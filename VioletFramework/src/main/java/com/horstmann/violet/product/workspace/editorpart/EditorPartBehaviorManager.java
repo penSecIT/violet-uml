@@ -68,6 +68,13 @@ public class EditorPartBehaviorManager implements IEditorPartBehaviorManager
     }
     
     /* (non-Javadoc)
+     * @see com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager#fireOnMouseMoved(java.awt.event.MouseEvent)
+     */
+    public void fireOnMouseMoved(MouseEvent event) {
+        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.onMouseMoved(event);
+    }
+    
+    /* (non-Javadoc)
      * @see com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager#fireBeforeEditingNode(com.horstmann.violet.product.diagram.abstracts.node.INode)
      */
     public void fireBeforeEditingNode(INode node) {

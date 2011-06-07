@@ -26,7 +26,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
@@ -176,7 +175,7 @@ public class FieldNode extends RectangularNode
 
 
     @Override
-    public Point2D getConnectionPoint(Direction d)
+    public Point2D getConnectionPoint(IEdge edge)
     {
         Rectangle2D b = getBounds();
         double parentX = 0;

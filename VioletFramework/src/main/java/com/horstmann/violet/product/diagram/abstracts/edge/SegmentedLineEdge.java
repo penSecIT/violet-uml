@@ -26,7 +26,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 
 import javax.swing.JLabel;
 
-import com.horstmann.violet.framework.util.ShortestPathConverter;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 
@@ -318,14 +316,12 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         ArrayList<Point2D> points = getPoints();
         path.append(startArrowHead.getPath((Point2D) points.get(1), (Point2D) points.get(0)), false);
         path.append(endArrowHead.getPath((Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1)), false);
-        path = ShortestPathConverter.getShortestPath(path);
         return path;
     }
 
     private GeneralPath getSegmentPath()
     {
         ArrayList<Point2D> points = getPoints();
-        //points.add(1,new Point2D.Double(150,200));
 
         GeneralPath path = new GeneralPath();
         Point2D p = (Point2D) points.get(points.size() - 1);
