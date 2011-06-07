@@ -98,19 +98,17 @@ public abstract class AbstractEdge implements IEdge
     
     @Override
     public Direction getDirection(INode node) {
+        Rectangle2D startBounds = start.getBounds();
+        Rectangle2D endBounds = end.getBounds();
+        Point2D startLocationOnGraph = start.getLocationOnGraph();
+        Point2D endLocationOnGraph = end.getLocationOnGraph();
+        Point2D startCenter = new Point2D.Double(startLocationOnGraph.getX() + startBounds.getWidth() / 2, startLocationOnGraph.getY() + startBounds.getHeight() / 2);
+        Point2D endCenter = new Point2D.Double(endLocationOnGraph.getX() + endBounds.getWidth() / 2, endLocationOnGraph.getY() + endBounds.getHeight() / 2);
         if (node.equals(start)) {
-            Rectangle2D startBounds = start.getBounds();
-            Rectangle2D endBounds = end.getBounds();
-            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
-            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
             Direction fromStart = new Direction(endCenter, startCenter);
             return fromStart;
         }
         if (node.equals(end)) {
-            Rectangle2D startBounds = start.getBounds();
-            Rectangle2D endBounds = end.getBounds();
-            Point2D startCenter = new Point2D.Double(startBounds.getCenterX(), startBounds.getCenterY());
-            Point2D endCenter = new Point2D.Double(endBounds.getCenterX(), endBounds.getCenterY());
             Direction toEnd = new Direction(startCenter, endCenter);
             return toEnd;
         }

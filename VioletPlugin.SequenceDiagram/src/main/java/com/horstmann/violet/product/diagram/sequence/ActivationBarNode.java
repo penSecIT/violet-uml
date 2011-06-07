@@ -106,54 +106,140 @@ public class ActivationBarNode extends RectangularNode
     public Point2D getConnectionPoint(IEdge e)
     {
         boolean isCallEdge = e.getClass().isAssignableFrom(CallEdge.class);
+        boolean isReturnEdge = e.getClass().isAssignableFrom(ReturnEdge.class);
         boolean isActivationBarNodeOnStart = e.getStart() != null && e.getStart().getClass().isAssignableFrom(ActivationBarNode.class);
         boolean isActivationBarNodeOnEnd = e.getEnd() != null && e.getEnd().getClass().isAssignableFrom(ActivationBarNode.class);
-        if (isCallEdge && isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
-            ActivationBarNode startingNode = (ActivationBarNode) e.getStart();
-            ActivationBarNode endingNode = (ActivationBarNode) e.getEnd();
-            LifelineNode startingLifelineNode = startingNode.getImplicitParameter();
-            LifelineNode endingLifelineNode = endingNode.getImplicitParameter();
-            boolean isSameLifelineNode = startingLifelineNode != null && endingLifelineNode != null && startingLifelineNode.equals(endingLifelineNode);
-            boolean isDifferentLifelineNodes = startingLifelineNode != null && endingLifelineNode != null && !startingLifelineNode.equals(endingLifelineNode);
-            // Case 1 : connected ot different LifeLines
-            if (isDifferentLifelineNodes) {
-                
-                boolean isStartingNode = this.equals(e.getStart());
-                boolean isEndingNode = this.equals(e.getEnd());
-                if (isStartingNode) {
-                    Point2D endingNodeLocationOnGraph = e.getEnd().getLocationOnGraph();
-                    Direction d = e.getDirection(this);
-                    if (d.getX() > 0)
-                    {
-                        double x = getLocationOnGraph().getX() + DEFAULT_WIDTH; 
-                        double y = endingNodeLocationOnGraph.getY() + CALL_YGAP;
-                        return new Point2D.Double(x, y);
+        boolean isLifelineNodeOnEnd = e.getEnd() != null && e.getEnd().getClass().isAssignableFrom(LifelineNode.class);
+        if (isCallEdge) {
+            if (isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+                ActivationBarNode startingNode = (ActivationBarNode) e.getStart();
+                ActivationBarNode endingNode = (ActivationBarNode) e.getEnd();
+                LifelineNode startingLifelineNode = startingNode.getImplicitParameter();
+                LifelineNode endingLifelineNode = endingNode.getImplicitParameter();
+                boolean isSameLifelineNode = startingLifelineNode != null && endingLifelineNode != null && startingLifelineNode.equals(endingLifelineNode);
+                boolean isDifferentLifelineNodes = startingLifelineNode != null && endingLifelineNode != null && !startingLifelineNode.equals(endingLifelineNode);
+                // Case 1 : two activation bars connected on differents LifeLines
+                if (isDifferentLifelineNodes && isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+                    boolean isStartingNode = this.equals(e.getStart());
+                    boolean isEndingNode = this.equals(e.getEnd());
+                    if (isStartingNode) {
+                        Point2D startingNodeLocation = getLocation();
+                        Point2D endingNodeLocation = e.getEnd().getLocation();
+                        Direction d = e.getDirection(this);
+                        if (d.getX() > 0)
+                        {
+                            double x = startingNodeLocation.getX(); 
+                            double y = endingNodeLocation.getY();
+                            return new Point2D.Double(x, y);
+                        }
+                        else
+                        {
+                            double x = startingNodeLocation.getX() + DEFAULT_WIDTH;
+                            double y = endingNodeLocation.getY();
+                            return new Point2D.Double(x, y);
+                        }
                     }
-                    else
-                    {
-                        double x = getLocationOnGraph().getX();
-                        double y = endingNodeLocationOnGraph.getY() + CALL_YGAP;
-                        return new Point2D.Double(x, y);
+                    if (isEndingNode) {
+                        Point2D endingNodeLocation = getLocation();
+                        Direction d = e.getDirection(this);
+                        if (d.getX() > 0)
+                        {
+                            double x = endingNodeLocation.getX(); 
+                            double y = endingNodeLocation.getY();
+                            return new Point2D.Double(x, y);
+                        }
+                        else
+                        {
+                            double x = endingNodeLocation.getX() + DEFAULT_WIDTH;
+                            double y = endingNodeLocation.getY();
+                            return new Point2D.Double(x, y);
+                        }
                     }
                 }
-                if (isEndingNode) {
-                    Point2D endingNodeLocationOnGraph = getLocationOnGraph();
-                    Direction d = e.getDirection(this);
-                    if (d.getX() > 0)
-                    {
-                        double x = endingNodeLocationOnGraph.getX(); 
-                        double y = endingNodeLocationOnGraph.getY();
+                // Case 2 : two activation bars connected on same lifeline (self call)
+                if (isSameLifelineNode && isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+                    boolean isStartingNode = this.equals(e.getStart());
+                    boolean isEndingNode = this.equals(e.getEnd());
+                    if (isStartingNode) {
+                        Point2D startingNodeLocation = getLocation();
+                        Point2D endingNodeLocation = e.getEnd().getLocation();
+                        double x = startingNodeLocation.getX() + DEFAULT_WIDTH;
+                        double y = startingNodeLocation.getY() + endingNodeLocation.getY() - CALL_YGAP / 2;
                         return new Point2D.Double(x, y);
                     }
-                    else
-                    {
-                        double x = endingNodeLocationOnGraph.getX() + DEFAULT_WIDTH;
-                        double y = endingNodeLocationOnGraph.getY();
+                    if (isEndingNode) {
+                        Point2D endingNodeLocation = getLocation();
+                        double x = endingNodeLocation.getX() + DEFAULT_WIDTH;
+                        double y = endingNodeLocation.getY();
                         return new Point2D.Double(x, y);
                     }
                 }
             }
-            
+            if (isActivationBarNodeOnStart && isLifelineNodeOnEnd) {
+                Direction d = e.getDirection(this);
+                Point2D startingNodeLocation = getLocation();
+                if (d.getX() > 0)
+                {
+                    double x = startingNodeLocation.getX(); 
+                    double y = startingNodeLocation.getY() + CALL_YGAP / 2;
+                    return new Point2D.Double(x, y);
+                }
+                else
+                {
+                    double x = startingNodeLocation.getX() + DEFAULT_WIDTH;
+                    double y = startingNodeLocation.getY() + CALL_YGAP / 2;
+                    return new Point2D.Double(x, y);
+                }
+            }
+        }
+        if (isReturnEdge) {
+            if (isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+                ActivationBarNode startingNode = (ActivationBarNode) e.getStart();
+                ActivationBarNode endingNode = (ActivationBarNode) e.getEnd();
+                LifelineNode startingLifelineNode = startingNode.getImplicitParameter();
+                LifelineNode endingLifelineNode = endingNode.getImplicitParameter();
+                boolean isDifferentLifelineNodes = startingLifelineNode != null && endingLifelineNode != null && !startingLifelineNode.equals(endingLifelineNode);
+                // Case 1 : two activation bars connected on differents LifeLines
+                if (isDifferentLifelineNodes && isActivationBarNodeOnStart && isActivationBarNodeOnEnd) {
+                    boolean isStartingNode = this.equals(e.getStart());
+                    boolean isEndingNode = this.equals(e.getEnd());
+                    if (isStartingNode) {
+                        Point2D startingNodeLocation = getLocation();
+                        Point2D endingNodeLocation = e.getEnd().getLocation();
+                        Rectangle2D endingNodeBounds = e.getEnd().getBounds();
+                        Direction d = e.getDirection(this);
+                        if (d.getX() > 0)
+                        {
+                            double x = startingNodeLocation.getX() + DEFAULT_WIDTH; 
+                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            return new Point2D.Double(x, y);
+                        }
+                        else
+                        {
+                            double x = startingNodeLocation.getX();
+                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            return new Point2D.Double(x, y);
+                        }
+                    }
+                    if (isEndingNode) {
+                        Point2D endingNodeLocation = getLocation();
+                        Rectangle2D endingNodeBounds = getBounds();
+                        Direction d = e.getDirection(this);
+                        if (d.getX() > 0)
+                        {
+                            double x = endingNodeLocation.getX() + DEFAULT_WIDTH; 
+                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            return new Point2D.Double(x, y);
+                        }
+                        else
+                        {
+                            double x = endingNodeLocation.getX();
+                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            return new Point2D.Double(x, y);
+                        }
+                    }
+                }
+            }
         }
         // Default case
         Direction d = e.getDirection(this);
