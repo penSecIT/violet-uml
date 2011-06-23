@@ -21,9 +21,7 @@
 
 package com.horstmann.violet.product.diagram.sequence;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
@@ -71,101 +69,47 @@ public class CallEdge extends SegmentedLineEdge
     {
         INode endingNode = getEnd();
         INode startingNode = getStart();
-        // Case 1 : classic connection between activation bars on different lifelines
-        if (startingNode.getClass().isAssignableFrom(ActivationBarNode.class) && endingNode.getClass().isAssignableFrom(ActivationBarNode.class))
+        if (isActivationBarsOnSameLifeline(startingNode, endingNode))
         {
-            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
-            ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
-            if (startingActivationBarNode.getImplicitParameter() != endingActivationBarNode.getImplicitParameter())
-            {
-                return getPointsForActivationBarsOnDifferentLifeLines(startingActivationBarNode, endingActivationBarNode);
-            }
+            return getPointsForLoopOnActivationBarNode(startingNode, endingNode);
         }
-        // Case 2 : self call on an activation bar
-        if (startingNode.getClass().isAssignableFrom(ActivationBarNode.class) && endingNode.getClass().isAssignableFrom(ActivationBarNode.class))
+        return getPointsForActivationBarsOnDifferentLifeLines(startingNode, endingNode);
+    }
+
+    private boolean isActivationBarsOnSameLifeline(INode startingNode, INode endingNode)
+    {
+        if (startingNode.getClass().isAssignableFrom(ActivationBarNode.class)
+                && endingNode.getClass().isAssignableFrom(ActivationBarNode.class))
         {
             ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
             ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
             if (startingActivationBarNode.getImplicitParameter() == endingActivationBarNode.getImplicitParameter())
             {
-                return getPointsForLoopOnActivationBarNode(startingActivationBarNode, endingActivationBarNode);
+                return true;
             }
         }
-        // Case 3 : activation bar connected to a lifeline by its top rectangle
-        if (startingNode.getClass().isAssignableFrom(ActivationBarNode.class) && endingNode.getClass().isAssignableFrom(LifelineNode.class)) {
-            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
-            LifelineNode endingLifelineNode = (LifelineNode) endingNode;
-            return getPointsForActivationBarConnectedToLifeLineTopRectangle(startingActivationBarNode, endingLifelineNode);
-        }
-        // Case 4 : default case
-        Point2D startingPoint = getStart().getLocation();
-        Point2D endingPoint = getEnd().getLocation();
-        ArrayList<Point2D> result = new ArrayList<Point2D>();
-        result.add(startingPoint);
-        result.add(endingPoint);
-        return result;
+        return false;
     }
-    
-    
-    private ArrayList<Point2D> getPointsForActivationBarConnectedToLifeLineTopRectangle(ActivationBarNode startingNode, LifelineNode endingNode) {
-        ArrayList<Point2D> a = new ArrayList<Point2D>();
-        Rectangle2D startingNodeBounds = startingNode.getBounds();
-        Rectangle2D endingNodeBounds = endingNode.getBounds();
-        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
-        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
-        Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
-        Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        double topMiddleHeight = endingNode.getTopRectangle().getHeight() / 2;
-        Point2D endPoint = getEnd().getConnectionPoint(this);
-        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingNodeLocationOnGraph.getY() + topMiddleHeight);
-        if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
-            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY());
-            a.add(startPointOnGraph);
-        }
-        else {
-            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getX(), endPointOnGraph.getY());
-            a.add(startPointOnGraph);
-        }
-        a.add(endPointOnGraph);
-        return a;
-    }
-    
 
-    private ArrayList<Point2D> getPointsForActivationBarsOnDifferentLifeLines(ActivationBarNode startingNode, ActivationBarNode endingNode) {
+    private ArrayList<Point2D> getPointsForActivationBarsOnDifferentLifeLines(INode startingNode, INode endingNode)
+    {
+        Point2D startingPoint = startingNode.getConnectionPoint(this);
+        Point2D endingPoint = endingNode.getConnectionPoint(this);
         ArrayList<Point2D> a = new ArrayList<Point2D>();
-        Rectangle2D startingNodeBounds = startingNode.getBounds();
-        Rectangle2D endingNodeBounds = endingNode.getBounds();
-        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
-        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
-        Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
-        Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        Point2D endPoint = getEnd().getConnectionPoint(this);
-        Point2D endPointOnGraph = new Point2D.Double(endPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingNodeLocationOnGraph.getY());
-        if (startNodeBoundsOnGraph.getCenterX() < endPointOnGraph.getX()) {
-            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endPointOnGraph.getY());
-            a.add(startPointOnGraph);
-        }
-        else {
-            Point2D.Double startPointOnGraph = new Point2D.Double(startNodeBoundsOnGraph.getX(), endPointOnGraph.getY());
-            a.add(startPointOnGraph);
-        }
-        a.add(endPointOnGraph);
+        a.add(startingPoint);
+        a.add(endingPoint);
         return a;
     }
-    
-    private ArrayList<Point2D> getPointsForLoopOnActivationBarNode(ActivationBarNode startingNode, ActivationBarNode endingNode)
+
+    private ArrayList<Point2D> getPointsForLoopOnActivationBarNode(INode startingNode, INode endingNode)
     {
         ArrayList<Point2D> a = new ArrayList<Point2D>();
-        Rectangle2D startingNodeBounds = startingNode.getBounds();
-        Rectangle2D endingNodeBounds = endingNode.getBounds();
-        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
-        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
-        Rectangle2D startNodeBoundsOnGraph = new Rectangle2D.Double(startingNodeLocationOnGraph.getX(), startingNodeLocationOnGraph.getY(), startingNodeBounds.getWidth(), startingNodeBounds.getHeight());
-        Rectangle2D endNodeBoundsOnGraph = new Rectangle2D.Double(endingNodeLocationOnGraph.getX(), endingNodeLocationOnGraph.getY(), endingNodeBounds.getWidth(), endingNodeBounds.getHeight());
-        Point2D p = new Point2D.Double(startNodeBoundsOnGraph.getMaxX(), endNodeBoundsOnGraph.getY() - ActivationBarNode.CALL_YGAP / 2);
-        Point2D q = new Point2D.Double(endNodeBoundsOnGraph.getMaxX() + endNodeBoundsOnGraph.getWidth(), p.getY());
-        Point2D r = new Point2D.Double(q.getX(), endNodeBoundsOnGraph.getY());
-        Point2D s = new Point2D.Double(endNodeBoundsOnGraph.getMaxX(), r.getY());
+        Point2D startingPoint = startingNode.getConnectionPoint(this);
+        Point2D endingPoint = endingNode.getConnectionPoint(this);
+        Point2D p = startingPoint;
+        Point2D q = new Point2D.Double(endingPoint.getX() + LOOP_GAP, p.getY());
+        Point2D r = new Point2D.Double(q.getX(), endingPoint.getY());
+        Point2D s = endingPoint;
         a.add(p);
         a.add(q);
         a.add(r);
@@ -173,23 +117,9 @@ public class CallEdge extends SegmentedLineEdge
         return a;
     }
 
-    @Override
-    public Line2D getConnectionPoints()
-    {
-        Rectangle2D startingNodeBounds = getStart().getBounds();
-        Rectangle2D endingNodeBounds = getEnd().getBounds();
-        Point2D startingNodeLocationOnGraph = getStart().getLocationOnGraph();
-        Point2D endingNodeLocationOnGraph = getEnd().getLocationOnGraph();
-        
-        Point2D endingPoint = getEnd().getConnectionPoint(this);
-        Point2D endingPointOnGraph = new Point2D.Double(endingPoint.getX() + endingNodeLocationOnGraph.getX() - endingNodeBounds.getX(), endingPoint.getY() + endingNodeLocationOnGraph.getY() - endingNodeBounds.getY());
-        
-        Point2D startingPoint = getStart().getConnectionPoint(this);
-        Point2D startingPointOnGraph = new Point2D.Double(startingPoint.getX() + startingNodeLocationOnGraph.getX() - startingNodeBounds.getX(), startingPoint.getY() + startingNodeLocationOnGraph.getY() - startingNodeBounds.getY());
-        
-        return new Line2D.Double(startingPointOnGraph, endingPointOnGraph);
-    }
-    
     /** Indicate if the node represents an asynchonus signal */
     private boolean signal;
+
+    /** Horizintal gap used to connected two activation bars on the same lifeline */
+    private static int LOOP_GAP = 15;
 }

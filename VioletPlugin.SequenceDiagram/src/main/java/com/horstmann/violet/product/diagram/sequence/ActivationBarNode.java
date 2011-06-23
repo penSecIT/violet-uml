@@ -123,8 +123,8 @@ public class ActivationBarNode extends RectangularNode
                     boolean isStartingNode = this.equals(e.getStart());
                     boolean isEndingNode = this.equals(e.getEnd());
                     if (isStartingNode) {
-                        Point2D startingNodeLocation = getLocation();
-                        Point2D endingNodeLocation = e.getEnd().getLocation();
+                        Point2D startingNodeLocation = getLocationOnGraph();
+                        Point2D endingNodeLocation = e.getEnd().getLocationOnGraph();
                         Direction d = e.getDirection(this);
                         if (d.getX() > 0)
                         {
@@ -140,7 +140,7 @@ public class ActivationBarNode extends RectangularNode
                         }
                     }
                     if (isEndingNode) {
-                        Point2D endingNodeLocation = getLocation();
+                        Point2D endingNodeLocation = getLocationOnGraph();
                         Direction d = e.getDirection(this);
                         if (d.getX() > 0)
                         {
@@ -161,14 +161,14 @@ public class ActivationBarNode extends RectangularNode
                     boolean isStartingNode = this.equals(e.getStart());
                     boolean isEndingNode = this.equals(e.getEnd());
                     if (isStartingNode) {
-                        Point2D startingNodeLocation = getLocation();
+                        Point2D startingNodeLocation = getLocationOnGraph();
                         Point2D endingNodeLocation = e.getEnd().getLocation();
                         double x = startingNodeLocation.getX() + DEFAULT_WIDTH;
                         double y = startingNodeLocation.getY() + endingNodeLocation.getY() - CALL_YGAP / 2;
                         return new Point2D.Double(x, y);
                     }
                     if (isEndingNode) {
-                        Point2D endingNodeLocation = getLocation();
+                        Point2D endingNodeLocation = getLocationOnGraph();
                         double x = endingNodeLocation.getX() + DEFAULT_WIDTH;
                         double y = endingNodeLocation.getY();
                         return new Point2D.Double(x, y);
@@ -177,7 +177,7 @@ public class ActivationBarNode extends RectangularNode
             }
             if (isActivationBarNodeOnStart && isLifelineNodeOnEnd) {
                 Direction d = e.getDirection(this);
-                Point2D startingNodeLocation = getLocation();
+                Point2D startingNodeLocation = getLocationOnGraph();
                 if (d.getX() > 0)
                 {
                     double x = startingNodeLocation.getX(); 
@@ -204,37 +204,37 @@ public class ActivationBarNode extends RectangularNode
                     boolean isStartingNode = this.equals(e.getStart());
                     boolean isEndingNode = this.equals(e.getEnd());
                     if (isStartingNode) {
-                        Point2D startingNodeLocation = getLocation();
-                        Point2D endingNodeLocation = e.getEnd().getLocation();
-                        Rectangle2D endingNodeBounds = e.getEnd().getBounds();
+                        Point2D startingNodeLocation = getLocationOnGraph();
+                        Rectangle2D startingNodeBounds = getBounds();
                         Direction d = e.getDirection(this);
                         if (d.getX() > 0)
                         {
-                            double x = startingNodeLocation.getX() + DEFAULT_WIDTH; 
-                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            double x = startingNodeLocation.getX(); 
+                            double y = startingNodeLocation.getY() + startingNodeBounds.getHeight();
                             return new Point2D.Double(x, y);
                         }
                         else
                         {
-                            double x = startingNodeLocation.getX();
-                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            double x = startingNodeLocation.getX() + DEFAULT_WIDTH;
+                            double y = startingNodeLocation.getY() + startingNodeBounds.getHeight();
                             return new Point2D.Double(x, y);
                         }
                     }
                     if (isEndingNode) {
-                        Point2D endingNodeLocation = getLocation();
-                        Rectangle2D endingNodeBounds = getBounds();
+                        Point2D startingNodeLocation = e.getStart().getLocationOnGraph();
+                        Rectangle2D startingNodeBounds = e.getStart().getBounds();
+                        Point2D endingNodeLocation = getLocationOnGraph();
                         Direction d = e.getDirection(this);
                         if (d.getX() > 0)
                         {
-                            double x = endingNodeLocation.getX() + DEFAULT_WIDTH; 
-                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            double x = endingNodeLocation.getX() ; 
+                            double y = startingNodeLocation.getY() + startingNodeBounds.getHeight();
                             return new Point2D.Double(x, y);
                         }
                         else
                         {
-                            double x = endingNodeLocation.getX();
-                            double y = endingNodeLocation.getY() + endingNodeBounds.getHeight();
+                            double x = endingNodeLocation.getX() + DEFAULT_WIDTH;
+                            double y = startingNodeLocation.getY() + startingNodeBounds.getHeight();
                             return new Point2D.Double(x, y);
                         }
                     }

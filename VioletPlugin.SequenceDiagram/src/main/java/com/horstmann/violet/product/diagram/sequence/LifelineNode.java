@@ -154,12 +154,13 @@ public class LifelineNode extends RectangularNode
     public Point2D getConnectionPoint(IEdge e)
     {
         Direction d = e.getDirection(this);
-        Rectangle2D bounds = getBounds();
+        Point2D locationOnGraph = getLocationOnGraph();
+        Rectangle2D topRectBounds = getTopRectangle();
         if (d.getX() > 0)
         {
-            return new Point2D.Double(bounds.getMaxX(), bounds.getMinY() + ActivationBarNode.CALL_YGAP / 2);
+            return new Point2D.Double(locationOnGraph.getX(), locationOnGraph.getY() + topRectBounds.getHeight() / 2);
         }
-        return new Point2D.Double(bounds.getX(), bounds.getMinY() + ActivationBarNode.CALL_YGAP / 2);
+        return new Point2D.Double(locationOnGraph.getX() + topRectBounds.getWidth(), locationOnGraph.getY() + topRectBounds.getHeight() / 2);
     }
 
     @Override
