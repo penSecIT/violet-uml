@@ -260,7 +260,7 @@ public class GraphFile implements IGraphFile
         optionPane.setIcon(this.clipBoardDialogIcon);
         optionPane.setMessage(this.clipBoardDialogMessage);
         optionPane.setName(this.clipBoardDialogTitle);
-        DialogFactory.getInstance().showDialog(optionPane, this.clipBoardDialogTitle, true);
+        this.dialogFactory.showDialog(optionPane, this.clipBoardDialogTitle, true);
     }
 
     /*
