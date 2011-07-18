@@ -28,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
@@ -40,17 +42,16 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
  * @author Alexandre de Pellegrin
  * 
  */
+@InjectableBean
 public class FileNamingService
 {
 
     /**
      * Default constructor
-     * @param pluginRegistry
      */
-    public FileNamingService(PluginRegistry pluginRegistry)
+    public FileNamingService()
     {
         ResourceBundleInjector.getInjector().inject(this);
-        this.pluginRegistry = pluginRegistry;
     }
 
 
@@ -152,6 +153,7 @@ public class FileNamingService
     @ResourceBundleBean(key="files.global.extension")
     private String defaultFileExtension;
     
+    @InjectedBean
     private PluginRegistry pluginRegistry;
 
 

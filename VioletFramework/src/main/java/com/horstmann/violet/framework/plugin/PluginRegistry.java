@@ -3,12 +3,15 @@ package com.horstmann.violet.framework.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+
 /**
  * Plugin registry
  * 
  * @author Alexandre de Pellegrin
  *
  */
+@InjectableBean
 public class PluginRegistry
 {
 
@@ -16,7 +19,7 @@ public class PluginRegistry
     /**
      * Private constructor
      */
-    private PluginRegistry()
+    public PluginRegistry()
     {
         // Singleton
     }

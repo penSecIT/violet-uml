@@ -26,8 +26,8 @@ import java.util.List;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.springframework.stereotype.Component;
-
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 
 /**
@@ -36,7 +36,7 @@ import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
  * @author Alexandre de Pellegrin
  * 
  */
-@Component
+@InjectableBean(autoCreate=false)
 public class ThemeManager
 {
 
@@ -165,6 +165,7 @@ public class ThemeManager
      */
     private List<ITheme> installedThemes = new ArrayList<ITheme>();
     
+    @InjectedBean
     private UserPreferencesService userPreferencesServices;
 
 }

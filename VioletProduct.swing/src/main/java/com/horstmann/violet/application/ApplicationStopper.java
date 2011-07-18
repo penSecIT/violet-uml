@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
@@ -21,7 +21,7 @@ public class ApplicationStopper
 
     public ApplicationStopper()
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         ResourceBundleInjector.getInjector().inject(this);
     }
 
@@ -112,10 +112,10 @@ public class ApplicationStopper
     @ResourceBundleBean(key = "dialog.exit.title")
     private String dialogExitTitle;
 
-    @SpringBean
+    @InjectedBean
     private DialogFactory dialogFactory;
 
-    @SpringBean
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
 
 }

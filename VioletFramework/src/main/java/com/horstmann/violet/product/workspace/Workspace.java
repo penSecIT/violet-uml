@@ -28,8 +28,8 @@ import java.util.Vector;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.IGraphFileListener;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.PluginRegistry;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -88,7 +88,7 @@ public class Workspace implements IWorkspace
 
     private void init()
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         setTitle(getGraphName());
         this.graphFile.addListener(new IGraphFileListener()
         {
@@ -381,7 +381,7 @@ public class Workspace implements IWorkspace
     private Id id;
     private boolean isSaveNeeded = false;
     
-    @SpringBean
+    @InjectedBean
     private PluginRegistry pluginRegistry;
 
 }

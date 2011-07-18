@@ -28,18 +28,28 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.application.gui.SplashScreen;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.dialog.DialogFactoryMode;
+import com.horstmann.violet.framework.display.theme.ClassicMetalTheme;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.file.chooser.IFileChooserService;
+import com.horstmann.violet.framework.file.chooser.JFileChooserService;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.injection.bean.BeanFactory;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
+import com.horstmann.violet.framework.userpreferences.DefaultUserPreferencesDao;
+import com.horstmann.violet.framework.userpreferences.IUserPreferencesDao;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.framework.util.VersionChecker;
 import com.horstmann.violet.product.workspace.IWorkspace;
@@ -63,8 +73,8 @@ public class UMLEditorApplication
             String arg = args[i];
             if ("-reset".equals(arg))
             {
-                ApplicationContext applicationContext = getApplicationContext();
-                UserPreferencesService service = (UserPreferencesService) applicationContext.getBean("userPreferencesService");
+                initBeanFactory();
+                UserPreferencesService service = BeanFactory.getFactory().getBean(UserPreferencesService.class);
                 service.reset();
                 System.out.println("User preferences reset done.");
             }
@@ -91,26 +101,36 @@ public class UMLEditorApplication
      */
     private UMLEditorApplication(String[] filesToOpen)
     {
-        ApplicationContext context = getApplicationContext();
-        SpringDependencyInjector injector = (SpringDependencyInjector) context.getBean("springDependencyInjector");
-        injector.inject(this);
+        initBeanFactory();
+        BeanInjector.getInjector().inject(this);
         createDefaultWorkspace(filesToOpen);
     }
+    
+    private static void initBeanFactory() {
+        IUserPreferencesDao userPreferencesDao = new DefaultUserPreferencesDao();
+        BeanFactory.getFactory().register(IUserPreferencesDao.class, userPreferencesDao);
 
-    /**
-     * @return a new application context instance
-     */
-    private static ApplicationContext getApplicationContext()
-    {
-        String[] configLocations =
-        {
-                "classpath*:applicationContext*.xml",
-                "classpath:applicationContext-framework.xml",
-                "classpath:dedicatedApplicationContext-application.xml"
-        };
-        ApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
-        return context;
+        ThemeManager themeManager = new ThemeManager();
+        ITheme theme1 = new ClassicMetalTheme();
+        ITheme theme2 = new VistaBlueTheme();
+        List<ITheme> themeList = new ArrayList<ITheme>();
+        themeList.add(theme1);
+        themeList.add(theme2);
+        themeManager.setInstalledThemes(themeList);
+        BeanFactory.getFactory().register(ThemeManager.class, themeManager);
+        themeManager.applyPreferedTheme();
+        
+        IFilePersistenceService filePersistenceService = new StandardJavaFilePersistenceService();
+        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
+        
+        DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.INTERNAL);
+        BeanFactory.getFactory().register(DialogFactory.class, dialogFactory);
+        
+        IFileChooserService fileChooserService = new JFileChooserService();
+        BeanFactory.getFactory().register(IFileChooserService.class, fileChooserService);
     }
+
+
 
     /**
      * Creates workspace when application works as a standalone one. It contains :<br>
@@ -178,13 +198,13 @@ public class UMLEditorApplication
     }
 
 
-    @SpringBean(name = "versionChecker")
+    @InjectedBean
     private VersionChecker versionChecker;
 
-    @SpringBean(name = "pluginLoader")
+    @InjectedBean
     private PluginLoader pluginLoader;
 
-    @SpringBean(name = "userPreferencesService")
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
 
 

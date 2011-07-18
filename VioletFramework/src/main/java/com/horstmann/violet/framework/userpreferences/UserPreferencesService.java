@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.horstmann.violet.framework.file.IFile;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
 
 
@@ -14,13 +16,10 @@ import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
  * @author alexandre de pellegrin
  *
  */
+@InjectableBean
 public class UserPreferencesService
 {
 
-    public UserPreferencesService(IUserPreferencesDao dao)
-    {
-        this.dao = dao;
-    }
 
     public void setPreferedLookAndFeel(String className)
     {
@@ -219,6 +218,7 @@ public class UserPreferencesService
     /**
      * Allows to store and retrieve preferences
      */
+    @InjectedBean
     private IUserPreferencesDao dao;
     
     /**

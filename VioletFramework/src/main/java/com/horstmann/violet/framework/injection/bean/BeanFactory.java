@@ -1,38 +1,29 @@
 package com.horstmann.violet.framework.injection.bean;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.util.ReflectionUtils;
-
-import com.horstmann.violet.framework.injection.bean.annotation.ManagedBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 
 public class BeanFactory {
 
     /**
-     * Default constructor. NOT PART OF THE PUBLIC API.
+     * Singleton constructor
      */
-    public BeanFactory() {
-        instance = this;
+    private BeanFactory() {
+        // Singleton pattern
     }
-    
-    private void init() {
-        
-        
-    }
- 
+
     /**
      * @return the only object instance
      */
     public static BeanFactory getFactory() {
-        return instance;
+        if (BeanFactory.instance == null) {
+            BeanFactory.instance = new BeanFactory();
+        }
+        return BeanFactory.instance;
     }
-
-
 
     /**
      * Looks for a bean from its type
@@ -42,10 +33,71 @@ public class BeanFactory {
      * @return
      */
     public <T> T getBean(Class<T> classType) {
-        ManagedBean managedBeanAnnotation = classType.getAnnotation(ManagedBean.class);
-        if (managedBeanAnnotation == null) {
-            throw new RuntimeException("Bean of type " + classType.getName() + " not managed by the BeanFactory");
+        if (singletonsMap.containsKey(classType)) {
+            Object object = singletonsMap.get(classType);
+            Class<? extends Object> implementationType = object.getClass();
+            InjectableBean annotation = implementationType.getAnnotation(InjectableBean.class);
+            if (annotation == null) {
+                throw new RuntimeException("Error on " + implementationType.getName() + " . All the class instances you want to inject must have the annotation @" + InjectableBean.class.getSimpleName() + " declared.");
+            }
         }
+        if (!singletonsMap.containsKey(classType)) {
+            createBean(classType);
+        }
+        return (T) singletonsMap.get(classType);
+    }
+
+    /**
+     * Allows to a bean register manually. If this bean has unset @InjectedBean
+     * field, they would be automatically injected.
+     * 
+     * @param classType
+     *            (prefer using the interface here)
+     * @param aBean
+     */
+    public void register(Class<?> classType, Object implementation) {
+        singletonsMap.put(classType, implementation);
+        BeanInjector beanInjector = BeanInjector.getInjector();
+        try {
+            beanInjector.inject(implementation);
+        } catch (RuntimeException re) {
+            throw new RuntimeException("Error while registering a bean of type " + classType.getName() + " . Perhaps you register another bean before this one." , re);
+        }
+    }
+
+    /**
+     * Creates a new class instance
+     * 
+     * @param <T>
+     * @param classType
+     */
+    private <T> void createBean(Class<T> classType) {
+        InjectableBean annotation = classType.getAnnotation(InjectableBean.class);
+        if (annotation == null) {
+            throw new RuntimeException("Error on " + classType + " . All the class instances you want to inject must have the annotation @" + InjectableBean.class.getSimpleName() + " declared.");
+        }
+        if (!annotation.autoCreate()) {
+            throw new RuntimeException("BeanFactory cannot create bean instance of type " + classType.getName() + " because you set the flag autocreate to false");
+        }
+        boolean isEmptyContructor = isEmptyConstructor(classType);
+        if (!isEmptyContructor) {
+            throw new RuntimeException("BeanFactory cannot create instance of type " + classType.getName() + " because it doesn't have a public constructor with no parameter.");
+        }
+        try {
+            T newInstance = classType.newInstance();
+            BeanInjector beanInjector = BeanInjector.getInjector();
+            beanInjector.inject(newInstance);
+            singletonsMap.put(classType, newInstance);
+        } catch (Exception e) {
+            throw new RuntimeException("BeanFactory failed to create bean of type " + classType.getName(), e);
+        }
+    }
+
+    /**
+     * @param classType
+     * @return true if the class has at least one empty constructor
+     */
+    private boolean isEmptyConstructor(Class<?> classType) {
         boolean isEmptyContructor = false;
         Constructor<?>[] constructors = classType.getConstructors();
         for (Constructor<?> aConstructor : constructors) {
@@ -54,20 +106,7 @@ public class BeanFactory {
                 isEmptyContructor = true;
             }
         }
-        if (!isEmptyContructor) {
-            throw new RuntimeException("BeanFactory cannot create instance of type " + classType.getName() + " because it doesn't have a constructor without any parameter");
-        }
-        if (!singletonsMap.containsKey(classType)) {
-            try {
-                T newInstance = classType.newInstance();
-                BeanInjector beanInjector = BeanInjector.getInjector();
-                beanInjector.inject(newInstance);
-                singletonsMap.put(classType, newInstance);
-            } catch (Exception e) {
-                throw new RuntimeException("BeanFactory failed to create bean of type " + classType.getName() + " for the following reason : " + e.getMessage());
-            }
-        }
-        return (T) singletonsMap.get(classType);
+        return isEmptyContructor;
     }
 
     private Map<Class<?>, Object> singletonsMap = new HashMap<Class<?>, Object>();

@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.horstmann.violet.framework.display.clipboard.Clipboard;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
@@ -16,13 +16,13 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
     private IEditorPart editorPart;
     
     /** The clipboard that is shared among all diagrams */
-    @SpringBean(name="clipboard")
+    @InjectedBean
     private Clipboard clipboard;
 
     public CutCopyPasteBehavior(IEditorPart editorPart)
     {
         this.editorPart = editorPart;
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
     }
 
     public void cut()

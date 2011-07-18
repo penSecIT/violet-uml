@@ -27,8 +27,8 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.product.workspace.IWorkspace;
 import com.horstmann.violet.product.workspace.sidebar.editortools.EditorToolsPanel;
@@ -41,7 +41,7 @@ public class SideBar extends JPanel implements ISideBar
 
     public SideBar(IWorkspace diagramPanel)
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         this.diagramPanel = diagramPanel;
         this.isSmallSize = this.userPreferencesService.isSmallSideBarPreferred();
         setupUI();
@@ -152,7 +152,7 @@ public class SideBar extends JPanel implements ISideBar
     private Map<ISideBarElement, String> externalContributionElements = new HashMap<ISideBarElement, String>();
     private boolean isSmallSize;
     
-    @SpringBean(name = "userPreferencesService")
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
     
 }

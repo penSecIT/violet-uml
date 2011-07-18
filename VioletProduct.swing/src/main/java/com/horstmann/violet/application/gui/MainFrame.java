@@ -40,8 +40,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.horstmann.violet.application.help.AboutDialog;
 import com.horstmann.violet.application.menu.MenuFactory;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
@@ -52,8 +50,8 @@ import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -77,10 +75,9 @@ public class MainFrame extends JFrame
      * Constructs a blank frame with a desktop pane but no graph windows.
      * 
      */
-    @Autowired
     public MainFrame()
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         ResourceBundleInjector.getInjector().inject(this);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.dialogFactory.setDialogOwner(this);
@@ -349,19 +346,19 @@ public class MainFrame extends JFrame
     /**
      * GUI Theme manager
      */
-    @SpringBean(name = "themeManager")
+    @InjectedBean
     private ThemeManager themeManager;
 
     /**
      * Needed to display dialog boxes
      */
-    @SpringBean(name = "dialogFactory")
+    @InjectedBean
     private DialogFactory dialogFactory;
 
     /**
      * Needed to open files
      */
-    @SpringBean
+    @InjectedBean
     private IFileChooserService fileChooserService;
     
     @ResourceBundleBean(key="app.name")

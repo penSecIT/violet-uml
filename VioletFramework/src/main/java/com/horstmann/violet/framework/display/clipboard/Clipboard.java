@@ -13,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 
+@InjectableBean
 public class Clipboard extends AbstractGraph
 {
     public void copyIn(IGraph g, List<INode> selectedNodes)

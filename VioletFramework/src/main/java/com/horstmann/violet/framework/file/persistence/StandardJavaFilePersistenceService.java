@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
@@ -37,6 +38,7 @@ import com.horstmann.violet.product.diagram.common.ImageNode;
  * @author alex
  *
  */
+@InjectableBean(autoCreate=false)
 public class StandardJavaFilePersistenceService implements IFilePersistenceService
 {
 

@@ -47,8 +47,8 @@ import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.naming.FileNamingService;
 import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
@@ -77,7 +77,7 @@ public class FileMenu extends JMenu
     public FileMenu(MainFrame mainFrame)
     {
         ResourceBundleInjector.getInjector().inject(this);
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         this.mainFrame = mainFrame;
         createMenu();
         addWindowsClosingListener();
@@ -470,26 +470,26 @@ public class FileMenu extends JMenu
     }
 
     /** The file chooser to use with with menu */
-    @SpringBean
+    @InjectedBean
     private IFileChooserService fileChooserService;
 
     /** Application stopper */
     private ApplicationStopper stopper = new ApplicationStopper();
 
     /** Plugin registry */
-    @SpringBean
+    @InjectedBean
     private PluginRegistry pluginRegistry;
     
     /** DialogBox handler */
-    @SpringBean
+    @InjectedBean
     private DialogFactory dialogFactory;
     
     /** Access to user preferences */
-    @SpringBean
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
     
     /** File services */
-    @SpringBean
+    @InjectedBean
     private FileNamingService fileNamingService;
 
     /** Application main frame */

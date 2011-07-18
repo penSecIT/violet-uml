@@ -24,7 +24,7 @@ package com.horstmann.violet.framework.userpreferences;
 /**
  * Interface for services storing and loading user preferences.
  */
-interface IUserPreferencesDao
+public interface IUserPreferencesDao
 {
 
     /**

@@ -4,80 +4,74 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
-
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 
 /**
- * This injector is made to perform dependency injection on objects.
- * This class was inspired from the excellent Apache Wicket framework. 
+ * This injector is made to perform dependency injection on objects. This class
+ * was inspired from the excellent Apache Wicket framework.
  * 
  * @author Alexandre de Pellegrin
- *
+ * 
  */
-public class BeanInjector 
-{
+public class BeanInjector {
 
     /**
-     * Default constructor. NOT PART OF THE PUBLIC API.
+     * Singleton constructor
      */
     public BeanInjector() {
-        instance = this;
+        // Singleton pattern
     }
-    
+
     /**
      * @return the only object instance
      */
     public static BeanInjector getInjector() {
-        return instance;
+        if (BeanInjector.instance == null)
+        {
+            BeanInjector.instance = new BeanInjector();
+        }
+        return BeanInjector.instance;
     }
-    
-
-
 
     /**
-     * Injects Spring beans on fields annotated with \@SpringBean 
+     * Injects Spring beans on fields annotated with \@SpringBean
+     * 
      * @param o
      */
     public void inject(Object o) {
-//        List<Class<?>> classAndSuperClasses = getClassAndSuperClasses(o);
-//        for (Class<?> aClass : classAndSuperClasses) {
-//            // Injects on fields
-//            for (Field aField : aClass.getDeclaredFields())
-//            {
-//                SpringBean propertyAnnotation = aField.getAnnotation(SpringBean.class);
-//                if (propertyAnnotation != null) {
-//                    String beanName = propertyAnnotation.name();
-//                    if ("".equals(beanName)) {
-//                        beanName = aField.getName();
-//                    }
-//                    Object beanToInject = this.context.getBean(beanName);
-//                    if (beanToInject == null) {
-//                        continue;
-//                    }
-//                    aField.setAccessible(true);
-//                    try
-//                    {
-//                        aField.set(o, beanToInject);
-//                    }
-//                    catch (IllegalArgumentException e)
-//                    {
-//                        throw new RuntimeException("Error while injecting bean maanged by Spring", e);
-//                    }
-//                    catch (IllegalAccessException e)
-//                    {
-//                        throw new RuntimeException("Error while injecting bean managed by Spring", e);
-//                    }
-//                }
-//            }
-//        }
+        List<Class<?>> classAndSuperClasses = getClassAndSuperClasses(o);
+        for (Class<?> aClass : classAndSuperClasses) {
+            // Injects on fields (only if they haven't any value set)
+            for (Field aField : aClass.getDeclaredFields()) {
+                InjectedBean propertyAnnotation = aField.getAnnotation(InjectedBean.class);
+                if (propertyAnnotation != null) {
+                    aField.setAccessible(true);
+                    if (!isFieldNUll(aField, o)) {
+                        continue;
+                    }
+                    Class<?> implementationClass = propertyAnnotation.implementation();
+                    if (implementationClass.equals(Object.class)) {
+                        implementationClass = aField.getType();
+                    }
+                    Object beanToInject = BeanFactory.getFactory().getBean(implementationClass);
+                    if (beanToInject == null) {
+                        throw new RuntimeException("Unable to inject a bean of type " + implementationClass.getName() + " . No such bean found.");
+                    }
+                    try {
+                        aField.set(o, beanToInject);
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Error while setting field value of bean managed by the BeanFactory", e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Error while setting field value of bean managed by the BeanFactory", e);
+                    }
+                }
+            }
+        }
     }
-    
+
     /**
-     * Takes an objet and returns its class and all its inherited classes 
+     * Takes an objet and returns its class and all its inherited classes
+     * 
      * @param o
      * @return
      */
@@ -86,7 +80,8 @@ public class BeanInjector
         List<Class<?>> fifo = new ArrayList<Class<?>>();
         fifo.add(o.getClass());
         while (!fifo.isEmpty()) {
-            Class<?> aClass = fifo.remove(0);;
+            Class<?> aClass = fifo.remove(0);
+            ;
             Class<?> aSuperClass = aClass.getSuperclass();
             if (aSuperClass != null) {
                 fifo.add(aSuperClass);
@@ -95,8 +90,28 @@ public class BeanInjector
         }
         return result;
     }
-    
-    
+
+    /**
+     * Checks if a field is empty (null value)
+     * 
+     * @param aField
+     * @param o
+     * @return true if null
+     */
+    private boolean isFieldNUll(Field aField, Object o) {
+        try {
+            Object currentValue = aField.get(o);
+            if (currentValue == null) {
+                return true;
+            }
+        } catch (IllegalArgumentException e1) {
+            throw new RuntimeException("Error while getting field value of bean managed by the BeanFactory. Field = " + aField.getName(), e1);
+        } catch (IllegalAccessException e1) {
+            throw new RuntimeException("Error while getting field value of bean managed by the BeanFactory. Field = " + aField.getName(), e1);
+        }
+        return false;
+    }
+
     /**
      * Singleton instance
      */

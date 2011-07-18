@@ -39,6 +39,9 @@ import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
 import com.horstmann.violet.framework.file.persistence.JFileReader;
 import com.horstmann.violet.framework.file.persistence.JFileWriter;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
@@ -46,15 +49,14 @@ import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 /**
  * This class implements a FileService with a JFileChooser
  */
+@InjectableBean(autoCreate=false)
 public class JFileChooserService implements IFileChooserService
 {
 
-    public JFileChooserService(UserPreferencesService userPreferencesService, FileNamingService fileNamingService, DialogFactory dialogFactory)
+    public JFileChooserService()
     {
         ResourceBundleInjector.getInjector().inject(this);
-        this.userPreferencesService = userPreferencesService;
-        this.fileNamingService = fileNamingService;
-        this.dialogFactory = dialogFactory;
+        BeanInjector.getInjector().inject(this);
         File initialDirectory = getLastOpenedDir();
         fileChooser.setCurrentDirectory(initialDirectory);
     }
@@ -232,10 +234,13 @@ public class JFileChooserService implements IFileChooserService
     
     private JFileChooser fileChooser = new JFileChooser();
 
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
     
+    @InjectedBean
     private FileNamingService fileNamingService;
     
+    @InjectedBean
     private DialogFactory dialogFactory;
 
     @ResourceBundleBean(key="dialog.overwrite.ok")

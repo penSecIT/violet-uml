@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.display.propertyeditor.CustomPropertyEditor;
 import com.horstmann.violet.framework.display.propertyeditor.ICustomPropertyEditor;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -30,7 +30,7 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
 
     public EditSelectedBehavior(IEditorPart editorPart)
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         ResourceBundleInjector.getInjector().inject(this);
         this.editorPart = editorPart;
         this.graph = editorPart.getGraph();
@@ -150,7 +150,7 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
     private IGraph graph;
     private IEditorPartBehaviorManager behaviorManager;
 
-    @SpringBean(name = "dialogFactory")
+    @InjectedBean
     private DialogFactory dialogFactory;
 
     @ResourceBundleBean(key = "edit.properties.title")

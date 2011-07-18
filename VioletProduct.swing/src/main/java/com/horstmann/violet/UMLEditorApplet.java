@@ -22,17 +22,29 @@ package com.horstmann.violet;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.dialog.DialogFactoryMode;
+import com.horstmann.violet.framework.display.theme.ClassicMetalTheme;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
+import com.horstmann.violet.framework.file.chooser.IFileChooserService;
+import com.horstmann.violet.framework.file.chooser.JFileChooserService;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.injection.bean.BeanFactory;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
+import com.horstmann.violet.framework.userpreferences.AppletUserPreferencesDao;
+import com.horstmann.violet.framework.userpreferences.IUserPreferencesDao;
 
 /**
  * A program for editing UML diagrams.
@@ -47,16 +59,36 @@ public class UMLEditorApplet extends JApplet
      */
     public void init()
     {
-        String[] configLocations =
-        {
-                "classpath:dedicatedApplicationContext-applet.xml",
-                "classpath*:applicationContext*.xml"
-        };
-        ApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
-        SpringDependencyInjector injector = (SpringDependencyInjector) context.getBean("springDependencyInjector");
-        injector.inject(this);
+        initBeanFactory();
+        BeanInjector.getInjector().inject(this);
         createAppletWorkspace();
     }
+    
+    private void initBeanFactory() {
+        IUserPreferencesDao userPreferencesDao = new AppletUserPreferencesDao();
+        BeanFactory.getFactory().register(IUserPreferencesDao.class, userPreferencesDao);
+        
+        ThemeManager themeManager = new ThemeManager();
+        ITheme theme1 = new ClassicMetalTheme();
+        ITheme theme2 = new VistaBlueTheme();
+        List<ITheme> themeList = new ArrayList<ITheme>();
+        themeList.add(theme1);
+        themeList.add(theme2);
+        themeManager.setInstalledThemes(themeList);
+        BeanFactory.getFactory().register(ThemeManager.class, themeManager);
+        themeManager.applyPreferedTheme();
+        
+        IFilePersistenceService filePersistenceService = new StandardJavaFilePersistenceService();
+        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
+        
+        DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.INTERNAL);
+        BeanFactory.getFactory().register(DialogFactory.class, dialogFactory);
+        
+        IFileChooserService fileChooserService = new JFileChooserService();
+        BeanFactory.getFactory().register(IFileChooserService.class, fileChooserService);
+
+    }
+
 
     /**
      * Creates workspace when application works as an applet. It contains :<br>
@@ -86,7 +118,7 @@ public class UMLEditorApplet extends JApplet
         this.pluginLoader.installPlugins();
     }
 
-    @SpringBean(name = "pluginLoader")
+    @InjectedBean
     private PluginLoader pluginLoader;
 
 }

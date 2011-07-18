@@ -19,8 +19,8 @@ import com.horstmann.violet.framework.file.naming.FileNamingService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.printer.PrintEngine;
@@ -36,7 +36,7 @@ public class GraphFile implements IGraphFile
     public GraphFile(Class<? extends IGraph> graphClass)
     {
         ResourceBundleInjector.getInjector().inject(this);
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         try
         {
             this.graph = graphClass.newInstance();
@@ -57,7 +57,7 @@ public class GraphFile implements IGraphFile
     public GraphFile(IFile file) throws IOException
     {
         ResourceBundleInjector.getInjector().inject(this);
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         IFileReader fileOpener = fileChooserService.getFileReader(file);
         if (fileOpener == null)
         {
@@ -340,16 +340,16 @@ public class GraphFile implements IGraphFile
     @ResourceBundleBean(key = "dialog.error.title")
     private String exportImageDialogTitle;
 
-    @SpringBean(name = "fileChooserService")
+    @InjectedBean
     private IFileChooserService fileChooserService;
 
-    @SpringBean
+    @InjectedBean
     private FileNamingService fileNamingService;
 
-    @SpringBean
+    @InjectedBean
     private IFilePersistenceService filePersistenceService;
 
-    @SpringBean
+    @InjectedBean
     private DialogFactory dialogFactory;
 
     private List<IGraphFileListener> listeners = new ArrayList<IGraphFileListener>();

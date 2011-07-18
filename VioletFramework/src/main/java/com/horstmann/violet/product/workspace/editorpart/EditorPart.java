@@ -36,7 +36,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
@@ -55,7 +54,6 @@ public class EditorPart extends JPanel implements IEditorPart
      */
     public EditorPart(IGraph aGraph)
     {
-        SpringDependencyInjector.getInjector().inject(this);
         this.graph = aGraph;
         this.zoom = 1;
         this.grid = new PlainGrid(this);

@@ -19,21 +19,16 @@ import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.VFSClassLoader;
 
 import com.horstmann.violet.framework.file.persistence.Violet016BackportFormatService;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.plugin.extensionpoint.Violet016FileFilterExtensionPoint;
 
+@InjectableBean
 public class PluginLoader extends ClassLoader
 {
 
     
-    /**
-     * Default constructor
-     * @param pluginRegistry
-     */
-    public PluginLoader(PluginRegistry pluginRegistry)
-    {
-        super();
-        this.pluginRegistry = pluginRegistry;
-    }
+
 
     public void installPlugins()
     {
@@ -121,6 +116,7 @@ public class PluginLoader extends ClassLoader
     }
     
     /** Registry where we register loaded plugins */
+    @InjectedBean
     private PluginRegistry pluginRegistry;
 
 }

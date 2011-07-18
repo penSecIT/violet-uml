@@ -30,8 +30,8 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import com.l2fprod.common.swing.plaf.windows.WindowsLookAndFeelAddons;
@@ -130,14 +130,14 @@ public abstract class AbstractTheme implements ITheme
      */
     private void exitWithErrors()
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         this.userPreferencesService.reset();
         System.exit(-1);
     }
 
     private String lafClassName;
     
-    @SpringBean(name = "userPreferencesService")
+    @InjectedBean
     private UserPreferencesService userPreferencesService;
 
 }

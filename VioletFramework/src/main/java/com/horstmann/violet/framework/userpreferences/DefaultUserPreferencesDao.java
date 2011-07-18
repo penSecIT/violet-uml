@@ -23,9 +23,12 @@ package com.horstmann.violet.framework.userpreferences;
 
 import java.util.prefs.Preferences;
 
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+
 /**
  * The default preferences service that uses the java.util.prefs API.
  */
+@InjectableBean(autoCreate=false)
 public class DefaultUserPreferencesDao implements IUserPreferencesDao
 {
 

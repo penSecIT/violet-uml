@@ -37,12 +37,16 @@ import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
 import com.horstmann.violet.framework.file.persistence.JNLPFileReader;
 import com.horstmann.violet.framework.file.persistence.JNLPFileWriter;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 
 /**
  * This class provides a FileService for Java Web Start. Note that file saving is strange under Web Start. You first save the data,
  * and the dialog is only displayed when the output stream is closed. Therefore, the file name is not available until after the file
  * has been written.
  */
+@InjectableBean(autoCreate=false)
 public class JNLPFileChooserService implements IFileChooserService
 {
 
@@ -51,9 +55,9 @@ public class JNLPFileChooserService implements IFileChooserService
      * 
      * @param namingService
      */
-    public JNLPFileChooserService(FileNamingService fileNamingService)
+    public JNLPFileChooserService()
     {
-        this.fileNamingService = fileNamingService;
+        BeanInjector.getInjector().inject(this);
         try
         {
             openService = (FileOpenService) ServiceManager.lookup("javax.jnlp.FileOpenService");
@@ -166,6 +170,7 @@ public class JNLPFileChooserService implements IFileChooserService
     /**
      * Handle file names
      */
+    @InjectedBean
     private FileNamingService fileNamingService;
 
 }
