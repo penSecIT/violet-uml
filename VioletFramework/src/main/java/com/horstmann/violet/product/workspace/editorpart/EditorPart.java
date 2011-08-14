@@ -71,6 +71,11 @@ public class EditorPart extends JPanel implements IEditorPart
             {
                 behaviorManager.fireOnMouseReleased(event);
             }
+            
+            public void mouseClicked(MouseEvent event)
+            {
+                behaviorManager.fireOnMouseClicked(event);
+            }
         });
 
         addMouseMotionListener(new MouseMotionAdapter()

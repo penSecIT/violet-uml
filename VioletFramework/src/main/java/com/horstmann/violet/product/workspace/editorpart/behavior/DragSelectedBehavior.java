@@ -30,6 +30,9 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
         {
             return;
         }
+        if (event.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
         if (!GraphTool.SELECTION_TOOL.equals(this.graphToolsBar.getSelectedTool()))
         {
             return;

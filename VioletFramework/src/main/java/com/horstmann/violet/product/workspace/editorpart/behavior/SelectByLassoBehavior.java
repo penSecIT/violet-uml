@@ -33,6 +33,9 @@ public class SelectByLassoBehavior extends AbstractEditorPartBehavior
         if (event.getClickCount() > 1) {
             return;
         }
+        if (event.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
         if (!GraphTool.SELECTION_TOOL.equals(this.graphToolsBar.getSelectedTool())) {
             return;
         }

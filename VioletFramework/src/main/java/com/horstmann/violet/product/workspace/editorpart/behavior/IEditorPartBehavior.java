@@ -18,6 +18,8 @@ public interface IEditorPartBehavior
     
     public void onMouseReleased(MouseEvent event);
     
+    public void onMouseClicked(MouseEvent event);
+    
     public void onMouseMoved(MouseEvent event);
     
     public void onToolSelected(GraphTool selectedTool);

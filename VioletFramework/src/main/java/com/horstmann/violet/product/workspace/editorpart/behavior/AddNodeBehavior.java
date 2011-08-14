@@ -24,10 +24,13 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
     }
 
     @Override
-    public void onMousePressed(MouseEvent event)
+    public void onMouseClicked(MouseEvent event)
     {
         if (event.getClickCount() > 1)
         {
+            return;
+        }
+        if (event.getButton() != MouseEvent.BUTTON1) {
             return;
         }
         if (GraphTool.SELECTION_TOOL.equals(this.graphToolsBar.getSelectedTool()))

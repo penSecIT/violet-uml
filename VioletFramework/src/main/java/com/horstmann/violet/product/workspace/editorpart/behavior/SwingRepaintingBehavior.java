@@ -34,6 +34,13 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
         this.editorPart.getAWTComponent().doLayout();
         this.editorPart.getAWTComponent().repaint();
     }
+    
+    @Override
+    public void onMouseClicked(MouseEvent event)
+    {
+        this.editorPart.getAWTComponent().doLayout();
+        this.editorPart.getAWTComponent().repaint();
+    }
 
     @Override
     public void onMousePressed(MouseEvent event)

@@ -31,22 +31,12 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMousePressed(MouseEvent event)
     {
-        this.isDragGesture = false;
-    }
-    
-    @Override
-    public void onMouseDragged(MouseEvent event)
-    {
-        this.isDragGesture = true;
-    }
-    
-    @Override
-    public void onMouseReleased(MouseEvent event)
-    {
-        if (this.isDragGesture) {
+        resetEventAttributes();
+        
+        if (event.getClickCount() > 1) {
             return;
         }
-        if (event.getClickCount() > 1) {
+        if (event.getButton() != MouseEvent.BUTTON1) {
             return;
         }
         if (!GraphTool.SELECTION_TOOL.equals(this.graphToolsBar.getSelectedTool())) {
@@ -63,18 +53,51 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         }
         if (isOnNodeOrEdge && !isCtrl)
         {
-            resetSelectedElements();
-            addOrRemoveElementFromSelection(mousePoint);
+            processSelection(mousePoint, true);
             return;
         }
         if (isOnNodeOrEdge && isCtrl)
         {
-            addOrRemoveElementFromSelection(mousePoint);
+            processSelection(mousePoint, false);
             return;
         }
     }
 
     
+    @Override
+    public void onMouseDragged(MouseEvent event)
+    {
+        this.isDragGesture = true;
+    }
+    
+    @Override
+    public void onMouseReleased(MouseEvent event)
+    {
+        if (event.getClickCount() > 1) {
+            return;
+        }
+        if (event.getButton() != MouseEvent.BUTTON1) {
+            return;
+        }
+        if (this.isDragGesture) {
+            return;
+        }
+        boolean isCtrl = (event.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0;
+        if (isCtrl) {
+            processSelectionInConflictWithDraggingEvents(false);
+        }
+        if (!isCtrl) {
+            processSelectionInConflictWithDraggingEvents(true);
+        }
+    }
+
+    private void resetEventAttributes()
+    {
+        this.isDragGesture = false;
+        this.unprocessedNode = null;
+        this.unprocessedEdge = null;
+    }
+
     
     private boolean isMouseOnNodeOrEdge(Point2D mouseLocation)
     {
@@ -92,7 +115,14 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         this.selectionHandler.clearSelection();
     }
 
-    private void addOrRemoveElementFromSelection(Point2D mouseLocation)
+    /**
+     * Here, we add or remove the selected node or edge to the global selection. Under the wood, we can't remove anything.
+     * This can only made on 'mouse released' to avoid conflict to any dragging event.
+     * 
+     * @param mouseLocation
+     * @param isResetSelectionFirst
+     */
+    private void processSelection(Point2D mouseLocation, boolean isResetSelectionFirst)
     {
         INode node = this.graph.findNode(mouseLocation);
         IEdge edge = this.graph.findEdge(mouseLocation);
@@ -100,10 +130,15 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         {
             if (this.selectionHandler.isElementAlreadySelected(node))
             {
-                this.selectionHandler.removeElementFromSelection(node);
+                // This node will be removed only on mouse button released
+                // to avoid conflicts with dragging events
+                this.unprocessedNode = node;
             }
             else
             {
+                if (isResetSelectionFirst) {
+                    resetSelectedElements();
+                }
                 this.selectionHandler.addSelectedElement(node);
             }
         }
@@ -111,11 +146,47 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
         {
             if (this.selectionHandler.isElementAlreadySelected(edge))
             {
-                this.selectionHandler.removeElementFromSelection(edge);
+                // This edge will be removed only on mouse button released
+                // to avoid conflicts with dragging events
+                this.unprocessedEdge = edge;
             }
             else
             {
+                if (isResetSelectionFirst) {
+                    resetSelectedElements();
+                }
                 this.selectionHandler.addSelectedElement(edge);
+            }
+        }
+    }
+    
+    /**
+     * We process nodes or edges on 'mouse released' event because it's not possible to remove nodes or edges
+     * from selection on 'mouse pressed' because it can be part of a dragging intention from the user. So,
+     * unprocessed elements are removed from selection only on 'mouse released' if the user is pressing CTRL.
+     * They are set as unique selection if the user isn't pressing CTRL.
+     * 
+     * @param isResetSelectionFirst
+     */
+    private void processSelectionInConflictWithDraggingEvents(boolean isResetSelectionFirst) {
+        if (this.unprocessedNode == null && this.unprocessedEdge == null) {
+            return;
+        }
+        if (isResetSelectionFirst) {
+            resetSelectedElements();
+            if (this.unprocessedNode != null) {
+                this.selectionHandler.addSelectedElement(this.unprocessedNode);
+            }
+            if (this.unprocessedEdge != null) {
+                this.selectionHandler.addSelectedElement(this.unprocessedEdge);
+            }
+        }
+        if (!isResetSelectionFirst) {
+            if (this.unprocessedNode != null) {
+                this.selectionHandler.removeElementFromSelection(this.unprocessedNode);
+            }
+            if (this.unprocessedEdge != null) {
+                this.selectionHandler.removeElementFromSelection(this.unprocessedEdge);
             }
         }
     }
@@ -158,5 +229,10 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
     private IGraphToolsBar graphToolsBar;
     
     private boolean isDragGesture = false;
+    
+    private INode unprocessedNode = null; 
 
+    private IEdge unprocessedEdge = null; 
+
+    
 }

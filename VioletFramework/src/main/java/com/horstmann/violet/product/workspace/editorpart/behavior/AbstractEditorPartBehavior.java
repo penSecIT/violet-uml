@@ -118,6 +118,13 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
     }
     
     @Override
+    public void onMouseClicked(MouseEvent event)
+    {
+        // TODO Auto-generated method stub
+
+    }
+    
+    @Override
     public void onMouseMoved(MouseEvent event)
     {
         // TODO Auto-generated method stub
