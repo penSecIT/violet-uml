@@ -2,6 +2,7 @@ package com.horstmann.violet.product.workspace.editorpart.behavior;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 
@@ -21,6 +22,8 @@ public interface IEditorPartBehavior
     public void onMouseClicked(MouseEvent event);
     
     public void onMouseMoved(MouseEvent event);
+    
+    public void onMouseWheelMoved(MouseWheelEvent event);
     
     public void onToolSelected(GraphTool selectedTool);
     

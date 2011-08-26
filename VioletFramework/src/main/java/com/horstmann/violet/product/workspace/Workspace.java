@@ -39,6 +39,7 @@ import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.behavior.AddEdgeBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.AddNodeBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.ChangeToolByWeelBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.FileCouldBeSavedBehavior;
@@ -47,6 +48,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByClickB
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByLassoBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SwingRepaintingBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.ZoomByWheelBehavior;
 import com.horstmann.violet.product.workspace.sidebar.ISideBar;
 import com.horstmann.violet.product.workspace.sidebar.SideBar;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
@@ -156,6 +158,8 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
             behaviorManager.addBehavior(new FileCouldBeSavedBehavior(this.getGraphFile()));
             behaviorManager.addBehavior(new ResizeNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new ZoomByWheelBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new ChangeToolByWeelBehavior(this.getSideBar().getGraphToolsBar()));
         }
         return this.graphEditor;
     }

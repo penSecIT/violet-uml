@@ -2,6 +2,7 @@ package com.horstmann.violet.product.workspace.editorpart.behavior;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 
@@ -58,6 +59,12 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     
     @Override
     public void onMouseMoved(MouseEvent event)
+    {
+        // Nothing to do
+    }
+    
+    @Override
+    public void onMouseWheelMoved(MouseWheelEvent event)
     {
         // Nothing to do
     }

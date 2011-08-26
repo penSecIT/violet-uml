@@ -1,6 +1,7 @@
 package com.horstmann.violet.product.workspace.sidebar.graphtools;
 
 import java.awt.GridLayout;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -267,23 +268,27 @@ public class GraphToolsBarPanel extends JPanel
         }
 
         buttonPanel.setLayout(new GridLayout(0, 1));
-        buttonPanel.addMouseWheelListener(new MouseWheelListener()
-        {
-
-            public void mouseWheelMoved(MouseWheelEvent e)
-            {
-                int scroll = e.getUnitsToScroll();
-                if (scroll > 0)
-                {
-                    selectNextButton();
-                }
-                if (scroll < 0)
-                {
-                    selectPreviousButton();
-                }
-            }
-
-        });
+//        buttonPanel.addMouseWheelListener(new MouseWheelListener()
+//        {
+//
+//            public void mouseWheelMoved(MouseWheelEvent e)
+//            {
+//                boolean isCtrl = (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0;
+//                if (isCtrl) {
+//                    return;
+//                }
+//                int scroll = e.getUnitsToScroll();
+//                if (scroll > 0)
+//                {
+//                    selectNextButton();
+//                }
+//                if (scroll < 0)
+//                {
+//                    selectPreviousButton();
+//                }
+//            }
+//
+//        });
         return buttonPanel;
     }
     

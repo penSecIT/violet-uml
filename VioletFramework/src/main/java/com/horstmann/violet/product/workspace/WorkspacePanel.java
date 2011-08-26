@@ -3,12 +3,6 @@ package com.horstmann.violet.product.workspace;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.LayoutManager;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,44 +50,8 @@ public class WorkspacePanel extends JPanel
     {
         if (this.scrollableEditorPart == null)
         {
-            IEditorPart editorPart = this.workspace.getEditorPart();
+            final IEditorPart editorPart = this.workspace.getEditorPart();
             Component panel = editorPart.getAWTComponent();
-            panel.addMouseListener(new MouseAdapter()
-            {
-                public void mouseClicked(MouseEvent e)
-                {
-                    if (e.getButton() == MouseEvent.BUTTON3)
-                    {
-                        WorkspacePanel.this.workspace.getSideBar().getGraphToolsBar().reset();
-                    }
-                }
-            });
-            panel.addMouseWheelListener(new MouseWheelListener()
-            {
-                public void mouseWheelMoved(MouseWheelEvent e)
-                {
-                    int scroll = e.getUnitsToScroll();
-                    if (scroll > 0)
-                    {
-                        workspace.getSideBar().getGraphToolsBar().selectNextTool();
-                    }
-                    if (scroll < 0)
-                    {
-                        workspace.getSideBar().getGraphToolsBar().selectPreviousTool();
-                    }
-                }
-            });
-            panel.addKeyListener(new KeyAdapter()
-            {
-                public void keyPressed(KeyEvent e)
-                {
-                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-                    {
-                        workspace.getSideBar().getGraphToolsBar().reset();
-                    }
-                }
-            });
-
             this.scrollableEditorPart = new JScrollPane(panel);
             this.scrollableEditorPart.setBackground(ThemeManager.getInstance().getTheme().getWhiteColor());
             this.scrollableEditorPart.setBorder(new EmptyBorder(0, 0, 0, 0));

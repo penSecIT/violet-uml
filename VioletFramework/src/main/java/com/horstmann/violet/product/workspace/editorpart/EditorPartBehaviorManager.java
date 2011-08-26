@@ -1,6 +1,7 @@
 package com.horstmann.violet.product.workspace.editorpart;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -63,6 +64,11 @@ public class EditorPartBehaviorManager implements IEditorPartBehaviorManager
     @Override
     public void fireOnMouseMoved(MouseEvent event) {
         for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.onMouseMoved(event);
+    }
+
+    @Override
+    public void fireOnMouseWheelMoved(MouseWheelEvent event) {
+        for (IEditorPartBehavior aBehavior : this.behaviors) aBehavior.onMouseWheelMoved(event);
     }
     
     @Override

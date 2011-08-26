@@ -2,6 +2,7 @@ package com.horstmann.violet.product.workspace.editorpart.behavior;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 
@@ -131,6 +132,12 @@ public abstract class AbstractEditorPartBehavior implements IEditorPartBehavior
 
     }
 
+    @Override
+    public void onMouseWheelMoved(MouseWheelEvent event)
+    {
+        // TODO Auto-generated method stub
+
+    }
 
     @Override
     public void onToolSelected(GraphTool selectedTool)

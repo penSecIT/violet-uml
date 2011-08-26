@@ -26,10 +26,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
 import java.util.List;
@@ -75,6 +78,15 @@ public class EditorPart extends JPanel implements IEditorPart
             public void mouseClicked(MouseEvent event)
             {
                 behaviorManager.fireOnMouseClicked(event);
+            }
+        });
+        
+        addMouseWheelListener(new MouseWheelListener()
+        {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e)
+            {
+                behaviorManager.fireOnMouseWheelMoved(e);
             }
         });
 
@@ -154,8 +166,18 @@ public class EditorPart extends JPanel implements IEditorPart
      */
     public Dimension getPreferredSize()
     {
+        Dimension parentSize = getParent().getSize();
         Rectangle2D bounds = graph.getClipBounds();
-        return new Dimension((int) (zoom * bounds.getMaxX()), (int) (zoom * bounds.getMaxY()));
+        int width = Math.max((int) (zoom * bounds.getMaxX()), (int) parentSize.getWidth());
+        int height =  Math.max((int) (zoom * bounds.getMaxY()), (int) parentSize.getHeight());
+        return new Dimension(width, height);
+    }
+    
+    @Override
+    public void doLayout()
+    {
+        setSize(getPreferredSize());
+        super.doLayout();
     }
 
     /*
@@ -170,6 +192,7 @@ public class EditorPart extends JPanel implements IEditorPart
             zoom *= FACTOR;
         for (int i = 1; i <= -steps; i++)
             zoom /= FACTOR;
+        doLayout();
         repaint();
     }
 

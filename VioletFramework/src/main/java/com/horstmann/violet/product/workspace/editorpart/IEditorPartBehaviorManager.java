@@ -1,6 +1,7 @@
 package com.horstmann.violet.product.workspace.editorpart;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
@@ -28,6 +29,8 @@ public interface IEditorPartBehaviorManager
     
     public abstract void fireOnMouseMoved(MouseEvent event);
 
+    public abstract void fireOnMouseWheelMoved(MouseWheelEvent event);
+    
     public abstract void fireBeforeEditingNode(INode node);
 
     public abstract void fireWhileEditingNode(INode node, PropertyChangeEvent event);
