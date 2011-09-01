@@ -174,7 +174,7 @@ public class UMLEditorApplication
                 IWorkspace workspace = new Workspace(graphFile);
                 mainFrame.addTabbedPane(workspace);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 System.err.println("Unable to open file " + aFile.getFilename() + "from location " + aFile.getDirectory());
                 userPreferencesService.removeOpenedFile(aFile);
