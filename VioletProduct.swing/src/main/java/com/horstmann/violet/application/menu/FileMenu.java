@@ -334,6 +334,7 @@ public class FileMenu extends JMenu
                 IWorkspace workspace = (Workspace) mainFrame.getActiveWorkspace();
                 if (workspace != null)
                 {
+                    IGraphFile graphFile = workspace.getGraphFile();
                     if (workspace.isSaveNeeded())
                     {
                         JOptionPane optionPane = new JOptionPane();
@@ -350,20 +351,26 @@ public class FileMenu extends JMenu
 
                         if (result == JOptionPane.YES_OPTION)
                         {
-                            workspace.getGraphFile().save();
+                            String filename = graphFile.getFilename();
+                            if (filename == null) {
+                                graphFile.saveToNewLocation();
+                            }
+                            if (filename != null) {
+                                graphFile.save();
+                            }
                             mainFrame.removeDiagramPanel(workspace);
-                            userPreferencesService.removeOpenedFile(workspace.getGraphFile());
+                            userPreferencesService.removeOpenedFile(graphFile);
                         }
                         if (result == JOptionPane.NO_OPTION)
                         {
                             mainFrame.removeDiagramPanel(workspace);
-                            userPreferencesService.removeOpenedFile(workspace.getGraphFile());
+                            userPreferencesService.removeOpenedFile(graphFile);
                         }
                     }
                     if (!workspace.isSaveNeeded())
                     {
                         mainFrame.removeDiagramPanel(workspace);
-                        userPreferencesService.removeOpenedFile(workspace.getGraphFile());
+                        userPreferencesService.removeOpenedFile(graphFile);
                     }
                 }
             }
