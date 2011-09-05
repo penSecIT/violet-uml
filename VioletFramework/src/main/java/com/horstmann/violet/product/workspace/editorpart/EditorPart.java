@@ -26,7 +26,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,8 +59,6 @@ public class EditorPart extends JPanel implements IEditorPart
         this.graph = aGraph;
         this.zoom = 1;
         this.grid = new PlainGrid(this);
-        
-
         addMouseListener(new MouseAdapter()
         {
 
@@ -74,13 +71,13 @@ public class EditorPart extends JPanel implements IEditorPart
             {
                 behaviorManager.fireOnMouseReleased(event);
             }
-            
+
             public void mouseClicked(MouseEvent event)
             {
                 behaviorManager.fireOnMouseClicked(event);
             }
         });
-        
+
         addMouseWheelListener(new MouseWheelListener()
         {
             @Override
@@ -96,15 +93,14 @@ public class EditorPart extends JPanel implements IEditorPart
             {
                 behaviorManager.fireOnMouseDragged(event);
             }
+
             @Override
             public void mouseMoved(MouseEvent event)
             {
                 behaviorManager.fireOnMouseMoved(event);
             }
         });
-
-
-        
+        setBounds(0,0,0,0);
     }
 
     /*
@@ -116,7 +112,6 @@ public class EditorPart extends JPanel implements IEditorPart
     {
         return this.graph;
     }
-
 
     /*
      * (non-Javadoc)
@@ -142,8 +137,6 @@ public class EditorPart extends JPanel implements IEditorPart
         }
     }
 
-
-
     public List<INode> getSelectedNodes()
     {
         return selectionHandler.getSelectedNodes();
@@ -159,27 +152,16 @@ public class EditorPart extends JPanel implements IEditorPart
         selectionHandler.addSelectedElement(node);
     }
 
-    /*
-     * Used by the scrollpane to evaluate if scrollbars are needed
-     * 
-     * @see javax.swing.JComponent#getPreferredSize()
-     */
+    @Override
     public Dimension getPreferredSize()
     {
         Dimension parentSize = getParent().getSize();
         Rectangle2D bounds = graph.getClipBounds();
         int width = Math.max((int) (zoom * bounds.getMaxX()), (int) parentSize.getWidth());
-        int height =  Math.max((int) (zoom * bounds.getMaxY()), (int) parentSize.getHeight());
+        int height = Math.max((int) (zoom * bounds.getMaxY()), (int) parentSize.getHeight());
         return new Dimension(width, height);
     }
     
-    @Override
-    public void doLayout()
-    {
-        setSize(getPreferredSize());
-        super.doLayout();
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -192,7 +174,7 @@ public class EditorPart extends JPanel implements IEditorPart
             zoom *= FACTOR;
         for (int i = 1; i <= -steps; i++)
             zoom /= FACTOR;
-        doLayout();
+        revalidate();
         repaint();
     }
 
@@ -211,8 +193,6 @@ public class EditorPart extends JPanel implements IEditorPart
     {
         return this.grid;
     }
-
-
 
     /*
      * (non-Javadoc)
@@ -245,7 +225,6 @@ public class EditorPart extends JPanel implements IEditorPart
         return this;
     }
 
-    
     /*
      * (non-Javadoc)
      * 
@@ -260,18 +239,18 @@ public class EditorPart extends JPanel implements IEditorPart
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (grid.isVisible()) grid.paint(g2);
         graph.draw(g2);
-        for (IEditorPartBehavior behavior : this.behaviorManager.getBehaviors()) {
+        for (IEditorPartBehavior behavior : this.behaviorManager.getBehaviors())
+        {
             behavior.onPaint(g2);
         }
     }
-    
 
     @Override
     public IEditorPartSelectionHandler getSelectionHandler()
     {
         return this.selectionHandler;
     }
-    
+
     @Override
     public IEditorPartBehaviorManager getBehaviorManager()
     {
@@ -279,7 +258,7 @@ public class EditorPart extends JPanel implements IEditorPart
     }
 
     private IGraph graph;
-    
+
     private IGrid grid;
 
     private double zoom;
@@ -290,7 +269,6 @@ public class EditorPart extends JPanel implements IEditorPart
      * Scale factor used to grow drawing area
      */
     private static final double GROW_SCALE_FACTOR = Math.sqrt(2);
-
 
     private IEditorPartBehaviorManager behaviorManager = new EditorPartBehaviorManager();
 

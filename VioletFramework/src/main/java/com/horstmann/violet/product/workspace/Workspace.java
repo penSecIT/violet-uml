@@ -40,6 +40,7 @@ import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorMana
 import com.horstmann.violet.product.workspace.editorpart.behavior.AddEdgeBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.AddNodeBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.ChangeToolByWeelBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.DragGraphBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.DragSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.FileCouldBeSavedBehavior;
@@ -154,11 +155,12 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new AddNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new AddEdgeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new DragSelectedBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new DragGraphBehavior(this));
             behaviorManager.addBehavior(new SwingRepaintingBehavior(this.graphEditor));
             behaviorManager.addBehavior(new EditSelectedBehavior(this.graphEditor));
             behaviorManager.addBehavior(new FileCouldBeSavedBehavior(this.getGraphFile()));
             behaviorManager.addBehavior(new ResizeNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
-            behaviorManager.addBehavior(new ZoomByWheelBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new ZoomByWheelBehavior(this.getEditorPart()));
             behaviorManager.addBehavior(new ChangeToolByWeelBehavior(this.getSideBar().getGraphToolsBar()));
         }
         return this.graphEditor;

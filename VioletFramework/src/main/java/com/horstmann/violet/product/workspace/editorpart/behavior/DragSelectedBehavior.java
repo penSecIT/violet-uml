@@ -9,6 +9,7 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.IGraphToolsBar;
 
@@ -83,12 +84,22 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
         dx = Math.max(dx, -bounds.getX());
         dy = Math.max(dy, -bounds.getY());
 
+        boolean isAtLeastOneNodeMoved = false;
+        IGrid grid = editorPart.getGrid();
         for (INode n : selectedNodes)
         {
-            if (!selectedNodes.contains(n.getParent())) // parents are responsible for translating their children
-            n.translate(dx, dy);
+            if (selectedNodes.contains(n.getParent())) continue; // parents are responsible for translating their children
+            Point2D currentNodeLocation = n.getLocation();
+            Point2D futureNodeLocation = new Point2D.Double(currentNodeLocation.getX() + dx, currentNodeLocation.getY() + dy);
+            Point2D fixedFutureNodeLocation = grid.snap(futureNodeLocation);
+            if (!currentNodeLocation.equals(fixedFutureNodeLocation)) {
+                n.setLocation(fixedFutureNodeLocation);
+                isAtLeastOneNodeMoved = true;
+            }
         }
-        lastMousePoint = mousePoint;
+        if (isAtLeastOneNodeMoved) {
+            lastMousePoint = grid.snap(mousePoint);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
+import com.horstmann.violet.product.workspace.editorpart.IGrid;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.IGraphToolsBar;
 
@@ -44,10 +45,12 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
         }
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+        IGrid grid = editorPart.getGrid();
+        Point2D newNodeLocation = grid.snap(mousePoint);
         INode prototype = (INode) selectedTool.getNodeOrEdge();
         INode newNode = (INode) prototype.clone();
         
-        boolean added = addNodeAtPoint(newNode, mousePoint);
+        boolean added = addNodeAtPoint(newNode, newNodeLocation);
         if (added)
         {
             selectionHandler.setSelectedElement(newNode);

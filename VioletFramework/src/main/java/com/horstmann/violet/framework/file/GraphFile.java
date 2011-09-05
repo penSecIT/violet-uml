@@ -186,10 +186,6 @@ public class GraphFile implements IGraphFile
                 };
                 return this.fileChooserService.chooseAndGetFileWriter(array);
             }
-            if (!isAskedForNewLocation)
-            {
-
-            }
             return this.fileChooserService.getFileWriter(this);
         }
         catch (Exception e)

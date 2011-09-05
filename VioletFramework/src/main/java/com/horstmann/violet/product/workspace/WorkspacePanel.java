@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.LayoutManager;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -51,10 +52,12 @@ public class WorkspacePanel extends JPanel
         if (this.scrollableEditorPart == null)
         {
             final IEditorPart editorPart = this.workspace.getEditorPart();
-            Component panel = editorPart.getAWTComponent();
-            this.scrollableEditorPart = new JScrollPane(panel);
+            final Component panel = editorPart.getAWTComponent();
+            this.scrollableEditorPart = new JScrollPane();
+            this.scrollableEditorPart.getViewport().setView(panel);
             this.scrollableEditorPart.setBackground(ThemeManager.getInstance().getTheme().getWhiteColor());
             this.scrollableEditorPart.setBorder(new EmptyBorder(0, 0, 0, 0));
+            this.scrollableEditorPart.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         }
         return this.scrollableEditorPart;
     }
@@ -83,7 +86,7 @@ public class WorkspacePanel extends JPanel
     /**
      * @return scrollpane containing status bar
      */
-    JScrollPane getScrollableStatusBar()
+    public JScrollPane getScrollableStatusBar()
     {
         if (this.scrollableStatusBar == null)
         {
