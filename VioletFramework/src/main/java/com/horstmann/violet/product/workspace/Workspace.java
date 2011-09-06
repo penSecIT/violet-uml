@@ -251,7 +251,6 @@ public class Workspace implements IWorkspace
      */
     private void updateTitle(boolean isSaveNeeded)
     {
-        this.isSaveNeeded = isSaveNeeded;
         String aTitle = getTitle();
         if (isSaveNeeded)
         {
@@ -291,15 +290,6 @@ public class Workspace implements IWorkspace
         setTitle(file.getName());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#isSaveNeeded()
-     */
-    public boolean isSaveNeeded()
-    {
-        return this.isSaveNeeded;
-    }
 
     /*
      * (non-Javadoc)
@@ -387,7 +377,6 @@ public class Workspace implements IWorkspace
     private String title;
     private Vector<IWorkspaceListener> listeners = new Vector<IWorkspaceListener>();
     private Id id;
-    private boolean isSaveNeeded = false;
     
     @InjectedBean
     private PluginRegistry pluginRegistry;

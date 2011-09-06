@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.injection.bean.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
@@ -49,7 +50,8 @@ public class ApplicationStopper
         if (workspaceList.size() == 0) return true;
         for (IWorkspace aWorkspacel : workspaceList)
         {
-            if (aWorkspacel.isSaveNeeded())
+            IGraphFile graphFile = aWorkspacel.getGraphFile();
+        	if (graphFile.isSaveRequired())
             {
                 dirtyWorkspaceList.add(aWorkspacel);
             }

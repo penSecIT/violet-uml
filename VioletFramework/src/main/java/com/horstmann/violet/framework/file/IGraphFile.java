@@ -18,6 +18,12 @@ public interface IGraphFile extends IFile
      */
     public abstract void setSaveRequired();
     
+    /**
+     * To know if the graph needs to be saved
+     * @return true if save is required
+     */
+    public abstract boolean isSaveRequired();
+    
     
     /**
      * Saves the graph

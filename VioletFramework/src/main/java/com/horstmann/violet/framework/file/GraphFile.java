@@ -76,52 +76,38 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#getGraph()
-     */
+    @Override
     public IGraph getGraph()
     {
         return this.graph;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#getFilename()
-     */
+    @Override
     public String getFilename()
     {
         return this.currentFilename;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#getDirectory()
-     */
+    @Override
     public String getDirectory()
     {
         return this.currentDirectory;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#setSaveRequired()
-     */
+    @Override
     public void setSaveRequired()
     {
         this.isSaveRequired = true;
         fireGraphModified();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#save()
-     */
+    @Override
+    public boolean isSaveRequired() 
+    {
+    	return this.isSaveRequired;
+    }
+    
+    @Override
     public void save()
     {
         try
@@ -140,16 +126,16 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#saveToNewLocation()
-     */
+    @Override
     public void saveToNewLocation()
     {
         try
         {
             IFileWriter fileSaver = getFileSaver(true);
+            if (fileSaver == null) { 
+            	// This appends when the action is cancelled
+            	return;
+            }
             OutputStream outputStream = fileSaver.getOutputStream();
             this.filePersistenceService.write(this.graph, outputStream);
             this.isSaveRequired = false;
@@ -194,11 +180,7 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#addListener(com.horstmann.violet.framework.file.IGraphFileListener)
-     */
+    @Override
     public void addListener(IGraphFileListener listener)
     {
         synchronized (listeners)
@@ -207,11 +189,7 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#removeListener(com.horstmann.violet.framework.file.IGraphFileListener)
-     */
+    @Override
     public void removeListener(IGraphFileListener listener)
     {
         synchronized (listeners)
@@ -244,11 +222,7 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#exportToClipboard()
-     */
+    @Override
     public void exportToClipboard()
     {
         FileExportService.exportToclipBoard(this.graph);
@@ -259,11 +233,7 @@ public class GraphFile implements IGraphFile
         this.dialogFactory.showDialog(optionPane, this.clipBoardDialogTitle, true);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#exportImage(java.io.OutputStream, java.lang.String)
-     */
+    @Override
     public void exportImage(OutputStream out, String format)
     {
         if (!ImageIO.getImageWritersByFormatName(format).hasNext())
@@ -296,11 +266,7 @@ public class GraphFile implements IGraphFile
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.file.IGraphFile#exportToPrinter()
-     */
+    @Override
     public void exportToPrinter()
     {
         PrintEngine engine = new PrintEngine(this.graph);

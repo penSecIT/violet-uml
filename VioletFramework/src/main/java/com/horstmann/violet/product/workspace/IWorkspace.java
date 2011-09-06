@@ -51,11 +51,6 @@ public interface IWorkspace
     public void setFilePath(String path);
 
     /**
-     * @return true if contained graph has been modified and needs to be saved
-     */
-    public boolean isSaveNeeded();
-
-    /**
      * Registers a listener on this diagram panel to capture events
      * 
      * @param l
