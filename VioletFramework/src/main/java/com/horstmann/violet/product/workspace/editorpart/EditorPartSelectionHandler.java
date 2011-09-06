@@ -54,8 +54,6 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
             this.removeElementFromSelection(node);
         }
         this.selectedNodes.add(node);
-        this.isNodeSelectedAtLeast = true;
-        this.isEdgeSelectedAtLeast = false;
     }
 
     public void addSelectedElement(IEdge edge)
@@ -64,10 +62,7 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
         {
             this.removeElementFromSelection(edge);
         }
-        this.selectedNodes.clear();
         this.selectedEdges.add(edge);
-        this.isNodeSelectedAtLeast = false;
-        this.isEdgeSelectedAtLeast = true;
     }
 
     public void removeElementFromSelection(INode node)
@@ -104,8 +99,6 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
     {
         this.selectedNodes.clear();
         this.selectedEdges.clear();
-        this.isNodeSelectedAtLeast = false;
-        this.isEdgeSelectedAtLeast = false;
     }
 
     public INode getLastSelectedNode()
@@ -120,12 +113,12 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
 
     public boolean isNodeSelectedAtLeast()
     {
-        return this.isNodeSelectedAtLeast;
+        return this.selectedNodes.size() > 0;
     }
 
     public boolean isEdgeSelectedAtLeast()
     {
-        return this.isEdgeSelectedAtLeast;
+        return this.selectedEdges.size() > 0;
     }
 
     public List<INode> getSelectedNodes()
@@ -162,9 +155,6 @@ public class EditorPartSelectionHandler implements IEditorPartSelectionHandler
 
     private List<INode> selectedNodes = new ArrayList<INode>();
     private List<IEdge> selectedEdges = new ArrayList<IEdge>();
-    
-    private boolean isNodeSelectedAtLeast = false;
-    private boolean isEdgeSelectedAtLeast = false;
     
     private GraphTool selectedTool;
 
