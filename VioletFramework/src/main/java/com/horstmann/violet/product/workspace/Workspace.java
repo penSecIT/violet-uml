@@ -45,6 +45,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.DragSelectedBe
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.FileCouldBeSavedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.ResizeNodeBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.SelectAllBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByClickBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByLassoBehavior;
@@ -152,6 +153,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new SelectByLassoBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SelectByClickBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new SelectByDistanceBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new SelectAllBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new AddNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new AddEdgeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new DragSelectedBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));

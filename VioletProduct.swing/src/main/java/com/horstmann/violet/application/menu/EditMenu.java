@@ -35,6 +35,7 @@ import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.behavior.CutCopyPasteBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.SelectAllBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoBehavior;
 
@@ -177,6 +178,23 @@ public class EditMenu extends JMenu
             }
         });
         this.add(delete);
+        
+        selectAll.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                if (isThereAnyWorkspaceDisplayed()) {
+                    IEditorPart activeEditorPart = getActiveEditorPart();
+                    IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+                    List<SelectAllBehavior> found = behaviorManager.getBehaviors(SelectAllBehavior.class);
+                    if (found.size() != 1) {
+                        return;
+                    }
+                    found.get(0).selectAllGraphElements();
+                }
+            }
+        });
+        this.add(selectAll);
 
         selectNext.addActionListener(new ActionListener()
         {
@@ -253,6 +271,9 @@ public class EditMenu extends JMenu
 
     @ResourceBundleBean(key = "edit.delete")
     private JMenuItem delete;
+
+    @ResourceBundleBean(key = "edit.select_all")
+    private JMenuItem selectAll;
 
     @ResourceBundleBean(key = "edit.select_next")
     private JMenuItem selectNext;
