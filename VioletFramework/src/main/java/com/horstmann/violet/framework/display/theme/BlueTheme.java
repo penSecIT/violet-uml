@@ -38,7 +38,7 @@ import com.pagosoft.plaf.themes.VistaTheme;
  * @author Alexandre de Pellegrin
  * 
  */
-public class VistaBlueTheme extends AbstractTheme
+public class BlueTheme extends AbstractTheme
 {
 
 
@@ -71,7 +71,7 @@ public class VistaBlueTheme extends AbstractTheme
      */
     public LookAndFeelInfo getLookAndFeelInfo()
     {
-        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Blue Vista", PgsLookAndFeel.class.getName());
+        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Blue", BlueTheme.class.getName());
         return themeInfo;
     }
 

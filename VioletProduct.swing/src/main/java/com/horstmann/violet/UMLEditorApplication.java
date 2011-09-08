@@ -36,7 +36,7 @@ import com.horstmann.violet.framework.display.theme.ClassicMetalTheme;
 import com.horstmann.violet.framework.display.theme.DarkTheme;
 import com.horstmann.violet.framework.display.theme.ITheme;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
+import com.horstmann.violet.framework.display.theme.BlueTheme;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
@@ -113,13 +113,14 @@ public class UMLEditorApplication
 
         ThemeManager themeManager = new ThemeManager();
         ITheme theme1 = new ClassicMetalTheme();
-        ITheme theme2 = new VistaBlueTheme();
+        ITheme theme2 = new BlueTheme();
         ITheme theme3 = new DarkTheme();
         List<ITheme> themeList = new ArrayList<ITheme>();
         themeList.add(theme1);
         themeList.add(theme2);
         themeList.add(theme3);
         themeManager.setInstalledThemes(themeList);
+        themeManager.applyPreferedTheme();
         BeanFactory.getFactory().register(ThemeManager.class, themeManager);
         themeManager.applyPreferedTheme();
         

@@ -63,7 +63,7 @@ public class ClassicMetalTheme extends AbstractTheme
      */
     public LookAndFeelInfo getLookAndFeelInfo()
     {
-        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Metal", MetalLookAndFeel.class.getName());
+        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Metal", ClassicMetalTheme.class.getName());
         return themeInfo;
     }
 

@@ -35,8 +35,6 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import com.pagosoft.plaf.PgsLookAndFeel;
 import com.pagosoft.plaf.PgsTheme;
 import com.pagosoft.plaf.PlafOptions;
-import com.pagosoft.plaf.themes.JGoodiesThemes;
-import com.pagosoft.plaf.themes.VistaTheme;
 
 /**
  * Implements Vista Blue theme
@@ -102,7 +100,7 @@ public class DarkTheme extends AbstractTheme
                     "MenuBar.gradientStart",
                     new ColorUIResource(70, 70, 70),
                     "MenuBar.gradientMiddle",
-                    new ColorUIResource(90, 90, 90),
+                    new ColorUIResource(70, 70, 70),
                     "MenuBar.gradientEnd",
                     new ColorUIResource(70, 70, 70),
 
@@ -184,6 +182,14 @@ public class DarkTheme extends AbstractTheme
                     getPrimary3(),
                     "ToggleButton.selectedGradientEnd",
                     getPrimary1(),
+
+                    "TabbedPane.selected",
+                    new ColorUIResource(253, 236, 178),
+                    "TabbedPane.background",
+                    new ColorUIResource(Color.WHITE),
+                    "TabbedPane.selectedForeground",
+                    new ColorUIResource(Color.BLACK),
+
             });
         }
     }
@@ -195,7 +201,7 @@ public class DarkTheme extends AbstractTheme
      */
     public LookAndFeelInfo getLookAndFeelInfo()
     {
-        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Blue Vista", PgsLookAndFeel.class.getName());
+        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Dark", DarkTheme.class.getName());
         return themeInfo;
     }
 

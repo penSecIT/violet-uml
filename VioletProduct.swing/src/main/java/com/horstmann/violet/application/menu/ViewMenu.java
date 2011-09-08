@@ -37,6 +37,8 @@ import javax.swing.event.MenuListener;
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.product.workspace.IWorkspace;
@@ -60,6 +62,7 @@ public class ViewMenu extends JMenu
     @ResourceBundleBean(key = "view")
     public ViewMenu(MainFrame mainFrame)
     {
+        BeanInjector.getInjector().inject(this);
         ResourceBundleInjector.getInjector().inject(this);
         this.mainFrame = mainFrame;
         this.createMenu();
@@ -153,8 +156,8 @@ public class ViewMenu extends JMenu
         });
 
         ButtonGroup lookAndFeelButtonGroup = new ButtonGroup();
-        String preferedLafName = ThemeManager.getInstance().getPreferedLookAndFeel();
-        LookAndFeelInfo[] laf = ThemeManager.getInstance().getInstalledLookAndFeelsInfos();
+        String preferedLafName = this.themeManager.getPreferedLookAndFeel();
+        LookAndFeelInfo[] laf = this.themeManager.getInstalledLookAndFeelsInfos();
         for (int i = 0; i < laf.length; i++)
         {
             String lafName = laf[i].getName();
@@ -275,7 +278,7 @@ public class ViewMenu extends JMenu
         optionPane.setMessage(changeLAFDialogMessage);
         optionPane.setOptionType(JOptionPane.YES_NO_CANCEL_OPTION);
         optionPane.setIcon(changeLAFDialogIcon);
-        DialogFactory.getInstance().showDialog(optionPane, changeLAFDialogTitle, true);
+        this.dialogFactory.showDialog(optionPane, changeLAFDialogTitle, true);
 
         int result = JOptionPane.CANCEL_OPTION;
         if (!JOptionPane.UNINITIALIZED_VALUE.equals(optionPane.getValue()))
@@ -285,12 +288,12 @@ public class ViewMenu extends JMenu
 
         if (result == JOptionPane.YES_OPTION)
         {
-            ThemeManager.getInstance().setPreferedLookAndFeel(className);
+            this.themeManager.setPreferedLookAndFeel(className);
             // FIXME : display dialog box instead of restarting app
         }
         if (result == JOptionPane.NO_OPTION)
         {
-            ThemeManager.getInstance().setPreferedLookAndFeel(className);
+            this.themeManager.setPreferedLookAndFeel(className);
         }
     }
 
@@ -331,5 +334,11 @@ public class ViewMenu extends JMenu
 
     @ResourceBundleBean(key = "dialog.change_laf.icon")
     private ImageIcon changeLAFDialogIcon;
+    
+    @InjectedBean
+    private DialogFactory dialogFactory;
+    
+    @InjectedBean
+    private ThemeManager themeManager;
 
 }

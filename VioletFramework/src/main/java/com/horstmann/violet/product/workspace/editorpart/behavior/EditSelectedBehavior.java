@@ -95,7 +95,7 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
         });
 
         JOptionPane optionPane = new JOptionPane();
-        optionPane.setOpaque(false);
+        optionPane.setOpaque(true);
         optionPane.addPropertyChangeListener(new PropertyChangeListener()
         {
             public void propertyChange(PropertyChangeEvent event)

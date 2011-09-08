@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
@@ -45,6 +46,7 @@ public class ThemeManager
      */
     public ThemeManager()
     {
+        BeanInjector.getInjector().inject(this);
         ThemeManager.setInstance(this);
     }
 
@@ -109,6 +111,8 @@ public class ThemeManager
                 return;
             }
         }
+        // Default case
+        switchToTheme(this.installedThemes.get(this.installedThemes.size() -1));
     }
 
     /**
