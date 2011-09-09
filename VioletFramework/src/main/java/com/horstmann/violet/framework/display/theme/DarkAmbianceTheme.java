@@ -211,12 +211,12 @@ public class DarkAmbianceTheme extends AbstractTheme
 
     public Color getWelcomeBackgroundEndColor()
     {
-        return getMenubarBackgroundColor();
+        return new Color(120, 120, 120);
     }
 
     public Color getWelcomeBackgroundStartColor()
     {
-        return getMenubarBackgroundColor();
+        return new Color(150, 150, 150);
     }
 
     public Color getWelcomeBigForegroundColor()
