@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.horstmann.violet.framework.display.theme.DarkTheme;
+import com.horstmann.violet.framework.display.theme.DarkAmbianceTheme;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
@@ -30,7 +30,7 @@ public class UserPreferencesService
     public String getPreferedLookAndFeel()
     {
         IUserPreferencesDao pService = PreferencesServiceFactory.getInstance();
-        String preferedLAF = pService.get(PreferencesConstant.LOOK_AND_FEEL, DarkTheme.class.getName());
+        String preferedLAF = pService.get(PreferencesConstant.LOOK_AND_FEEL, DarkAmbianceTheme.class.getName());
         return preferedLAF;
     }
     

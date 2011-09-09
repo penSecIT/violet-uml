@@ -23,6 +23,7 @@ package com.horstmann.violet.application.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -30,12 +31,13 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.display.theme.ITheme;
+import com.horstmann.violet.framework.display.theme.ThemeInfo;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
 import com.horstmann.violet.framework.injection.bean.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
@@ -157,22 +159,23 @@ public class ViewMenu extends JMenu
 
         ButtonGroup lookAndFeelButtonGroup = new ButtonGroup();
         String preferedLafName = this.themeManager.getPreferedLookAndFeel();
-        LookAndFeelInfo[] laf = this.themeManager.getInstalledLookAndFeelsInfos();
-        for (int i = 0; i < laf.length; i++)
+        List<ITheme> themes = this.themeManager.getInstalledThemes();
+        for (ITheme aTheme : themes)
         {
-            String lafName = laf[i].getName();
-            final String lafClassName = laf[i].getClassName();
-            JMenuItem lafMenu = new JCheckBoxMenuItem(lafName);
+            ThemeInfo themeInfo = aTheme.getThemeInfo();
+        	String themeName = themeInfo.getName();
+            final String themeClassName = themeInfo.getThemeClass().getName();
+            JMenuItem lafMenu = new JCheckBoxMenuItem(themeName);
             lafMenu.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    performChangeLookAndFeel(lafClassName);
+                    performChangeLookAndFeel(themeClassName);
                 }
             });
             changeLookAndFeelMenu.add(lafMenu);
             lookAndFeelButtonGroup.add(lafMenu);
-            if (lafClassName.equals(preferedLafName))
+            if (themeClassName.equals(preferedLafName))
             {
                 lafMenu.setSelected(true);
             }
@@ -274,27 +277,11 @@ public class ViewMenu extends JMenu
      */
     private void performChangeLookAndFeel(String className)
     {
+    	this.themeManager.setPreferedLookAndFeel(className);
         JOptionPane optionPane = new JOptionPane();
         optionPane.setMessage(changeLAFDialogMessage);
-        optionPane.setOptionType(JOptionPane.YES_NO_CANCEL_OPTION);
         optionPane.setIcon(changeLAFDialogIcon);
         this.dialogFactory.showDialog(optionPane, changeLAFDialogTitle, true);
-
-        int result = JOptionPane.CANCEL_OPTION;
-        if (!JOptionPane.UNINITIALIZED_VALUE.equals(optionPane.getValue()))
-        {
-            result = ((Integer) optionPane.getValue()).intValue();
-        }
-
-        if (result == JOptionPane.YES_OPTION)
-        {
-            this.themeManager.setPreferedLookAndFeel(className);
-            // FIXME : display dialog box instead of restarting app
-        }
-        if (result == JOptionPane.NO_OPTION)
-        {
-            this.themeManager.setPreferedLookAndFeel(className);
-        }
     }
 
     /**

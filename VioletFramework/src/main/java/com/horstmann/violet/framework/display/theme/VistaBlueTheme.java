@@ -24,8 +24,6 @@ package com.horstmann.violet.framework.display.theme;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
@@ -38,16 +36,20 @@ import com.pagosoft.plaf.themes.VistaTheme;
  * @author Alexandre de Pellegrin
  * 
  */
-public class BlueTheme extends AbstractTheme
+public class VistaBlueTheme extends AbstractTheme
 {
 
 
-    /**
-     * Initializes pgs laf
-     */
-    private void initializePgsLookAndFeel()
+	@Override
+	public ThemeInfo getThemeInfo() {
+		return new ThemeInfo("Vista Blue", VistaBlueTheme.class, PgsLookAndFeel.class);
+	}
+	
+	
+    @Override
+    protected void configure()
     {
-        VistaTheme vistaTheme = new VistaTheme()
+    	VistaTheme vistaTheme = new VistaTheme()
         {
             public ColorUIResource getMenuBackground()
             {
@@ -61,31 +63,9 @@ public class BlueTheme extends AbstractTheme
         };
         PgsLookAndFeel.setCurrentTheme(vistaTheme);
     }
+
     
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.theme.Theme#getLookAndFeelInfo()
-     */
-    public LookAndFeelInfo getLookAndFeelInfo()
-    {
-        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Blue", BlueTheme.class.getName());
-        return themeInfo;
-    }
-
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.theme.AbstractTheme#setup()
-     */
-    protected void setup()
-    {
-        initializePgsLookAndFeel();
-    }
-
+    
     public Color getWhiteColor()
     {
         return Color.WHITE;

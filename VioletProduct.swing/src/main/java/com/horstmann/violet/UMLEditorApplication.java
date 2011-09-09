@@ -33,10 +33,10 @@ import com.horstmann.violet.application.gui.SplashScreen;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.display.dialog.DialogFactoryMode;
 import com.horstmann.violet.framework.display.theme.ClassicMetalTheme;
-import com.horstmann.violet.framework.display.theme.DarkTheme;
+import com.horstmann.violet.framework.display.theme.DarkAmbianceTheme;
 import com.horstmann.violet.framework.display.theme.ITheme;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.display.theme.BlueTheme;
+import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
@@ -113,8 +113,8 @@ public class UMLEditorApplication
 
         ThemeManager themeManager = new ThemeManager();
         ITheme theme1 = new ClassicMetalTheme();
-        ITheme theme2 = new BlueTheme();
-        ITheme theme3 = new DarkTheme();
+        ITheme theme2 = new VistaBlueTheme();
+        ITheme theme3 = new DarkAmbianceTheme();
         List<ITheme> themeList = new ArrayList<ITheme>();
         themeList.add(theme1);
         themeList.add(theme2);

@@ -24,8 +24,6 @@ package com.horstmann.violet.framework.display.theme;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.MetalTheme;
@@ -47,6 +45,12 @@ public class ClassicMetalTheme extends AbstractTheme
         initializeLookAndFeel();
     }
 
+    @Override
+    public ThemeInfo getThemeInfo() {
+    	return new ThemeInfo("Metal", ClassicMetalTheme.class, MetalLookAndFeel.class);
+    }
+    
+    
     /**
      * Inits Metal laf
      */
@@ -59,20 +63,9 @@ public class ClassicMetalTheme extends AbstractTheme
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.framework.display.clipboard.theme.Theme#getLookAndFeelInfo()
-     */
-    public LookAndFeelInfo getLookAndFeelInfo()
-    {
-        LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Metal", ClassicMetalTheme.class.getName());
-        return themeInfo;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see com.horstmann.violet.framework.display.clipboard.theme.AbstractTheme#setup()
      */
-    protected void setup()
+    protected void configure()
     {
     }
 

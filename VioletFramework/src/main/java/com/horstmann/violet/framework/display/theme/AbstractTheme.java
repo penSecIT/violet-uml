@@ -45,6 +45,11 @@ import com.l2fprod.common.swing.plaf.windows.WindowsLookAndFeelAddons;
 public abstract class AbstractTheme implements ITheme
 {
 
+    /**
+     * Configure the look and feel here
+     */
+    protected abstract void configure();
+	
     /*
      * (non-Javadoc)
      * 
@@ -52,11 +57,11 @@ public abstract class AbstractTheme implements ITheme
      */
     public void activate()
     {
-        setup();
+        configure();
         try
         {
-            this.lafClassName = getLookAndFeelInfo().getClassName();
-            UIManager.setLookAndFeel(this.lafClassName);
+            String laf = getThemeInfo().getLookAndFeelClass().getName();
+            UIManager.setLookAndFeel(laf);
 
             Frame[] frames = Frame.getFrames();
             for (int i = 0; i < frames.length; i++)
@@ -107,10 +112,7 @@ public abstract class AbstractTheme implements ITheme
         defaults.putAll(m);
     }
 
-    /**
-     * Setup entry point after look and feel change
-     */
-    protected abstract void setup();
+
 
     /**
      * Informs on error and exits

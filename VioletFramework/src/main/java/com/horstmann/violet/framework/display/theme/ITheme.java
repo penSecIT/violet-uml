@@ -24,7 +24,7 @@ package com.horstmann.violet.framework.display.theme;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.LookAndFeel;
 
 /**
  * GUI theme. It includes look and feel and colors
@@ -40,10 +40,7 @@ public interface ITheme
      */
     public void activate();
     
-    /**
-     * @return laf info
-     */
-    public LookAndFeelInfo getLookAndFeelInfo();
+    public abstract ThemeInfo getThemeInfo();
 
     public abstract Color getWhiteColor();
 

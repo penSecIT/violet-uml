@@ -24,8 +24,6 @@ package com.horstmann.violet.framework.display.theme;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.UIManager.LookAndFeelInfo;
-
 import com.horstmann.violet.framework.injection.bean.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
 import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
@@ -71,14 +69,14 @@ public class ThemeManager
     /**
      * @return installed look and feels infos
      */
-    public LookAndFeelInfo[] getInstalledLookAndFeelsInfos()
+    public ThemeInfo[] getInstalledThemeInfos()
     {
-        List<LookAndFeelInfo> infos = new ArrayList<LookAndFeelInfo>();
+        List<ThemeInfo> infos = new ArrayList<ThemeInfo>();
         for (ITheme aTheme : this.installedThemes)
         {
-            infos.add(aTheme.getLookAndFeelInfo());
+            infos.add(aTheme.getThemeInfo());
         }
-        return infos.toArray(new LookAndFeelInfo[infos.size()]);
+        return infos.toArray(new ThemeInfo[infos.size()]);
     }
 
     /**

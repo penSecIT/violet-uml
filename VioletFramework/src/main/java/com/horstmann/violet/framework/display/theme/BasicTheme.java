@@ -30,8 +30,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.LookAndFeel;
 
 /**
  * Currently supported JVM theme. This themes fakes swing composants to extract current look and feel theme colors
@@ -46,28 +45,19 @@ public class BasicTheme extends AbstractTheme
      * 
      * @param className
      */
-    public BasicTheme(String className)
+    public BasicTheme(String className) throws ClassNotFoundException
     {
-        this.lookAndFeelClassName = className;
+        this.lookAndFeelClass = (Class<? extends LookAndFeel>) Class.forName(className);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.theme.Theme#getLookAndFeelInfo()
-     */
-    public LookAndFeelInfo getLookAndFeelInfo()
-    {
-        LookAndFeelInfo basicInfo = new UIManager.LookAndFeelInfo("Basic", this.lookAndFeelClassName);
-        return basicInfo;
-    }
+	@Override
+	public ThemeInfo getThemeInfo() {
+		return new ThemeInfo("Basic", BasicTheme.class, this.lookAndFeelClass);
+	}
+    
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.theme.AbstractTheme#setup()
-     */
-    protected void setup()
+    @Override
+    protected void configure()
     {
         this.defaultGridColor = new Color(220, 220, 220);
 
@@ -247,7 +237,7 @@ public class BasicTheme extends AbstractTheme
     }
 
     /** Look and feel class name */
-    private String lookAndFeelClassName;
+    private Class<? extends LookAndFeel> lookAndFeelClass;
 
     /** Default grid color */
     private Color defaultGridColor;
@@ -284,5 +274,7 @@ public class BasicTheme extends AbstractTheme
 
     /** Tabbed pane background color */
     private Color basicTabbedPaneBackground;
+
+
 
 }
