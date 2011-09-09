@@ -41,8 +41,8 @@ public class EditSelectedBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMouseClicked(MouseEvent event)
     {
-        boolean isButton3Clicked = (event.getButton() == MouseEvent.BUTTON3);
-        if (event.getClickCount() > 1 || isButton3Clicked)
+        boolean isButton1Clicked = (event.getButton() == MouseEvent.BUTTON1);
+        if (event.getClickCount() > 1 && isButton1Clicked)
         {
             double zoom = editorPart.getZoomFactor();
             Point2D mouseLocation = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);

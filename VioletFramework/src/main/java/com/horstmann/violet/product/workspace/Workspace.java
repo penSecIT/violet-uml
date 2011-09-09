@@ -49,6 +49,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.SelectAllBehav
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByClickBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByLassoBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.ShowMenuOnRightClickBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SwingRepaintingBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.ZoomByWheelBehavior;
 import com.horstmann.violet.product.workspace.sidebar.ISideBar;
@@ -164,6 +165,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new ResizeNodeBehavior(this.graphEditor, this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new ZoomByWheelBehavior(this.getEditorPart()));
             behaviorManager.addBehavior(new ChangeToolByWeelBehavior(this.getSideBar().getGraphToolsBar()));
+            behaviorManager.addBehavior(new ShowMenuOnRightClickBehavior(this.graphEditor));
         }
         return this.graphEditor;
     }
