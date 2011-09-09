@@ -179,7 +179,7 @@ public class AboutDialog extends JDialog
             {
                 e.printStackTrace();
             }
-
+            tp.setBorder(new EmptyBorder(0,0,0,0));
             authorsScrollPane = new VerticalAutoScrollPane();
             authorsScrollPane.setBackground(new Color(255, 255, 255));
             authorsScrollPane.setForeground(new Color(0, 0, 0));
