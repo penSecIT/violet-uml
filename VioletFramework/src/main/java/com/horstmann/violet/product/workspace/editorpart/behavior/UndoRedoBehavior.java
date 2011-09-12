@@ -124,6 +124,10 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMouseReleased(MouseEvent event)
     {
+        if (event.getClickCount() > 1)
+        {
+            return;
+        }
         if (!this.isReadyForDragging)
         {
             return;
