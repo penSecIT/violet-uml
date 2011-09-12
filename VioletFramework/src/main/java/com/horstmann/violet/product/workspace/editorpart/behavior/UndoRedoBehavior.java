@@ -1,10 +1,12 @@
 package com.horstmann.violet.product.workspace.editorpart.behavior;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -33,6 +35,11 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
      * To retreive selected elements
      */
     private IEditorPartSelectionHandler selectionHandler;
+    
+    /**
+     * Keeps node locations before dragging event
+     */
+    private Map<INode, Point2D> lastNodesLocation = new HashMap<INode, Point2D>();
 
     /**
      * Used on node's drag'n drop
@@ -78,6 +85,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         {
             isReadyForDragging = true;
             this.lastMouseLocation = mousePoint;
+            saveNodeLocation();
         }
     }
 
@@ -101,22 +109,23 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
             return;
         }
         startHistoryCapture();
-        List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
+    }
+
+    @Override
+    public void onMouseReleased(MouseEvent event)
+    {
+    	List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
         CompoundEdit capturedEdit = getCurrentCapturedEdit();
-        Point newMouseLocation = event.getPoint();
-        double zoom = editorPart.getZoomFactor();
-        Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        INode lastNode = selectionHandler.getLastSelectedNode();
-        if (lastNode == null)
-        {
-            return;
-        }
-        final double dx = mousePoint.getX() - this.lastMouseLocation.getX();
-        final double dy = mousePoint.getY() - this.lastMouseLocation.getY();
-        this.lastMouseLocation = newMouseLocation;
         for (final INode aSelectedNode : selectedNodes)
         {
-            UndoableEdit edit = new AbstractUndoableEdit()
+        	Point2D lastNodeLocation = this.lastNodesLocation.get(aSelectedNode);
+        	Point2D currentNodeLocation = aSelectedNode.getLocation();
+        	if (currentNodeLocation.equals(lastNodeLocation)) {
+        		continue;
+        	}
+        	final double dx = currentNodeLocation.getX() - lastNodeLocation.getX();
+        	final double dy = currentNodeLocation.getY() - lastNodeLocation.getY();
+        	UndoableEdit edit = new AbstractUndoableEdit()
             {
                 @Override
                 public void undo() throws CannotUndoException
@@ -134,13 +143,9 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
             };
             capturedEdit.addEdit(edit);
         }
-    }
-
-    @Override
-    public void onMouseReleased(MouseEvent event)
-    {
-        stopHistoryCapture();
-        this.lastMouseLocation = null;
+    	
+    	stopHistoryCapture();
+        this.lastNodesLocation.clear();
         this.isReadyForDragging = false;
     }
 
@@ -150,7 +155,32 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         startHistoryCapture();
         CompoundEdit capturedEdit = getCurrentCapturedEdit();
         List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
+        List<INode> filteredNodes = removeChildren(selectedNodes);
         List<IEdge> selectedEdges = this.selectionHandler.getSelectedEdges();
+        for (final INode aSelectedNode : filteredNodes)
+        {
+        	
+        	
+        	UndoableEdit edit = new AbstractUndoableEdit()
+            {
+                @Override
+                public void undo() throws CannotUndoException
+                {
+                    IGraph graph = editorPart.getGraph();
+                    graph.addNode(aSelectedNode, aSelectedNode.getLocation());
+                    super.undo();
+                }
+
+                @Override
+                public void redo() throws CannotRedoException
+                {
+                    super.redo();
+                    IGraph graph = editorPart.getGraph();
+                    graph.removeNode(aSelectedNode);
+                }
+            };
+            capturedEdit.addEdit(edit);
+        }
         for (final IEdge aSelectedEdge : selectedEdges)
         {
             UndoableEdit edit = new AbstractUndoableEdit()
@@ -169,28 +199,6 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
                     super.redo();
                     IGraph graph = editorPart.getGraph();
                     graph.removeEdge(aSelectedEdge);
-                }
-            };
-            capturedEdit.addEdit(edit);
-        }
-        for (final INode aSelectedNode : selectedNodes)
-        {
-            UndoableEdit edit = new AbstractUndoableEdit()
-            {
-                @Override
-                public void undo() throws CannotUndoException
-                {
-                    IGraph graph = editorPart.getGraph();
-                    graph.addNode(aSelectedNode, aSelectedNode.getLocation());
-                    super.undo();
-                }
-
-                @Override
-                public void redo() throws CannotRedoException
-                {
-                    super.redo();
-                    IGraph graph = editorPart.getGraph();
-                    graph.removeNode(aSelectedNode);
                 }
             };
             capturedEdit.addEdit(edit);
@@ -354,9 +362,10 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     {
         if (this.currentCapturedEdit == null)
         {
-            this.currentCapturedEdit = new CompoundEdit();
+        	this.currentCapturedEdit = new CompoundEdit();
         }
     }
+
 
     /**
      * @return current composed undoable edit
@@ -376,5 +385,66 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         this.undoManager.addEdit(this.currentCapturedEdit);
         this.currentCapturedEdit = null;
     }
+    
+    /**
+     * Saves currently selected node locations
+     */
+    private void saveNodeLocation() {
+    	this.lastNodesLocation.clear();
+    	List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
+    	for (INode aSelectedNode : selectedNodes) {
+    		Point2D location = aSelectedNode.getLocation();
+    		this.lastNodesLocation.put(aSelectedNode, location);
+    	}
+    }
+    
+    /**
+     * Checks if ancestorNode is a parent node of child node
+     * 
+     * @param childNode
+     * @param ancestorNode
+     * @return b
+     */
+    private boolean isAncestorRelationship(INode childNode, INode ancestorNode) {
+    	INode parent = childNode.getParent();
+    	List<INode> fifo = new ArrayList<INode>();
+    	fifo.add(parent);
+    	while (!fifo.isEmpty()) {
+    		INode aParentNode = fifo.get(0);
+    		fifo.remove(0);
+    		if (aParentNode.equals(ancestorNode)) {
+    			return true;
+    		}
+    		INode aGranParent = aParentNode.getParent();
+    		if (aGranParent != null) {
+    			fifo.add(aGranParent);
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Takes a list of nodes and removes from this list all nodes which have ancestors node in this list.<br/>
+     * 
+     * @param nodes the list to filter
+     * @return the filtered list
+     */
+    private List<INode> removeChildren(List<INode> nodes) {
+    	List<INode> result = new ArrayList<INode>();
+    	for (INode aNode : nodes) {
+    		boolean isOrphelin = true;
+    		for (INode aParent : nodes) {
+    			boolean isAncestorRelationship = isAncestorRelationship(aNode, aParent);
+    			if (isAncestorRelationship) {
+    				isOrphelin = false;
+    			}
+    		}
+    		if (isOrphelin) {
+    			result.add(aNode);
+    		}
+    	}
+    	return result;
+    }
+   
 
 }
