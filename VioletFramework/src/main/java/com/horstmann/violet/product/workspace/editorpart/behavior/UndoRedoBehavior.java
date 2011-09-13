@@ -93,13 +93,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMouseDragged(MouseEvent event)
     {
-    	double zoom = editorPart.getZoomFactor();
-        final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        if (isMouseOnNode(mousePoint))
-        {
-            keepSelectedNodesLocations();
-            this.isDragInProgress = true;
-        }
+    	this.isDragInProgress = true;
     }
 
 
@@ -114,7 +108,10 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         List<UndoableEdit> editList = new ArrayList<UndoableEdit>();
         for (final INode aSelectedNode : selectedNodes)
         {
-        	Point2D lastNodeLocation = this.nodesLocationsBeforeDrag.get(aSelectedNode);
+        	if (!this.nodesLocationsBeforeDrag.containsKey(aSelectedNode)) {
+        	    continue;
+        	}
+            Point2D lastNodeLocation = this.nodesLocationsBeforeDrag.get(aSelectedNode);
         	Point2D currentNodeLocation = aSelectedNode.getLocation();
         	if (currentNodeLocation.equals(lastNodeLocation)) {
         		continue;
