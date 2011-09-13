@@ -55,6 +55,16 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     private List<IEdge> edgesOnGraphBeforeRemove = new ArrayList<IEdge>();
     
     /**
+     * Keeps all the nodes attached to the graph before the add action
+     */
+    private List<INode> nodesOnGraphBeforeAdd = new ArrayList<INode>();
+    
+    /**
+     * Keeps all the edges attached to the graph before the add action
+     */
+    private List<IEdge> edgesOnGraphBeforeAdd = new ArrayList<IEdge>();
+    
+    /**
      * Used on node's drag'n drop
      */
     private boolean isDragInProgress = false;
@@ -228,59 +238,167 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         this.edgesOnGraphBeforeRemove.clear();
     }
     
+    
+    @Override
+    public void beforeAddingNodeAtPoint(INode node, Point2D location)
+    {
+        this.nodesOnGraphBeforeAdd.clear();
+        this.edgesOnGraphBeforeAdd.clear();
+        this.nodesOnGraphBeforeAdd.addAll(this.editorPart.getGraph().getAllNodes());
+        this.edgesOnGraphBeforeAdd.addAll(this.editorPart.getGraph().getAllEdges());
+    }
 
     @Override
     public void afterAddingNodeAtPoint(final INode node, final Point2D location)
     {
+        List<INode> nodesOnGraphAfterAction = new ArrayList<INode>(this.editorPart.getGraph().getAllNodes());
+        List<IEdge> edgesOnGraphAfterAction = new ArrayList<IEdge>(this.editorPart.getGraph().getAllEdges());
+
+        List<INode> nodesReallyAdded = new ArrayList<INode>();
+        nodesReallyAdded.addAll(nodesOnGraphAfterAction);
+        nodesReallyAdded.removeAll(this.nodesOnGraphBeforeAdd);
+        
+        List<IEdge> edgesReallyAdded = new ArrayList<IEdge>();
+        edgesReallyAdded.addAll(edgesOnGraphAfterAction);
+        edgesReallyAdded.removeAll(this.edgesOnGraphBeforeAdd);
+        
         startHistoryCapture();
         CompoundEdit capturedEdit = getCurrentCapturedEdit();
-        UndoableEdit edit = new AbstractUndoableEdit()
-        {
-            @Override
-            public void undo() throws CannotUndoException
-            {
-                IGraph graph = editorPart.getGraph();
-                graph.removeNode(node);
-                super.undo();
-            }
 
-            @Override
-            public void redo() throws CannotRedoException
+        for (final INode aSelectedNode : nodesReallyAdded)
+        {
+            
+            
+            UndoableEdit edit = new AbstractUndoableEdit()
             {
-                super.redo();
-                IGraph graph = editorPart.getGraph();
-                graph.addNode(node, location);
-            }
-        };
-        capturedEdit.addEdit(edit);
+                @Override
+                public void undo() throws CannotUndoException
+                {
+                    IGraph graph = editorPart.getGraph();
+                    graph.removeNode(aSelectedNode);
+                    super.undo();
+                }
+
+                @Override
+                public void redo() throws CannotRedoException
+                {
+                    super.redo();
+                    IGraph graph = editorPart.getGraph();
+                    graph.addNode(aSelectedNode, aSelectedNode.getLocationOnGraph());
+                }
+            };
+            capturedEdit.addEdit(edit);
+        }
+        
+        for (final IEdge aSelectedEdge : edgesReallyAdded)
+        {
+            UndoableEdit edit = new AbstractUndoableEdit()
+            {
+                @Override
+                public void undo() throws CannotUndoException
+                {
+                    IGraph graph = editorPart.getGraph();
+                    graph.removeEdge(aSelectedEdge);
+                    super.undo();
+                }
+
+                @Override
+                public void redo() throws CannotRedoException
+                {
+                    super.redo();
+                    IGraph graph = editorPart.getGraph();
+                    graph.connect(aSelectedEdge, aSelectedEdge.getStart(), aSelectedEdge.getStartLocation(), aSelectedEdge.getEnd(), aSelectedEdge.getEndLocation());
+                }
+            };
+            capturedEdit.addEdit(edit);
+        }
+
+        
+        
         stopHistoryCapture();
+        this.nodesOnGraphBeforeAdd.clear();
+        this.edgesOnGraphBeforeAdd.clear();
     }
 
     @Override
+    public void beforeAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint)
+    {
+        this.nodesOnGraphBeforeAdd.clear();
+        this.edgesOnGraphBeforeAdd.clear();
+        this.nodesOnGraphBeforeAdd.addAll(this.editorPart.getGraph().getAllNodes());
+        this.edgesOnGraphBeforeAdd.addAll(this.editorPart.getGraph().getAllEdges());
+    }
+    
+    @Override
     public void afterAddingEdgeAtPoints(final IEdge edge, final Point2D startPoint, final Point2D endPoint)
     {
+        List<INode> nodesOnGraphAfterAction = new ArrayList<INode>(this.editorPart.getGraph().getAllNodes());
+        List<IEdge> edgesOnGraphAfterAction = new ArrayList<IEdge>(this.editorPart.getGraph().getAllEdges());
+
+        List<INode> nodesReallyAdded = new ArrayList<INode>();
+        nodesReallyAdded.addAll(nodesOnGraphAfterAction);
+        nodesReallyAdded.removeAll(this.nodesOnGraphBeforeAdd);
+        
+        List<IEdge> edgesReallyAdded = new ArrayList<IEdge>();
+        edgesReallyAdded.addAll(edgesOnGraphAfterAction);
+        edgesReallyAdded.removeAll(this.edgesOnGraphBeforeAdd);
+        
         startHistoryCapture();
         CompoundEdit capturedEdit = getCurrentCapturedEdit();
-        UndoableEdit edit = new AbstractUndoableEdit()
-        {
-            @Override
-            public void undo() throws CannotUndoException
-            {
-                IGraph graph = editorPart.getGraph();
-                graph.removeEdge(edge);
-                super.undo();
-            }
 
-            @Override
-            public void redo() throws CannotRedoException
+        for (final INode aSelectedNode : nodesReallyAdded)
+        {
+            
+            
+            UndoableEdit edit = new AbstractUndoableEdit()
             {
-                super.redo();
-                IGraph graph = editorPart.getGraph();
-                graph.connect(edge, edge.getStart(), edge.getStartLocation(), edge.getEnd(), edge.getEndLocation());
-            }
-        };
-        capturedEdit.addEdit(edit);
+                @Override
+                public void undo() throws CannotUndoException
+                {
+                    IGraph graph = editorPart.getGraph();
+                    graph.removeNode(aSelectedNode);
+                    super.undo();
+                }
+
+                @Override
+                public void redo() throws CannotRedoException
+                {
+                    super.redo();
+                    IGraph graph = editorPart.getGraph();
+                    graph.addNode(aSelectedNode, aSelectedNode.getLocationOnGraph());
+                }
+            };
+            capturedEdit.addEdit(edit);
+        }
+        
+        for (final IEdge aSelectedEdge : edgesReallyAdded)
+        {
+            UndoableEdit edit = new AbstractUndoableEdit()
+            {
+                @Override
+                public void undo() throws CannotUndoException
+                {
+                    IGraph graph = editorPart.getGraph();
+                    graph.removeEdge(aSelectedEdge);
+                    super.undo();
+                }
+
+                @Override
+                public void redo() throws CannotRedoException
+                {
+                    super.redo();
+                    IGraph graph = editorPart.getGraph();
+                    graph.connect(aSelectedEdge, aSelectedEdge.getStart(), aSelectedEdge.getStartLocation(), aSelectedEdge.getEnd(), aSelectedEdge.getEndLocation());
+                }
+            };
+            capturedEdit.addEdit(edit);
+        }
+
+        
+        
         stopHistoryCapture();
+        this.nodesOnGraphBeforeAdd.clear();
+        this.edgesOnGraphBeforeAdd.clear();
     }
 
     @Override
