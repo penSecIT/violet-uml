@@ -39,27 +39,22 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     /**
      * Keeps node locations before dragging event
      */
-    private Map<INode, Point2D> lastNodesLocation = new HashMap<INode, Point2D>();
+    private Map<INode, Point2D> selectNodesLocationsBeforeDrag = new HashMap<INode, Point2D>();
     
     /**
-     * Keeps all the nodes attached to the graph before the unable action
+     * Keeps all the nodes attached to the graph before the remove action
      */
-    private List<INode> nodesOnGraphBeforeAction = new ArrayList<INode>();
+    private List<INode> nodesOnGraphBeforeRemove = new ArrayList<INode>();
     
     /**
-     * Keeps all the edges attached to the graph before the unable action
+     * Keeps all the edges attached to the graph before the remove action
      */
-    private List<IEdge> edgesOnGraphBeforeAction = new ArrayList<IEdge>();
+    private List<IEdge> edgesOnGraphBeforeRemove = new ArrayList<IEdge>();
     
     /**
      * Used on node's drag'n drop
      */
-    private Point2D lastMouseLocation = null;
-
-    /**
-     * Used on node's drag'n drop
-     */
-    private boolean isReadyForDragging = false;
+    private boolean isDragInProgress = false;
 
     /**
      * Current composed undoable edit
@@ -71,10 +66,6 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
      */
     private UndoManager undoManager = new UndoManager();
 
-    /**
-     * History size limit
-     */
-    private static final int HISTORY_SIZE = 50;
 
     public UndoRedoBehavior(IEditorPart editorPart)
     {
@@ -85,58 +76,34 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMousePressed(MouseEvent event)
     {
-        if (event.getClickCount() > 1)
-        {
-            return;
-        }
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+        this.isDragInProgress = false;
         if (isMouseOnNode(mousePoint))
         {
-            isReadyForDragging = true;
-            this.lastMouseLocation = mousePoint;
-            saveNodeLocation();
+            saveSelectedNodesLocationsBeforeDrag();
         }
     }
 
-    private boolean isMouseOnNode(Point2D mouseLocation)
-    {
-        IGraph graph = this.editorPart.getGraph();
-        INode node = graph.findNode(mouseLocation);
-        if (node == null)
-        {
-            return false;
-        }
-        return true;
-    }
+
 
     @Override
     public void onMouseDragged(MouseEvent event)
     {
-
-        if (!this.isReadyForDragging)
-        {
-            return;
-        }
-        startHistoryCapture();
+    	this.isDragInProgress = true;
     }
 
     @Override
     public void onMouseReleased(MouseEvent event)
     {
-        if (event.getClickCount() > 1)
-        {
-            return;
-        }
-        if (!this.isReadyForDragging)
-        {
-            return;
-        }
+    	if (!this.isDragInProgress) {
+    		return;
+    	}
         List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
-        CompoundEdit capturedEdit = getCurrentCapturedEdit();
+        List<UndoableEdit> editList = new ArrayList<UndoableEdit>();
         for (final INode aSelectedNode : selectedNodes)
         {
-        	Point2D lastNodeLocation = this.lastNodesLocation.get(aSelectedNode);
+        	Point2D lastNodeLocation = this.selectNodesLocationsBeforeDrag.get(aSelectedNode);
         	Point2D currentNodeLocation = aSelectedNode.getLocation();
         	if (currentNodeLocation.equals(lastNodeLocation)) {
         		continue;
@@ -159,21 +126,27 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
                     aSelectedNode.translate(dx, dy);
                 }
             };
-            capturedEdit.addEdit(edit);
+            editList.add(edit);
         }
-    	
-    	stopHistoryCapture();
-        this.lastNodesLocation.clear();
-        this.isReadyForDragging = false;
+        if (editList.size() > 0) {
+        	startHistoryCapture();
+        	CompoundEdit capturedEdit = getCurrentCapturedEdit();
+        	for (UndoableEdit edit : editList) {
+        		capturedEdit.addEdit(edit);
+        	}
+        	stopHistoryCapture();
+        }
+        this.selectNodesLocationsBeforeDrag.clear();
+        this.isDragInProgress = false;
     }
 
     @Override
     public void beforeRemovingSelectedElements()
     {
-        this.nodesOnGraphBeforeAction.clear();
-        this.edgesOnGraphBeforeAction.clear();
-        this.nodesOnGraphBeforeAction.addAll(this.editorPart.getGraph().getAllNodes());
-        this.edgesOnGraphBeforeAction.addAll(this.editorPart.getGraph().getAllEdges());
+        this.nodesOnGraphBeforeRemove.clear();
+        this.edgesOnGraphBeforeRemove.clear();
+        this.nodesOnGraphBeforeRemove.addAll(this.editorPart.getGraph().getAllNodes());
+        this.edgesOnGraphBeforeRemove.addAll(this.editorPart.getGraph().getAllEdges());
     }
     
     @Override
@@ -182,11 +155,11 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         List<IEdge> edgesOnGraphAfterAction = new ArrayList<IEdge>(this.editorPart.getGraph().getAllEdges());
 
         List<INode> nodesReallyRemoved = new ArrayList<INode>();
-        nodesReallyRemoved.addAll(this.nodesOnGraphBeforeAction);
+        nodesReallyRemoved.addAll(this.nodesOnGraphBeforeRemove);
         nodesReallyRemoved.removeAll(nodesOnGraphAfterAction);
         
         List<IEdge> edgesReallyRemoved = new ArrayList<IEdge>();
-        edgesReallyRemoved.addAll(this.edgesOnGraphBeforeAction);
+        edgesReallyRemoved.addAll(this.edgesOnGraphBeforeRemove);
         edgesReallyRemoved.removeAll(edgesOnGraphAfterAction);
         
         startHistoryCapture();
@@ -242,8 +215,8 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         }
         
         stopHistoryCapture();
-        this.nodesOnGraphBeforeAction.clear();
-        this.edgesOnGraphBeforeAction.clear();
+        this.nodesOnGraphBeforeRemove.clear();
+        this.edgesOnGraphBeforeRemove.clear();
     }
     
 
@@ -430,12 +403,12 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     /**
      * Saves currently selected node locations
      */
-    private void saveNodeLocation() {
-    	this.lastNodesLocation.clear();
+    private void saveSelectedNodesLocationsBeforeDrag() {
+    	this.selectNodesLocationsBeforeDrag.clear();
     	List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
     	for (INode aSelectedNode : selectedNodes) {
     		Point2D location = aSelectedNode.getLocation();
-    		this.lastNodesLocation.put(aSelectedNode, location);
+    		this.selectNodesLocationsBeforeDrag.put(aSelectedNode, location);
     	}
     }
     
@@ -488,6 +461,17 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     		}
     	}
     	return result;
+    }
+    
+    private boolean isMouseOnNode(Point2D mouseLocation)
+    {
+        IGraph graph = this.editorPart.getGraph();
+        INode node = graph.findNode(mouseLocation);
+        if (node == null)
+        {
+            return false;
+        }
+        return true;
     }
    
 
