@@ -4,9 +4,12 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -39,7 +42,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     /**
      * Keeps node locations before dragging event
      */
-    private Map<INode, Point2D> selectNodesLocationsBeforeDrag = new HashMap<INode, Point2D>();
+    private Map<INode, Point2D> nodesLocationsBeforeDrag = new HashMap<INode, Point2D>();
     
     /**
      * Keeps all the nodes attached to the graph before the remove action
@@ -81,7 +84,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         this.isDragInProgress = false;
         if (isMouseOnNode(mousePoint))
         {
-            saveSelectedNodesLocationsBeforeDrag();
+            saveNodesLocationsBeforeDrag();
         }
     }
 
@@ -90,8 +93,16 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     @Override
     public void onMouseDragged(MouseEvent event)
     {
-    	this.isDragInProgress = true;
+    	double zoom = editorPart.getZoomFactor();
+        final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+        if (isMouseOnNode(mousePoint))
+        {
+            keepSelectedNodesLocations();
+            this.isDragInProgress = true;
+        }
     }
+
+
 
     @Override
     public void onMouseReleased(MouseEvent event)
@@ -103,7 +114,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         List<UndoableEdit> editList = new ArrayList<UndoableEdit>();
         for (final INode aSelectedNode : selectedNodes)
         {
-        	Point2D lastNodeLocation = this.selectNodesLocationsBeforeDrag.get(aSelectedNode);
+        	Point2D lastNodeLocation = this.nodesLocationsBeforeDrag.get(aSelectedNode);
         	Point2D currentNodeLocation = aSelectedNode.getLocation();
         	if (currentNodeLocation.equals(lastNodeLocation)) {
         		continue;
@@ -136,10 +147,11 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         	}
         	stopHistoryCapture();
         }
-        this.selectNodesLocationsBeforeDrag.clear();
+        this.nodesLocationsBeforeDrag.clear();
         this.isDragInProgress = false;
     }
 
+    
     @Override
     public void beforeRemovingSelectedElements()
     {
@@ -401,14 +413,14 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     }
     
     /**
-     * Saves currently selected node locations
+     * Saves nodes locations
      */
-    private void saveSelectedNodesLocationsBeforeDrag() {
-    	this.selectNodesLocationsBeforeDrag.clear();
-    	List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
+    private void saveNodesLocationsBeforeDrag() {
+    	this.nodesLocationsBeforeDrag.clear();
+    	Collection<INode> selectedNodes = this.editorPart.getGraph().getAllNodes();
     	for (INode aSelectedNode : selectedNodes) {
     		Point2D location = aSelectedNode.getLocation();
-    		this.selectNodesLocationsBeforeDrag.put(aSelectedNode, location);
+    		this.nodesLocationsBeforeDrag.put(aSelectedNode, location);
     	}
     }
     
@@ -474,5 +486,17 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
         return true;
     }
    
+    
+	private void keepSelectedNodesLocations() {
+		List<INode> selectedNodes = this.selectionHandler.getSelectedNodes();
+		Set<INode> nodeKeySet = this.nodesLocationsBeforeDrag.keySet();
+		Iterator<INode> nodeIterator = nodeKeySet.iterator();
+		while(nodeIterator.hasNext()) {
+			INode aNode = nodeIterator.next();
+			if (!selectedNodes.contains(aNode)) {
+				nodeIterator.remove();
+			}
+		}
+	}
 
 }
