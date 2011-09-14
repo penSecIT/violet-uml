@@ -51,7 +51,7 @@ public class ShowMenuOnRightClickBehavior extends AbstractEditorPartBehavior
             public void actionPerformed(ActionEvent event)
             {
                 IEditorPartBehaviorManager behaviorManager = ShowMenuOnRightClickBehavior.this.editorPart.getBehaviorManager();
-                List<UndoRedoBehavior> found = behaviorManager.getBehaviors(UndoRedoBehavior.class);
+                List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
                 if (found.size() != 1) {
                     return;
                 }
@@ -65,7 +65,7 @@ public class ShowMenuOnRightClickBehavior extends AbstractEditorPartBehavior
             public void actionPerformed(ActionEvent event)
             {
                 IEditorPartBehaviorManager behaviorManager = ShowMenuOnRightClickBehavior.this.editorPart.getBehaviorManager();
-                List<UndoRedoBehavior> found = behaviorManager.getBehaviors(UndoRedoBehavior.class);
+                List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
                 if (found.size() != 1) {
                     return;
                 }

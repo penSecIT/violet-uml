@@ -26,7 +26,7 @@ import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
 
-public class UndoRedoBehavior extends AbstractEditorPartBehavior
+public class UndoRedoGlobalBehavior extends AbstractEditorPartBehavior
 {
 
     /**
@@ -80,7 +80,7 @@ public class UndoRedoBehavior extends AbstractEditorPartBehavior
     private UndoManager undoManager = new UndoManager();
 
 
-    public UndoRedoBehavior(IEditorPart editorPart)
+    public UndoRedoGlobalBehavior(IEditorPart editorPart)
     {
         this.editorPart = editorPart;
         this.selectionHandler = editorPart.getSelectionHandler();

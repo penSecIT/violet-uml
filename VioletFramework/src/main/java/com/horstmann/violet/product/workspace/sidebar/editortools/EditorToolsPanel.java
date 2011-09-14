@@ -24,6 +24,7 @@ package com.horstmann.violet.product.workspace.sidebar.editortools;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -31,8 +32,10 @@ import javax.swing.JPanel;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.product.workspace.IWorkspace;
+import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.behavior.CutCopyPasteBehavior;
-import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoGlobalBehavior;
 import com.horstmann.violet.product.workspace.sidebar.ISideBarElement;
 import com.horstmann.violet.product.workspace.sidebar.SideBar;
 
@@ -62,14 +65,20 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
         {
             public void actionPerformed(ActionEvent e)
             {
-                undoRedoBehavior.undo();
+            	UndoRedoGlobalBehavior undoRedoBehavior = getUndoRedoBehavior();
+            	if (undoRedoBehavior != null) {
+            		undoRedoBehavior.undo();
+            	}
             }
         });
         this.bRedo.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
-                undoRedoBehavior.redo();
+            	UndoRedoGlobalBehavior undoRedoBehavior = getUndoRedoBehavior();
+            	if (undoRedoBehavior != null) {
+            		undoRedoBehavior.redo();
+            	}
             }
         });
         this.bDelete.addActionListener(new ActionListener()
@@ -83,23 +92,62 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
         {
             public void actionPerformed(ActionEvent e)
             {
-                cutCopyPasteBehavior.cut();
+                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior();
+                if (cutCopyPasteBehavior != null) {
+                	cutCopyPasteBehavior.cut();
+                }
             }
         });
         this.bCopy.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
-                cutCopyPasteBehavior.copy();
+                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior();
+                if (cutCopyPasteBehavior != null) {
+                	cutCopyPasteBehavior.copy();
+                }
             }
         });
         this.bPaste.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
-                cutCopyPasteBehavior.paste();
+                CutCopyPasteBehavior cutCopyPasteBehavior = getCutCopyPasteBehavior();
+                if (cutCopyPasteBehavior != null) {
+                	cutCopyPasteBehavior.paste();
+                }
             }
         });        
+    }
+    
+    /**
+     * Looks for UndoRedoBehavior on the current editor part
+     * 
+     * @return the first UndoRedoBehavior object found or null
+     */
+    private UndoRedoGlobalBehavior getUndoRedoBehavior() {
+    	IEditorPart activeEditorPart = workspace.getEditorPart();
+        IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+        List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
+        if (found.size() != 1) {
+            return null;
+        }
+        return found.get(0);
+    }
+    
+    /**
+     * Looks for CutCopyPasteBehavior on the current editor part
+     * 
+     * @return the first CutCopyPasteBehavior object found or null
+     */
+    private CutCopyPasteBehavior getCutCopyPasteBehavior() {
+    	IEditorPart activeEditorPart = workspace.getEditorPart();
+        IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
+        List<CutCopyPasteBehavior> found = behaviorManager.getBehaviors(CutCopyPasteBehavior.class);
+        if (found.size() != 1) {
+            return null;
+        }
+        return found.get(0);
     }
 
     /*
@@ -119,10 +167,6 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
     public void install(IWorkspace workspace)
     {
         this.workspace = workspace;
-        this.undoRedoBehavior = new UndoRedoBehavior(workspace.getEditorPart());
-        this.cutCopyPasteBehavior = new CutCopyPasteBehavior(workspace.getEditorPart());
-        workspace.getEditorPart().getBehaviorManager().addBehavior(undoRedoBehavior);
-        workspace.getEditorPart().getBehaviorManager().addBehavior(cutCopyPasteBehavior);
     }
 
     /*
@@ -242,7 +286,4 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
     @ResourceBundleBean(key = "title.standardbuttons.text")
     private String title;
     
-    private UndoRedoBehavior undoRedoBehavior;
-    private CutCopyPasteBehavior cutCopyPasteBehavior;
-
 }
