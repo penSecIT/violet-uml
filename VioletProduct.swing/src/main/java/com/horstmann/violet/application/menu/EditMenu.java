@@ -37,7 +37,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.CutCopyPasteBe
 import com.horstmann.violet.product.workspace.editorpart.behavior.EditSelectedBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectAllBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistanceBehavior;
-import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoGlobalBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoCompoundBehavior;
 
 /**
  * Edit menu
@@ -75,7 +75,7 @@ public class EditMenu extends JMenu
                 if (isThereAnyWorkspaceDisplayed()) {
                     IEditorPart activeEditorPart = getActiveEditorPart();
                     IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
-                    List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
+                    List<UndoRedoCompoundBehavior> found = behaviorManager.getBehaviors(UndoRedoCompoundBehavior.class);
                     if (found.size() != 1) {
                         return;
                     }
@@ -92,7 +92,7 @@ public class EditMenu extends JMenu
                 if (isThereAnyWorkspaceDisplayed()) {
                     IEditorPart activeEditorPart = getActiveEditorPart();
                     IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
-                    List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
+                    List<UndoRedoCompoundBehavior> found = behaviorManager.getBehaviors(UndoRedoCompoundBehavior.class);
                     if (found.size() != 1) {
                         return;
                     }
