@@ -81,11 +81,11 @@ public class UndoRedoOnEditBehavior extends AbstractEditorPartBehavior
         Object newValue = event.getNewValue();
         Object oldValue = event.getOldValue();
         if (oldValue == null && newValue == null) return;
-        boolean isOldValueRecognized = oldValue != null
-                && (String.class.isInstance(oldValue) || MultiLineString.class.isInstance(oldValue));
-        boolean isNewValueRecognized = oldValue != null
-                && (String.class.isInstance(newValue) || MultiLineString.class.isInstance(newValue));
-        if (!isOldValueRecognized && !isNewValueRecognized) return;
+//        boolean isOldValueRecognized = oldValue != null
+//                && (String.class.isInstance(oldValue) || MultiLineString.class.isInstance(oldValue));
+//        boolean isNewValueRecognized = oldValue != null
+//                && (String.class.isInstance(newValue) || MultiLineString.class.isInstance(newValue));
+//        if (!isOldValueRecognized && !isNewValueRecognized) return;
         UndoableEdit edit = new AbstractUndoableEdit()
         {
             @Override
