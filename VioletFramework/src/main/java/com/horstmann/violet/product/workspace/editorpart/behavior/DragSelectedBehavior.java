@@ -107,6 +107,8 @@ public class DragSelectedBehavior extends AbstractEditorPartBehavior
     {
         lastMousePoint = null;
         isReadyForDragging = false;
+        editorPart.getSwingComponent().revalidate();
+        editorPart.getSwingComponent().repaint();
     }
 
     private IGraph graph;

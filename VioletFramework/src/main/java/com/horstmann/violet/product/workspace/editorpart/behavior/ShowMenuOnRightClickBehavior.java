@@ -28,7 +28,7 @@ public class ShowMenuOnRightClickBehavior extends AbstractEditorPartBehavior
         boolean isButton3Clicked = (event.getButton() == MouseEvent.BUTTON3);
         if (event.getClickCount() == 1 && isButton3Clicked)
         {
-            getPopupMenu().show(this.editorPart.getAWTComponent(), event.getX(), event.getY());
+            getPopupMenu().show(this.editorPart.getSwingComponent(), event.getX(), event.getY());
         }
     }
     

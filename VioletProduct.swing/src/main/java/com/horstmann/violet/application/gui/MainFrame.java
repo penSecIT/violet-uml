@@ -145,7 +145,7 @@ public class MainFrame extends JFrame
             public void run()
             {
                 getTabbedPane().setSelectedIndex(workspaceList.size() - 1);
-                workspace.getEditorPart().getAWTComponent().requestFocus();
+                workspace.getEditorPart().getSwingComponent().requestFocus();
             }
         });
     }

@@ -1,5 +1,7 @@
 package com.horstmann.violet.product.workspace.editorpart.behavior;
 
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +20,11 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
     /** The clipboard that is shared among all diagrams */
     @InjectedBean
     private Clipboard clipboard;
+    
+    /**
+     * Keep mouse location to paste on just above the current mouse location
+     */
+    private Point2D lastMouseLocation = new Point2D.Double(0, 0);
 
     public CutCopyPasteBehavior(IEditorPart editorPart)
     {
@@ -25,10 +32,19 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
         BeanInjector.getInjector().inject(this);
     }
 
+    @Override
+    public void onMousePressed(MouseEvent event)
+    {
+        double zoom = editorPart.getZoomFactor();
+        this.lastMouseLocation = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
+    }
+    
+    
     public void cut()
     {
         copy();
         editorPart.removeSelected();
+        editorPart.getSwingComponent().repaint();
     }
 
     public void copy()
@@ -44,7 +60,7 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             IGraph graph = editorPart.getGraph();
             List<INode> selectedNodes = editorPart.getSelectedNodes();
             INode lastSelectedNode = selectedNodes.isEmpty() ? null : selectedNodes.get(selectedNodes.size() - 1);
-            Collection<INode> pastedNodes = this.clipboard.pasteOut(graph, lastSelectedNode);
+            Collection<INode> pastedNodes = this.clipboard.pasteOut(graph, lastSelectedNode, this.lastMouseLocation);
             if (pastedNodes != null)
             {
                 editorPart.clearSelection();
@@ -54,6 +70,8 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
         }
         finally
         {
+            editorPart.getSwingComponent().invalidate();
+            editorPart.getSwingComponent().repaint();
         }
     }
 

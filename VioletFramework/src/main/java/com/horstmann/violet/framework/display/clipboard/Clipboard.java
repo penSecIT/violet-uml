@@ -72,9 +72,9 @@ public class Clipboard extends AbstractGraph
         }
     }
 
-    public Collection<INode> pasteOut(IGraph g, INode selectedNode)
+    public Collection<INode> pasteOut(IGraph g, INode selectedNode, Point2D location)
     {
-        return copyStructure(this, getAllNodes(), g, selectedNode, 0, 0);
+        return copyStructure(this, getAllNodes(), g, selectedNode, location.getX(), location.getY());
     }
 
     private static Collection<INode> copyStructure(IGraph graphIn, Collection<INode> selectedIn, IGraph graphOut, INode selectedOut, double dx, double dy)

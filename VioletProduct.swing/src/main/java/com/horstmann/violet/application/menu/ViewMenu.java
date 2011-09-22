@@ -233,7 +233,7 @@ public class ViewMenu extends JMenu
         IWorkspace workspace = mainFrame.getActiveWorkspace();
         IEditorPart editorPart = workspace.getEditorPart();
         editorPart.getGrid().changeGridSize(-1);
-        editorPart.getAWTComponent().repaint();
+        editorPart.getSwingComponent().repaint();
     }
 
     /**
@@ -245,7 +245,7 @@ public class ViewMenu extends JMenu
         IWorkspace workspace = mainFrame.getActiveWorkspace();
         IEditorPart editorPart = workspace.getEditorPart();
         editorPart.getGrid().changeGridSize(1);
-        editorPart.getAWTComponent().repaint();
+        editorPart.getSwingComponent().repaint();
     }
 
     /**
@@ -267,7 +267,7 @@ public class ViewMenu extends JMenu
         {
             editorPart.getGrid().setVisible(true);
         }
-        editorPart.getAWTComponent().repaint();
+        editorPart.getSwingComponent().repaint();
     }
 
     /**

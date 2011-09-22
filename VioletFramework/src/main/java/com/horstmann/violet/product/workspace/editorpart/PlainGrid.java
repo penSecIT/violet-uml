@@ -91,7 +91,7 @@ public class PlainGrid implements IGrid
      */
     private Rectangle2D.Double getBounds(Graphics2D g2)
     {
-        Component editorPartComponent = editorPart.getAWTComponent();
+        Component editorPartComponent = editorPart.getSwingComponent();
         IGraph graph = editorPart.getGraph();
 
         Rectangle2D bounds = editorPartComponent.getBounds();

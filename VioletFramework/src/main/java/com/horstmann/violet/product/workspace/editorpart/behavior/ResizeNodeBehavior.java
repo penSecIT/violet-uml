@@ -42,9 +42,9 @@ public class ResizeNodeBehavior extends AbstractEditorPartBehavior
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
         Rectangle2D bounds = selectedNode.getBounds();
         if (bounds.contains(mousePoint)) {
-            editorPart.getAWTComponent().setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+            editorPart.getSwingComponent().setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
         } else {
-            editorPart.getAWTComponent().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            editorPart.getSwingComponent().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
     }
 

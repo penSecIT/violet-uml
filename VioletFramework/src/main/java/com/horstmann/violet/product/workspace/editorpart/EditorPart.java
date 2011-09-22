@@ -22,7 +22,6 @@
 package com.horstmann.violet.product.workspace.editorpart;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,6 +35,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -220,7 +220,7 @@ public class EditorPart extends JPanel implements IEditorPart
         repaint();
     }
 
-    public Component getAWTComponent()
+    public JComponent getSwingComponent()
     {
         return this;
     }

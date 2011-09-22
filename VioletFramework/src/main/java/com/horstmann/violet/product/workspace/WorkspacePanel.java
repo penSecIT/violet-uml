@@ -52,7 +52,7 @@ public class WorkspacePanel extends JPanel
         if (this.scrollableEditorPart == null)
         {
             final IEditorPart editorPart = this.workspace.getEditorPart();
-            final Component panel = editorPart.getAWTComponent();
+            final Component panel = editorPart.getSwingComponent();
             this.scrollableEditorPart = new JScrollPane();
             this.scrollableEditorPart.getViewport().setView(panel);
             this.scrollableEditorPart.setBackground(ThemeManager.getInstance().getTheme().getWhiteColor());

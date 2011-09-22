@@ -1,7 +1,8 @@
 package com.horstmann.violet.product.workspace.editorpart;
 
-import java.awt.Component;
 import java.util.List;
+
+import javax.swing.JComponent;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
@@ -73,7 +74,7 @@ public interface IEditorPart
     /**
      * @return the awt object displaying this editor part
      */
-    public Component getAWTComponent();
+    public JComponent getSwingComponent();
     
     /**
      * @return object that manages nodes and edges selection

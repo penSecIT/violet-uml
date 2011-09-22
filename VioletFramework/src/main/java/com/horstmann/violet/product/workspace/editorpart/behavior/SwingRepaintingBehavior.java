@@ -25,36 +25,36 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     @Override
     public void onToolSelected(GraphTool selectedTool)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void onMouseReleased(MouseEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
     
     @Override
     public void onMouseClicked(MouseEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void onMousePressed(MouseEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void onMouseDragged(MouseEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
     
     @Override
@@ -102,36 +102,36 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     @Override
     public void afterRemovingSelectedElements()
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void afterEditingNode(INode node)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void afterEditingEdge(IEdge edge)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void afterAddingNodeAtPoint(INode node, Point2D location)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void afterAddingEdgeAtPoints(IEdge edge, Point2D startPoint, Point2D endPoint)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
     
     @Override
@@ -144,29 +144,29 @@ public class SwingRepaintingBehavior implements IEditorPartBehavior
     @Override
     public void onEdgeSelected(IEdge edge)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void onNodeSelected(INode node)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void whileEditingEdge(IEdge edge, PropertyChangeEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
     @Override
     public void whileEditingNode(INode node, PropertyChangeEvent event)
     {
-        this.editorPart.getAWTComponent().doLayout();
-        this.editorPart.getAWTComponent().repaint();
+        this.editorPart.getSwingComponent().doLayout();
+        this.editorPart.getSwingComponent().repaint();
     }
 
    
