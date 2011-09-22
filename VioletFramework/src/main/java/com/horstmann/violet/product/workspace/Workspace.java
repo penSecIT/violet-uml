@@ -52,7 +52,7 @@ import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByDistan
 import com.horstmann.violet.product.workspace.editorpart.behavior.SelectByLassoBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.ShowMenuOnRightClickBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.SwingRepaintingBehavior;
-import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoGlobalBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoCompoundBehavior;
 import com.horstmann.violet.product.workspace.editorpart.behavior.ZoomByWheelBehavior;
 import com.horstmann.violet.product.workspace.sidebar.ISideBar;
 import com.horstmann.violet.product.workspace.sidebar.SideBar;
@@ -168,7 +168,7 @@ public class Workspace implements IWorkspace
             behaviorManager.addBehavior(new ZoomByWheelBehavior(this.getEditorPart()));
             behaviorManager.addBehavior(new ChangeToolByWeelBehavior(this.getSideBar().getGraphToolsBar()));
             behaviorManager.addBehavior(new ShowMenuOnRightClickBehavior(this.graphEditor));
-            behaviorManager.addBehavior(new UndoRedoGlobalBehavior(this.graphEditor));
+            behaviorManager.addBehavior(new UndoRedoCompoundBehavior(this.graphEditor));
             behaviorManager.addBehavior(new CutCopyPasteBehavior(this.graphEditor));
         }
         return this.graphEditor;

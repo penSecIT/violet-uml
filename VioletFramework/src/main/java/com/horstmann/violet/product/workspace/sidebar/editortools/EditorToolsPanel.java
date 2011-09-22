@@ -35,7 +35,7 @@ import com.horstmann.violet.product.workspace.IWorkspace;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.behavior.CutCopyPasteBehavior;
-import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoGlobalBehavior;
+import com.horstmann.violet.product.workspace.editorpart.behavior.UndoRedoCompoundBehavior;
 import com.horstmann.violet.product.workspace.sidebar.ISideBarElement;
 import com.horstmann.violet.product.workspace.sidebar.SideBar;
 
@@ -65,7 +65,7 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
         {
             public void actionPerformed(ActionEvent e)
             {
-            	UndoRedoGlobalBehavior undoRedoBehavior = getUndoRedoBehavior();
+            	UndoRedoCompoundBehavior undoRedoBehavior = getUndoRedoBehavior();
             	if (undoRedoBehavior != null) {
             		undoRedoBehavior.undo();
             	}
@@ -75,7 +75,7 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
         {
             public void actionPerformed(ActionEvent e)
             {
-            	UndoRedoGlobalBehavior undoRedoBehavior = getUndoRedoBehavior();
+            	UndoRedoCompoundBehavior undoRedoBehavior = getUndoRedoBehavior();
             	if (undoRedoBehavior != null) {
             		undoRedoBehavior.redo();
             	}
@@ -125,10 +125,10 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
      * 
      * @return the first UndoRedoBehavior object found or null
      */
-    private UndoRedoGlobalBehavior getUndoRedoBehavior() {
+    private UndoRedoCompoundBehavior getUndoRedoBehavior() {
     	IEditorPart activeEditorPart = workspace.getEditorPart();
         IEditorPartBehaviorManager behaviorManager = activeEditorPart.getBehaviorManager();
-        List<UndoRedoGlobalBehavior> found = behaviorManager.getBehaviors(UndoRedoGlobalBehavior.class);
+        List<UndoRedoCompoundBehavior> found = behaviorManager.getBehaviors(UndoRedoCompoundBehavior.class);
         if (found.size() != 1) {
             return null;
         }
