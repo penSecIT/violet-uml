@@ -232,6 +232,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
         // Case 3 : attached directly to the graph
         newNode.setGraph(this);
         newNode.setLocation(p);
+        newNode.setParent(null);
         nodes.add(newNode);
         return true;
     }

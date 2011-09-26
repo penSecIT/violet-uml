@@ -152,12 +152,12 @@ public class Clipboard extends AbstractGraph
         for (IEdge e : newEdges)
             graphOut.connect(e, e.getStart(), e.getStartLocation(), e.getEnd(), e.getEndLocation());
         
-        if (selectedOut != null) {
-            Collection<INode> nodes = originalAndClonedNodes.values();
-            for (INode aNode : nodes) {
-                selectedOut.addChild(aNode, aNode.getLocation());
-            }
-        }
+//        if (selectedOut != null) {
+//            Collection<INode> nodes = originalAndClonedNodes.values();
+//            for (INode aNode : nodes) {
+//                selectedOut.addChild(aNode, aNode.getLocation());
+//            }
+//        }
         
         for (INode n : selectedIn)
         {

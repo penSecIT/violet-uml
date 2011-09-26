@@ -66,23 +66,25 @@ public abstract class AbstractNode implements INode
         };
     }
 
-    
     /**
      * @return currently connected edges
      */
-    protected List<IEdge> getConnectedEdges() {
+    protected List<IEdge> getConnectedEdges()
+    {
         List<IEdge> connectedEdges = new ArrayList<IEdge>();
         IGraph currentGraph = getGraph();
-        for (IEdge anEdge : currentGraph.getAllEdges()) {
+        for (IEdge anEdge : currentGraph.getAllEdges())
+        {
             INode start = anEdge.getStart();
             INode end = anEdge.getEnd();
-            if (this.equals(start) || this.equals(end)) {
+            if (this.equals(start) || this.equals(end))
+            {
                 connectedEdges.add(anEdge);
             }
         }
         return connectedEdges;
     }
-    
+
     @Override
     public Point2D getLocation()
     {
@@ -202,7 +204,6 @@ public abstract class AbstractNode implements INode
         return true;
     }
 
-
     /**
      * @return the shape to be used for computing the drop shadow
      */
@@ -220,10 +221,13 @@ public abstract class AbstractNode implements INode
             cloned.id = new Id();
             cloned.children = new ArrayList<INode>();
             cloned.location = (Point2D.Double) getLocation().clone();
-            /*
-             * for (Node child : children) { Node clonedChild = child.clone(); cloned.children.add(clonedChild);
-             * clonedChild.setParent(cloned); }
-             */
+
+            for (INode child : children)
+            {
+                INode clonedChild = child.clone();
+                cloned.children.add(clonedChild);
+                clonedChild.setParent(cloned);
+            }
             cloned.graph = null;
             return cloned;
         }
@@ -272,8 +276,6 @@ public abstract class AbstractNode implements INode
     {
         return this.toolTip;
     }
-    
-   
 
     private ArrayList<INode> children;
     private INode parent;

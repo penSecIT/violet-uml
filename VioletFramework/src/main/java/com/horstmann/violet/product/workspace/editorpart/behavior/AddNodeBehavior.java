@@ -64,7 +64,7 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
      * @param location
      * @return true if the node has been added
      */
-    private boolean addNodeAtPoint(INode newNode, Point2D location)
+    public boolean addNodeAtPoint(INode newNode, Point2D location)
     {
         boolean isAdded = false;
         this.behaviorManager.fireBeforeAddingNodeAtPoint(newNode, location);

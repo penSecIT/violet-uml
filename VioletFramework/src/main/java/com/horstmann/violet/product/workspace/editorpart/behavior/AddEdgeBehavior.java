@@ -97,7 +97,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
      * @param endPoint
      * @return true id the edge has been added
      */
-    private boolean addEdgeAtPoints(IEdge newEdge, Point2D startPoint, Point2D endPoint)
+    public boolean addEdgeAtPoints(IEdge newEdge, Point2D startPoint, Point2D endPoint)
     {
         boolean isAdded = false;
         if (startPoint.distance(endPoint) > CONNECT_THRESHOLD)

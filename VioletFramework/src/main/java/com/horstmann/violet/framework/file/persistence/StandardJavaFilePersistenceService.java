@@ -223,6 +223,8 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
 
                 for ( INode n : g.getAllNodes())
                 {
+                    INode parent = n.getParent();
+                    if (parent != null) continue;
                     Point2D p = n.getLocation();
                     out.writeStatement(new Statement(oldInstance, "addNode", new Object[]
                     {
@@ -253,9 +255,11 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 for (int i = 0; i < children.size(); i++)
                 {
                     INode c = (INode) children.get(i);
+                    Point2D p = c.getLocation();
                     out.writeStatement(new Statement(oldInstance, "addChild", new Object[]
                     {
-                        c
+                        c,
+                        p
                     }));
                 }
                 boolean isWriteId = false; // Keep for further refinement
