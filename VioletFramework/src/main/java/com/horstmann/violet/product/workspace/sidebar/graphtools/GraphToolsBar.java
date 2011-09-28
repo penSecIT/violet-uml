@@ -167,17 +167,17 @@ public class GraphToolsBar implements IGraphToolsBar, ISideBarElement
      */
     private List<GraphTool> getStandardNodeTools(IGraph graph)
     {
-        INode[] nodeTypes = graph.getNodePrototypes();
+    	List<INode> nodeTypes = graph.getNodePrototypes();
         List<GraphTool> tools = new ArrayList<GraphTool>();
         GraphTool firstTool = GraphTool.SELECTION_TOOL;
         tools.add(firstTool);
-        if (nodeTypes.length == 0)
+        if (nodeTypes.size() == 0)
         {
             return tools;
         }
-        for (int i = 0; i < nodeTypes.length; i++)
+        for (int i = 0; i < nodeTypes.size(); i++)
         {
-            GraphTool aTool = new GraphTool(nodeTypes[i], nodeTypes[i].getToolTip());
+            GraphTool aTool = new GraphTool(nodeTypes.get(i), nodeTypes.get(i).getToolTip());
             tools.add(aTool);
         }
         return tools;
@@ -191,15 +191,15 @@ public class GraphToolsBar implements IGraphToolsBar, ISideBarElement
      */
     private List<GraphTool> getStandardEdgeTools(IGraph graph)
     {
-        IEdge[] edgeTypes = graph.getEdgePrototypes();
+        List<IEdge> edgeTypes = graph.getEdgePrototypes();
         List<GraphTool> tools = new ArrayList<GraphTool>();
-        if (edgeTypes.length == 0)
+        if (edgeTypes.size() == 0)
         {
             return tools;
         }
-        for (int i = 0; i < edgeTypes.length; i++)
+        for (int i = 0; i < edgeTypes.size(); i++)
         {
-            GraphTool aTool = new GraphTool(edgeTypes[i], edgeTypes[i].getToolTip());
+            GraphTool aTool = new GraphTool(edgeTypes.get(i), edgeTypes.get(i).getToolTip());
             tools.add(aTool);
         }
         return tools;

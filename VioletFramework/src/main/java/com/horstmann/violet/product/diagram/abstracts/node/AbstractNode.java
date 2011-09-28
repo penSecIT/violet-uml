@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
-import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
@@ -53,15 +52,15 @@ public abstract class AbstractNode implements INode
         this.graph = new AbstractGraph()
         {
             @Override
-            public INode[] getNodePrototypes()
+            public List<INode> getNodePrototypes()
             {
-                return new INode[0];
+                return new ArrayList<INode>();
             }
 
             @Override
-            public IEdge[] getEdgePrototypes()
+            public List<IEdge> getEdgePrototypes()
             {
-                return new IEdge[0];
+                return new ArrayList<IEdge>();
             }
         };
     }

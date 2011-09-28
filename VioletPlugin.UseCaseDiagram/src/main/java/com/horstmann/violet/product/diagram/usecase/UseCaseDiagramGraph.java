@@ -21,6 +21,8 @@
 
 package com.horstmann.violet.product.diagram.usecase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -40,19 +42,19 @@ import com.horstmann.violet.product.diagram.common.NoteNode;
 public class UseCaseDiagramGraph extends AbstractGraph
 {
 
-    public INode[] getNodePrototypes()
+    public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
     }
 
-    public IEdge[] getEdgePrototypes()
+    public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
     }
 
-    private static final INode[] NODE_PROTOTYPES = new INode[4];
+    private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
 
-    private static final IEdge[] EDGE_PROTOTYPES = new IEdge[5];
+    private static final List<IEdge> EDGE_PROTOTYPES = new ArrayList<IEdge>();
 
     static
     {
@@ -60,26 +62,26 @@ public class UseCaseDiagramGraph extends AbstractGraph
 
         ActorNode actorNode = new ActorNode();
         actorNode.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES[0] = actorNode;
+        NODE_PROTOTYPES.add(actorNode);
 
         UseCaseNode useCaseNode = new UseCaseNode();
         useCaseNode.setToolTip(rs.getString("node1.tooltip"));
-        NODE_PROTOTYPES[1] = useCaseNode;
+        NODE_PROTOTYPES.add(useCaseNode);
 
         NoteNode noteNode = new NoteNode();
         noteNode.setToolTip(rs.getString("node2.tooltip"));
-        NODE_PROTOTYPES[2] = noteNode;
+        NODE_PROTOTYPES.add(noteNode);
 
         DiagramLinkNode diagramLinkNode = new DiagramLinkNode();
         diagramLinkNode.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES[3] = diagramLinkNode;
+        NODE_PROTOTYPES.add(diagramLinkNode);
 
         UseCaseRelationshipEdge communication = new UseCaseRelationshipEdge();
         communication.setBentStyle(BentStyle.STRAIGHT);
         communication.setLineStyle(LineStyle.SOLID);
         communication.setEndArrowHead(ArrowHead.NONE);
         communication.setToolTip(rs.getString("edge0.tooltip"));
-        EDGE_PROTOTYPES[0] = communication;
+        EDGE_PROTOTYPES.add(communication);
 
         UseCaseRelationshipEdge extendRel = new UseCaseRelationshipEdge();
         extendRel.setBentStyle(BentStyle.STRAIGHT);
@@ -87,7 +89,7 @@ public class UseCaseDiagramGraph extends AbstractGraph
         extendRel.setEndArrowHead(ArrowHead.V);
         extendRel.setMiddleLabel("\u00ABextend\u00BB");
         extendRel.setToolTip(rs.getString("edge1.tooltip"));
-        EDGE_PROTOTYPES[1] = extendRel;
+        EDGE_PROTOTYPES.add(extendRel);
 
         UseCaseRelationshipEdge includeRel = new UseCaseRelationshipEdge();
         includeRel.setBentStyle(BentStyle.STRAIGHT);
@@ -95,18 +97,18 @@ public class UseCaseDiagramGraph extends AbstractGraph
         includeRel.setEndArrowHead(ArrowHead.V);
         includeRel.setMiddleLabel("\u00ABinclude\u00BB");
         includeRel.setToolTip(rs.getString("edge2.tooltip"));
-        EDGE_PROTOTYPES[2] = includeRel;
+        EDGE_PROTOTYPES.add(includeRel);
 
         UseCaseRelationshipEdge generalization = new UseCaseRelationshipEdge();
         generalization.setBentStyle(BentStyle.STRAIGHT);
         generalization.setLineStyle(LineStyle.SOLID);
         generalization.setEndArrowHead(ArrowHead.TRIANGLE);
         generalization.setToolTip(rs.getString("edge3.tooltip"));
-        EDGE_PROTOTYPES[3] = generalization;
+        EDGE_PROTOTYPES.add(generalization);
 
         NoteEdge noteEdge = new NoteEdge();
         noteEdge.setToolTip(rs.getString("edge4.tooltip"));
-        EDGE_PROTOTYPES[4] = noteEdge;
+        EDGE_PROTOTYPES.add(noteEdge);
     }
 
 }

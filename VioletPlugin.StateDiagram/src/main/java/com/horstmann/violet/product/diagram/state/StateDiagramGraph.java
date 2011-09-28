@@ -21,6 +21,8 @@
 
 package com.horstmann.violet.product.diagram.state;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -36,19 +38,19 @@ import com.horstmann.violet.product.diagram.common.NoteNode;
  */
 public class StateDiagramGraph extends AbstractGraph
 {
-    public INode[] getNodePrototypes()
+    public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
     }
 
-    public IEdge[] getEdgePrototypes()
+    public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
     }
 
-    private static final INode[] NODE_PROTOTYPES = new INode[5];
+    private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
 
-    private static final IEdge[] EDGE_PROTOTYPES = new IEdge[2];
+    private static final List<IEdge> EDGE_PROTOTYPES = new ArrayList<IEdge>();
 
     static
     {
@@ -56,31 +58,31 @@ public class StateDiagramGraph extends AbstractGraph
         
         StateNode stateNode = new StateNode();
         stateNode.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES[0] = stateNode;
+        NODE_PROTOTYPES.add(stateNode);
         
         CircularInitialStateNode circularInitialStateNode = new CircularInitialStateNode();
         circularInitialStateNode.setToolTip(rs.getString("node1.tooltip"));
-        NODE_PROTOTYPES[1] = circularInitialStateNode;
+        NODE_PROTOTYPES.add(circularInitialStateNode);
         
         CircularFinalStateNode circularFinalStateNode = new CircularFinalStateNode();
         circularFinalStateNode.setToolTip(rs.getString("node2.tooltip"));
-        NODE_PROTOTYPES[2] = circularFinalStateNode;
+        NODE_PROTOTYPES.add(circularFinalStateNode);
         
         NoteNode noteNode = new NoteNode();
         noteNode.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES[3] = noteNode;
+        NODE_PROTOTYPES.add(noteNode);
         
         DiagramLinkNode diagramLinkNode = new DiagramLinkNode();
         diagramLinkNode.setToolTip(rs.getString("node4.tooltip"));
-        NODE_PROTOTYPES[4] = diagramLinkNode;
+        NODE_PROTOTYPES.add(diagramLinkNode);
         
         StateTransitionEdge stateTransitionEdge = new StateTransitionEdge();
         stateTransitionEdge.setToolTip(rs.getString("edge0.tooltip"));
-        EDGE_PROTOTYPES[0] = stateTransitionEdge;
+        EDGE_PROTOTYPES.add(stateTransitionEdge);
         
         NoteEdge noteEdge = new NoteEdge();
         noteEdge.setToolTip(rs.getString("edge1.tooltip"));
-        EDGE_PROTOTYPES[1] = noteEdge;
+        EDGE_PROTOTYPES.add(noteEdge);
     }
 
 }

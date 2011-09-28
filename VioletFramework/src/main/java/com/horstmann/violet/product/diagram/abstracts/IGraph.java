@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
@@ -15,17 +16,17 @@ public interface IGraph
     /**
      * Gets the node types of a particular graph type.
      * 
-     * @return an array of node prototypes
+     * @return a list of node prototypes
      */
-    public abstract INode[] getNodePrototypes();
+    public abstract List<INode> getNodePrototypes();
 
 
     /**
      * Gets the edge types of a particular graph type.
      * 
-     * @return an array of edge prototypes
+     * @return a list of edge prototypes
      */
-    public abstract IEdge[] getEdgePrototypes();
+    public abstract List<IEdge> getEdgePrototypes();
 
 
     /**

@@ -11,10 +11,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,10 +29,6 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 
 	private IEditorPart editorPart;
 
-	private String clipboardString;
-
-	private ByteBuffer bb;
-
 	private StandardJavaFilePersistenceService persistenceService = new StandardJavaFilePersistenceService();
 
 	/**
@@ -44,6 +36,11 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 	 */
 	private Point2D lastMouseLocation = new Point2D.Double(0, 0);
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param editorPart
+	 */
 	public CutCopyPasteBehavior(IEditorPart editorPart) {
 		this.editorPart = editorPart;
 		BeanInjector.getInjector().inject(this);
@@ -55,12 +52,18 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 		this.lastMouseLocation = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
 	}
 
+	/**
+	 * Cuts selected graph elements
+	 */
 	public void cut() {
 		copy();
 		editorPart.removeSelected();
 		editorPart.getSwingComponent().repaint();
 	}
 
+	/**
+	 * Copies selected graph elements to system clipboard
+	 */
 	public void copy() {
 		IGraph graph = editorPart.getGraph();
 		Class<? extends IGraph> graphClass = graph.getClass();
@@ -86,20 +89,139 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 		}
 		try {
 			ByteBuffer serializedGraph = persistenceService.serializeGraph(newGraph);
-			String xmlContent = bb_to_str(serializedGraph);
-			putToSystemClipboard(xmlContent);
+			String xmlContent = convertToString(serializedGraph);
+			pushContentToSystemClipboard(xmlContent);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void putToSystemClipboard(String content) {
+	/**
+	 * Paste elements from system wide clipboard to graph
+	 */
+	public void paste() {
+		IGraph graph = this.editorPart.getGraph();
+		try {
+			String xmlContent = getContentFromSystemClipboard();
+			ByteBuffer byteBuffer = convertToByteBuffer(xmlContent);
+			IGraph deserializedGraph = persistenceService.deserializeGraph(byteBuffer);
+			deserializedGraph = translateToMouseLocation(deserializedGraph, this.lastMouseLocation);
+
+			Collection<INode> nodesFromClipboard = deserializedGraph.getAllNodes();
+			List<INode> nodes = filterOnNodePrototypes(nodesFromClipboard);
+			for (INode aNode : nodes) {
+				if (isAncestorInCollection(aNode, nodes))
+					continue;
+
+				graph.addNode(aNode, aNode.getLocation());
+			}
+			
+			Collection<IEdge> edgesFromClipboard = deserializedGraph.getAllEdges();
+			List<IEdge> edges = filterOnEdgePrototypes(edgesFromClipboard);
+			for (IEdge anEdge : edges) {
+				Point2D startLocation = anEdge.getStartLocation();
+				Point2D endLocation = anEdge.getEndLocation();
+				INode startNode = graph.findNode(anEdge.getStart().getId());
+				INode endNode = graph.findNode(anEdge.getEnd().getId());
+				if (startNode != null && endNode != null) {
+					graph.connect(anEdge, startNode, startLocation, endNode, endLocation);
+				}
+			}
+			
+			editorPart.getSwingComponent().invalidate();
+			editorPart.getSwingComponent().repaint();
+		} catch (IOException e) {
+			// Nothing to do
+		}
+	}
+	
+	/**
+	 * As we can copy/paste on many diagrams, we ensure that we paste only node types acceptable for the current diagram
+	 * 
+	 * @param nodes from clipboard
+	 * @return nodes acceptable for the current diagram
+	 */
+	private List<INode> filterOnNodePrototypes(Collection<INode> nodes) {
+		IGraph currentGraph = this.editorPart.getGraph();
+		List<INode> nodePrototypes = currentGraph.getNodePrototypes();
+		List<Class<? extends INode>> classPrototypes = new ArrayList<Class<? extends INode>>();
+		for (INode aNodePrototype : nodePrototypes) {
+			classPrototypes.add(aNodePrototype.getClass());
+		}
+
+		List<INode> result = new ArrayList<INode>();
+		for (INode aNode : nodes) {
+			Class<? extends INode> nodeClass = aNode.getClass();
+			if (classPrototypes.contains(nodeClass)) {
+				result.add(aNode);
+			}
+		}
+		return result;
+	}
+	
+	/**
+ 	 * As we can copy/paste on many diagrams, we ensure that we paste only edge types acceptable for the current diagram
+	 * 
+	 * @param edges from clipboard
+	 * @return edges acceptable for the current diagram
+	 */
+	private List<IEdge> filterOnEdgePrototypes(Collection<IEdge> edges) {
+		IGraph currentGraph = this.editorPart.getGraph();
+		List<IEdge> edgePrototypes = currentGraph.getEdgePrototypes();
+		List<Class<? extends IEdge>> classPrototypes = new ArrayList<Class<? extends IEdge>>();
+		for (IEdge aEdgePrototype : edgePrototypes) {
+			classPrototypes.add(aEdgePrototype.getClass());
+		}
+
+		List<IEdge> result = new ArrayList<IEdge>();
+		for (IEdge aEdge : edges) {
+			Class<? extends IEdge> nodeClass = aEdge.getClass();
+			if (classPrototypes.contains(nodeClass)) {
+				result.add(aEdge);
+			}
+		}
+		return result;
+	}
+	
+
+	/**
+	 * Moves all the nodes of a graph to a location
+	 * 
+	 * @param graph
+	 * @param mouseLocation
+	 * @return the modified graph
+	 */
+	private IGraph translateToMouseLocation(IGraph graph, Point2D mouseLocation) {
+		Rectangle2D clipBounds = graph.getClipBounds();
+		double dx = mouseLocation.getX() - clipBounds.getX();
+		double dy = mouseLocation.getY() - clipBounds.getY();
+		Collection<INode> nodes = graph.getAllNodes();
+		for (INode aNode : nodes) {
+			boolean hasParent = (aNode.getParent() != null);
+			if (!hasParent) {
+				aNode.translate(dx, dy);
+			}
+		}
+		return graph;
+	}
+
+	/**
+	 * Deals with system wide clipboard
+	 * 
+	 * @param content
+	 */
+	private void pushContentToSystemClipboard(String content) {
 		StringSelection dataToClip = new StringSelection(content);
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(dataToClip, dataToClip);
 	}
 
-	private String getFromSystemClipboard() {
+	/**
+	 * Deals with system wide clipboard
+	 * 
+	 * @return
+	 */
+	private String getContentFromSystemClipboard() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable clipData = clipboard.getContents(clipboard);
 		if (clipData != null) {
@@ -116,84 +238,40 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 		}
 		return "";
 	}
+	
+	
+	/**
+	 * Converts a string into a bytebuffer
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	private ByteBuffer convertToByteBuffer(String msg) {
+		return ByteBuffer.wrap(msg.getBytes());
+	}
+	
 
-	public void paste() {
-
-		IGraph graph = this.editorPart.getGraph();
-		try {
-			String xmlContent = getFromSystemClipboard();
-			xmlContent = xmlContent.trim();
-			System.out.println(xmlContent);
-			ByteBuffer byteBuffer = str_to_bb(xmlContent);
-			IGraph deserializedGraph = persistenceService.deserializeGraph(byteBuffer);
-			deserializedGraph = translateToMouseLocation(deserializedGraph, this.lastMouseLocation);
-
-			Collection<INode> nodes = deserializedGraph.getAllNodes();
-			for (INode aNode : nodes) {
-				if (isAncestorRelationship(aNode, nodes))
-					continue;
-
-				graph.addNode(aNode, aNode.getLocation());
-			}
-			Collection<IEdge> edges = deserializedGraph.getAllEdges();
-			for (IEdge anEdge : edges) {
-				Point2D startLocation = anEdge.getStartLocation();
-				Point2D endLocation = anEdge.getEndLocation();
-				INode startNode = graph.findNode(anEdge.getStart().getId());
-				INode endNode = graph.findNode(anEdge.getEnd().getId());
-				if (startNode != null && endNode != null) {
-					graph.connect(anEdge, startNode, startLocation, endNode, endLocation);
-				}
-			}
-			editorPart.getSwingComponent().invalidate();
-			editorPart.getSwingComponent().repaint();
-		} catch (IOException e) {
-			// Nothing to do
-		}
+	/**
+	 * Converts a bytebuffer into a string
+	 * 
+	 * @param bytebuffer
+	 * @return
+	 */
+	private String convertToString(ByteBuffer bytebuffer) {
+		byte[] bytearray = new byte[bytebuffer.remaining()];
+		bytebuffer.get(bytearray);
+		String s = new String(bytearray);
+		return s;
 	}
 
-	private IGraph translateToMouseLocation(IGraph graph, Point2D mouseLocation) {
-		Rectangle2D clipBounds = graph.getClipBounds();
-		double dx = mouseLocation.getX() - clipBounds.getX();
-		double dy = mouseLocation.getY() - clipBounds.getY();
-		Collection<INode> nodes = graph.getAllNodes();
-		for (INode aNode : nodes) {
-			boolean hasParent = (aNode.getParent() != null);
-			if (!hasParent) {
-				aNode.translate(dx, dy);
-			}
-		}
-		return graph;
-	}
-
-	public static Charset charset = Charset.forName("UTF-8");
-	public static CharsetEncoder encoder = charset.newEncoder();
-	public static CharsetDecoder decoder = charset.newDecoder();
-
-	private ByteBuffer str_to_bb(String msg) {
-		try {
-			return encoder.encode(CharBuffer.wrap(msg));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private String bb_to_str(ByteBuffer buffer) {
-		String data = "";
-		try {
-			int old_position = buffer.position();
-			data = decoder.decode(buffer).toString();
-			// reset buffer's position to its original so it is not altered:
-			buffer.position(old_position);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-		return data;
-	}
-
-	private boolean isAncestorRelationship(INode childNode, Collection<INode> ancestorList) {
+	/**
+	 * Checks if the given list contains an ancestor of the given node
+	 * 
+	 * @param childNode
+	 * @param ancestorList
+	 * @return b
+	 */
+	private boolean isAncestorInCollection(INode childNode, Collection<INode> ancestorList) {
 		for (INode anAncestorNode : ancestorList) {
 			boolean ancestorRelationship = isAncestorRelationship(childNode, anAncestorNode);
 			if (ancestorRelationship)

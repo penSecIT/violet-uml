@@ -179,10 +179,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     }
 
     @Override
-    public abstract INode[] getNodePrototypes();
+    public abstract List<INode> getNodePrototypes();
 
     @Override
-    public abstract IEdge[] getEdgePrototypes();
+    public abstract List<IEdge> getEdgePrototypes();
 
     @Override
     public Collection<INode> getAllNodes()

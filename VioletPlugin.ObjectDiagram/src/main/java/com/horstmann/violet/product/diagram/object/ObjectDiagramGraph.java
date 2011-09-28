@@ -21,6 +21,8 @@
 
 package com.horstmann.violet.product.diagram.object;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -38,19 +40,19 @@ import com.horstmann.violet.product.diagram.common.NoteNode;
  */
 public class ObjectDiagramGraph extends AbstractGraph
 {
-    public INode[] getNodePrototypes()
+    public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
     }
 
-    public IEdge[] getEdgePrototypes()
+    public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
     }
 
-    private static final INode[] NODE_PROTOTYPES = new INode[4];
+    private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
 
-    private static final IEdge[] EDGE_PROTOTYPES = new IEdge[3];
+    private static final List<IEdge> EDGE_PROTOTYPES = new ArrayList<IEdge>();
 
     static
     {
@@ -58,7 +60,7 @@ public class ObjectDiagramGraph extends AbstractGraph
 
         ObjectNode node0 = new ObjectNode();
         node0.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES[0] = node0;
+        NODE_PROTOTYPES.add(node0);
 
         FieldNode node1 = new FieldNode();
         node1.setToolTip(rs.getString("node1.tooltip"));
@@ -68,28 +70,28 @@ public class ObjectDiagramGraph extends AbstractGraph
         MultiLineString fv = new MultiLineString();
         fv.setText("value");
         node1.setValue(fv);
-        NODE_PROTOTYPES[1] = node1;
+        NODE_PROTOTYPES.add(node1);
 
         NoteNode node2 = new NoteNode();
         node2.setToolTip(rs.getString("node2.tooltip"));
-        NODE_PROTOTYPES[2] = node2;
+        NODE_PROTOTYPES.add(node2);
 
         DiagramLinkNode node3 = new DiagramLinkNode();
         node3.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES[3] = node3;
+        NODE_PROTOTYPES.add(node3);
 
         ObjectReferenceEdge reference = new ObjectReferenceEdge();
         reference.setToolTip(rs.getString("edge0.tooltip"));
-        EDGE_PROTOTYPES[0] = reference;
+        EDGE_PROTOTYPES.add(reference);
 
         ObjectRelationshipEdge association = new ObjectRelationshipEdge();
         association.setBentStyle(BentStyle.STRAIGHT);
         association.setToolTip(rs.getString("edge1.tooltip"));
-        EDGE_PROTOTYPES[1] = association;
+        EDGE_PROTOTYPES.add(association);
 
         NoteEdge noteEdge = new NoteEdge();
         noteEdge.setToolTip(rs.getString("edge2.tooltip"));
-        EDGE_PROTOTYPES[2] = noteEdge;
+        EDGE_PROTOTYPES.add(noteEdge);
     }
 
 }

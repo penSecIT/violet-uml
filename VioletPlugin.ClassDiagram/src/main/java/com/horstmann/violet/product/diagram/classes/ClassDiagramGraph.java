@@ -1,6 +1,8 @@
 package com.horstmann.violet.product.diagram.classes;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -21,19 +23,19 @@ public class ClassDiagramGraph extends AbstractGraph
 {
 
 
-    public INode[] getNodePrototypes()
+    public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
     }
 
-    public IEdge[] getEdgePrototypes()
+    public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
     }
 
-    private static final INode[] NODE_PROTOTYPES = new INode[5];
+    private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
 
-    private static final IEdge[] EDGE_PROTOTYPES = new IEdge[7];
+    private static final List<IEdge> EDGE_PROTOTYPES = new ArrayList<IEdge>();
 
     static
     {
@@ -41,64 +43,64 @@ public class ClassDiagramGraph extends AbstractGraph
         
         ClassNode node0 = new ClassNode();
         node0.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES[0] = node0;
+        NODE_PROTOTYPES.add(node0);
         
         InterfaceNode node1 = new InterfaceNode();
         node1.setToolTip(rs.getString("node1.tooltip"));
-        NODE_PROTOTYPES[1] = node1;
+        NODE_PROTOTYPES.add(node1);
         
         PackageNode node2 = new PackageNode();
         node2.setToolTip(rs.getString("node2.tooltip"));
-        NODE_PROTOTYPES[2] = node2;
+        NODE_PROTOTYPES.add(node2);
         
         NoteNode node3 = new NoteNode();
         node3.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES[3] = node3;
+        NODE_PROTOTYPES.add(node3);
         
         DiagramLinkNode node4 = new DiagramLinkNode();
         node4.setToolTip(rs.getString("node4.tooltip"));
-        NODE_PROTOTYPES[4] = node4;
+        NODE_PROTOTYPES.add(node4);
 
         ClassRelationshipEdge dependency = new ClassRelationshipEdge();
         dependency.setLineStyle(LineStyle.DOTTED);
         dependency.setEndArrowHead(ArrowHead.V);
         dependency.setToolTip(rs.getString("edge0.tooltip"));
-        EDGE_PROTOTYPES[0] = dependency;
+        EDGE_PROTOTYPES.add(dependency);
         
         ClassRelationshipEdge inheritance = new ClassRelationshipEdge();
         inheritance.setBentStyle(BentStyle.AUTO);
         inheritance.setEndArrowHead(ArrowHead.TRIANGLE);
         inheritance.setToolTip(rs.getString("edge1.tooltip"));
-        EDGE_PROTOTYPES[1] = inheritance;
+        EDGE_PROTOTYPES.add(inheritance);
 
         ClassRelationshipEdge interfaceInheritance = new ClassRelationshipEdge();
         interfaceInheritance.setBentStyle(BentStyle.AUTO);
         interfaceInheritance.setLineStyle(LineStyle.DOTTED);
         interfaceInheritance.setEndArrowHead(ArrowHead.TRIANGLE);
         interfaceInheritance.setToolTip(rs.getString("edge2.tooltip"));
-        EDGE_PROTOTYPES[2] = interfaceInheritance;
+        EDGE_PROTOTYPES.add(interfaceInheritance);
 
         ClassRelationshipEdge association = new ClassRelationshipEdge();
         association.setBentStyle(BentStyle.AUTO);
         association.setEndArrowHead(ArrowHead.V);
         association.setToolTip(rs.getString("edge3.tooltip"));
-        EDGE_PROTOTYPES[3] = association;
+        EDGE_PROTOTYPES.add(association);
 
         ClassRelationshipEdge aggregation = new ClassRelationshipEdge();
         aggregation.setBentStyle(BentStyle.AUTO);
         aggregation.setStartArrowHead(ArrowHead.DIAMOND);
         aggregation.setToolTip(rs.getString("edge4.tooltip"));
-        EDGE_PROTOTYPES[4] = aggregation;
+        EDGE_PROTOTYPES.add(aggregation);
 
         ClassRelationshipEdge composition = new ClassRelationshipEdge();
         composition.setBentStyle(BentStyle.AUTO);
         composition.setStartArrowHead(ArrowHead.BLACK_DIAMOND);
         composition.setToolTip(rs.getString("edge5.tooltip"));
-        EDGE_PROTOTYPES[5] = composition;
+        EDGE_PROTOTYPES.add(composition);
 
         NoteEdge noteEdge = new NoteEdge();
         noteEdge.setToolTip(rs.getString("edge6.tooltip"));
-        EDGE_PROTOTYPES[6] = noteEdge;
+        EDGE_PROTOTYPES.add(noteEdge);
     }
 
 }

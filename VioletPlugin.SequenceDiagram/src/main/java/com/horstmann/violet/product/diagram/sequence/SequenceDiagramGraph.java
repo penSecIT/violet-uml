@@ -22,6 +22,8 @@
 package com.horstmann.violet.product.diagram.sequence;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -37,27 +39,7 @@ import com.horstmann.violet.product.diagram.common.NoteNode;
  */
 public class SequenceDiagramGraph extends AbstractGraph
 {
-//    public boolean addNode(INode n, Point2D p)
-//    {
-//        if (!super.addNode(n, p)) return false;
-//        if (n instanceof ActivationBarNode) // must be inside an object
-//        {
-//            Collection<INode> nodes = getNodes();
-//            boolean inside = false;
-//            Iterator<INode> iter = nodes.iterator();
-//            while (!inside && iter.hasNext())
-//            {
-//                INode n2 = iter.next();
-//                if (n2 instanceof LifelineNode && n2.contains(p))
-//                {
-//                    inside = true;
-//                    ((ActivationBarNode) n).setImplicitParameter((LifelineNode) n2);
-//                }
-//            }
-//            if (!inside) return false;
-//        }
-//        return true;
-//    }
+
     
     @Override
     public boolean addNode(INode newNode, Point2D p)
@@ -69,26 +51,21 @@ public class SequenceDiagramGraph extends AbstractGraph
         return super.addNode(newNode, p);
     }
 
-    /*
-     * public void addEdgeToRemove(Edge e) { if (e instanceof CallEdge && e.getEnd().getChildren().size() == 0)
-     * addNodeToRemove(e.getEnd()); super.addEdgeToRemove(e); }
-     */
-
  
 
-    public INode[] getNodePrototypes()
+    public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
     }
 
-    public IEdge[] getEdgePrototypes()
+    public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
     }
 
-    private static final INode[] NODE_PROTOTYPES = new INode[4];
+    private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
 
-    private static final IEdge[] EDGE_PROTOTYPES = new IEdge[3];
+    private static final List<IEdge> EDGE_PROTOTYPES = new ArrayList<IEdge>();
 
     static
     {
@@ -96,31 +73,31 @@ public class SequenceDiagramGraph extends AbstractGraph
         
         LifelineNode lifelineNode = new LifelineNode();
         lifelineNode.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES[0] = lifelineNode;
+        NODE_PROTOTYPES.add(lifelineNode);
         
         ActivationBarNode activationBarNode = new ActivationBarNode();
         activationBarNode.setToolTip(rs.getString("node1.tooltip"));
-        NODE_PROTOTYPES[1] = activationBarNode;
+        NODE_PROTOTYPES.add(activationBarNode);
         
         NoteNode noteNode = new NoteNode();
         noteNode.setToolTip(rs.getString("node2.tooltip"));
-        NODE_PROTOTYPES[2] = noteNode;
+        NODE_PROTOTYPES.add(noteNode);
         
         DiagramLinkNode diagramLinkNode = new DiagramLinkNode();
         diagramLinkNode.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES[3] = diagramLinkNode;
+        NODE_PROTOTYPES.add(diagramLinkNode);
         
         CallEdge callEdge = new CallEdge();
         callEdge.setToolTip(rs.getString("edge0.tooltip"));
-        EDGE_PROTOTYPES[0] = callEdge;
+        EDGE_PROTOTYPES.add(callEdge);
         
         ReturnEdge returnEdge = new ReturnEdge();
         returnEdge.setToolTip(rs.getString("edge1.tooltip"));
-        EDGE_PROTOTYPES[1] = returnEdge;
+        EDGE_PROTOTYPES.add(returnEdge);
         
         NoteEdge noteEdge = new NoteEdge();
         noteEdge.setToolTip(rs.getString("edge2.tooltip"));
-        EDGE_PROTOTYPES[2] = noteEdge;
+        EDGE_PROTOTYPES.add(noteEdge);
     }
 
 }
