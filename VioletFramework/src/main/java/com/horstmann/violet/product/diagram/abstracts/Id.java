@@ -68,6 +68,13 @@ public class Id
         }
         return super.toString();
     }
+    
+    @Override
+    public Id clone() throws CloneNotSupportedException {
+    	Id clone = new Id();
+    	clone.value = this.value + "";
+    	return clone;
+    }
 
     /**
      * Id value

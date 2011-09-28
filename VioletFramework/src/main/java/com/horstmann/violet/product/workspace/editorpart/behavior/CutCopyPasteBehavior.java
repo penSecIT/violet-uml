@@ -23,7 +23,6 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
-import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartSelectionHandler;
 
 public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
@@ -81,11 +80,16 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             newGraph.addNode(clone, locationOnGraph);
         }
         List<IEdge> selectedEdges = selectionHandler.getSelectedEdges();
-//        for (IEdge aSelectedEdge : selectedEdges) {
-//            IEdge clone = aSelectedEdge.clone();
-//            Point2D locationOnGraph = aSelectedNode.getLocationOnGraph();
-//            newGraph.connect(clone, start, startLocation, end, endLocation)addNode(n, p)Node(clone, locationOnGraph);
-//        }
+        for (IEdge aSelectedEdge : selectedEdges) {
+            IEdge clone = aSelectedEdge.clone();
+            Point2D startLocation = clone.getStartLocation();
+            Point2D endLocation = clone.getEndLocation();
+            INode startNode = newGraph.findNode(clone.getStart().getId());
+            INode endNode = newGraph.findNode(clone.getEnd().getId());
+            if (startNode != null && endNode != null) {
+            	newGraph.connect(clone, startNode, startLocation, endNode, endLocation);
+            }
+        }
         try
         {
             ByteBuffer serializedGraph = persistenceService.serializeGraph(newGraph);
@@ -103,38 +107,31 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
 
     public void paste()
     {
-        IEditorPartBehaviorManager behaviorManager = this.editorPart.getBehaviorManager();
-        List<AddNodeBehavior> nodeBehaviorsFound = behaviorManager.getBehaviors(AddNodeBehavior.class);
-        if (nodeBehaviorsFound.size() != 1) {
-            return;
-        }
-        AddNodeBehavior addNodeBehavior = nodeBehaviorsFound.get(0);
         
-        List<AddEdgeBehavior> edgeBehaviorsFound = behaviorManager.getBehaviors(AddEdgeBehavior.class);
-        if (edgeBehaviorsFound.size() != 1) {
-            return;
-        }
-        AddEdgeBehavior addEdgeBehavior = edgeBehaviorsFound.get(0);
-        
+    	
+    	IGraph graph = this.editorPart.getGraph();
         try
         {
            ByteBuffer byteBuffer = this.bb;
            IGraph deserializedGraph = persistenceService.deserializeGraph(byteBuffer);
-           Rectangle2D clipBounds = deserializedGraph.getClipBounds();
+           deserializedGraph = translateToMouseLocation(deserializedGraph, this.lastMouseLocation);
+           
            Collection<INode> nodes = deserializedGraph.getAllNodes();
            for (INode aNode : nodes) {
                if (isAncestorRelationship(aNode, nodes)) continue;
-               //aNode.translate(clipBounds.getMinX(), clipBounds.getMinY());
-               addNodeBehavior.addNodeAtPoint(aNode, aNode.getLocation());
+               
+               graph.addNode(aNode, aNode.getLocation());
            }
            Collection<IEdge> edges = deserializedGraph.getAllEdges();
            for (IEdge anEdge : edges) {
                Point2D startLocation = anEdge.getStartLocation();
                Point2D endLocation = anEdge.getEndLocation();
-               addEdgeBehavior.addEdgeAtPoints(anEdge, startLocation, endLocation);
+               INode startNode = graph.findNode(anEdge.getStart().getId());
+               INode endNode = graph.findNode(anEdge.getEnd().getId());
+               if (startNode != null && endNode != null) {
+            	   graph.connect(anEdge, startNode, startLocation, endNode, endLocation);
+               }
            }
-           
-           
         }
         catch (IOException e)
         {
@@ -147,6 +144,21 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             editorPart.getSwingComponent().repaint();
         }
     }
+    
+    private IGraph translateToMouseLocation(IGraph graph, Point2D mouseLocation) {
+    	Rectangle2D clipBounds = graph.getClipBounds();
+    	double dx = mouseLocation.getX() - clipBounds.getX();
+    	double dy = mouseLocation.getY() - clipBounds.getY();
+    	Collection<INode> nodes = graph.getAllNodes();
+    	for (INode aNode : nodes) {
+    		boolean hasParent = (aNode.getParent() != null);
+    		if (!hasParent) {
+    			aNode.translate(dx, dy);
+    		}
+    	}
+    	return graph;
+    }
+    
     
     public static Charset charset = Charset.forName("UTF-8");
     public static CharsetEncoder encoder = charset.newEncoder();

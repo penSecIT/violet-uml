@@ -7,6 +7,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
@@ -81,6 +82,8 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         }
         IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
         IEdge newEdge = (IEdge) prototype.clone();
+        newEdge.setId(new Id());
+        
         boolean added = addEdgeAtPoints(newEdge, mouseDownPoint, lastMousePoint);
         if (added)
         {

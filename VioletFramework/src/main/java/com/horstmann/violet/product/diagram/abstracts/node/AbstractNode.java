@@ -218,7 +218,7 @@ public abstract class AbstractNode implements INode
         try
         {
             AbstractNode cloned = (AbstractNode) super.clone();
-            cloned.id = new Id();
+            cloned.id = this.id.clone();
             cloned.children = new ArrayList<INode>();
             cloned.location = (Point2D.Double) getLocation().clone();
 

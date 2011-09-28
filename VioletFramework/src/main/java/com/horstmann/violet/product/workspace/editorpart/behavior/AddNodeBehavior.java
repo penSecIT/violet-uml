@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.editorpart.IEditorPartBehaviorManager;
@@ -49,6 +50,7 @@ public class AddNodeBehavior extends AbstractEditorPartBehavior
         Point2D newNodeLocation = grid.snap(mousePoint);
         INode prototype = (INode) selectedTool.getNodeOrEdge();
         INode newNode = (INode) prototype.clone();
+        newNode.setId(new Id());
         
         boolean added = addNodeAtPoint(newNode, newNodeLocation);
         if (added)
