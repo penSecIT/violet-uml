@@ -137,19 +137,20 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
 
             Collection<INode> nodesFromClipboard = deserializedGraph.getAllNodes();
             List<INode> nodes = filterOnNodePrototypes(nodesFromClipboard);
-            List<INode> nodesReallyAdded = new ArrayList<INode>();
+            List<INode> nodesReallyPasted = new ArrayList<INode>();
             for (INode aNode : nodes)
             {
                 if (isAncestorInCollection(aNode, nodes)) continue;
                 boolean isAdded = graph.addNode(aNode, aNode.getLocationOnGraph());
-                if (isAdded) {
-                    nodesReallyAdded.add(aNode);
+                if (isAdded)
+                {
+                    nodesReallyPasted.add(aNode);
                 }
             }
 
             Collection<IEdge> edgesFromClipboard = deserializedGraph.getAllEdges();
             List<IEdge> edges = filterOnEdgePrototypes(edgesFromClipboard);
-            List<IEdge> edgesReallyAdded = new ArrayList<IEdge>();
+            List<IEdge> edgesReallyPasted = new ArrayList<IEdge>();
             for (IEdge anEdge : edges)
             {
                 Point2D startLocation = anEdge.getStartLocation();
@@ -159,14 +160,16 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
                 if (startNode != null && endNode != null)
                 {
                     boolean isConnected = graph.connect(anEdge, startNode, startLocation, endNode, endLocation);
-                    if (isConnected) {
-                        edgesReallyAdded.add(anEdge);
+                    if (isConnected)
+                    {
+                        edgesReallyPasted.add(anEdge);
                     }
                 }
             }
-            
-            addUndoRedoSupport(nodesReallyAdded, edgesReallyAdded);
-            
+
+            addUndoRedoSupport(nodesReallyPasted, edgesReallyPasted);
+            selectPastedElements(nodesReallyPasted, edgesReallyPasted);
+
             editorPart.getSwingComponent().invalidate();
             editorPart.getSwingComponent().repaint();
         }
@@ -179,21 +182,22 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
     /**
      * Adds Undo/Redo support to copy pastes
      * 
-     * @param nodesAdded
-     * @param edgesAdded
+     * @param nodesPasted
+     * @param edgesPasted
      */
-    private void addUndoRedoSupport(List<INode> nodesAdded, List<IEdge> edgesAdded)
+    private void addUndoRedoSupport(List<INode> nodesPasted, List<IEdge> edgesPasted)
     {
         IEditorPartBehaviorManager behaviorManager = this.editorPart.getBehaviorManager();
         List<UndoRedoCompoundBehavior> found = behaviorManager.getBehaviors(UndoRedoCompoundBehavior.class);
-        if (found.size() != 1) {
+        if (found.size() != 1)
+        {
             return;
         }
         UndoRedoCompoundBehavior undoRedoBehavior = found.get(0);
-        
+
         undoRedoBehavior.startHistoryCapture();
         CompoundEdit capturedEdit = undoRedoBehavior.getCurrentCapturedEdit();
-        for (final INode aNode : nodesAdded)
+        for (final INode aNode : nodesPasted)
         {
             UndoableEdit edit = new AbstractUndoableEdit()
             {
@@ -216,7 +220,7 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             capturedEdit.addEdit(edit);
         }
 
-        for (final IEdge anEdge : edgesAdded)
+        for (final IEdge anEdge : edgesPasted)
         {
             UndoableEdit edit = new AbstractUndoableEdit()
             {
@@ -240,7 +244,21 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
         }
         undoRedoBehavior.stopHistoryCapture();
     }
-    
+
+    private void selectPastedElements(List<INode> nodesPasted, List<IEdge> edgesPasted)
+    {
+        IEditorPartSelectionHandler selectionHandler = this.editorPart.getSelectionHandler();
+        selectionHandler.clearSelection();
+        for (final INode aNode : nodesPasted)
+        {
+            selectionHandler.addSelectedElement(aNode);
+        }
+        for (final IEdge anEdge : edgesPasted)
+        {
+            selectionHandler.addSelectedElement(anEdge);
+        }
+    }
+
     /**
      * As we can copy/paste on many diagrams, we ensure that we paste only node types acceptable for the current diagram
      * 
