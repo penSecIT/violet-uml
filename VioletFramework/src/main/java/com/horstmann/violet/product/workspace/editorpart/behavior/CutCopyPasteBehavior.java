@@ -103,6 +103,9 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 		IGraph graph = this.editorPart.getGraph();
 		try {
 			String xmlContent = getContentFromSystemClipboard();
+			if (xmlContent == null) {
+				return; // If no content, we stop here
+			}
 			ByteBuffer byteBuffer = convertToByteBuffer(xmlContent);
 			IGraph deserializedGraph = persistenceService.deserializeGraph(byteBuffer);
 			deserializedGraph = translateToMouseLocation(deserializedGraph, this.lastMouseLocation);
@@ -231,12 +234,12 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior {
 					return s;
 				}
 			} catch (UnsupportedFlavorException ufe) {
-				return "";
+				return null;
 			} catch (IOException ioe) {
-				return "";
+				return null;
 			}
 		}
-		return "";
+		return null;
 	}
 	
 	
