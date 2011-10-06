@@ -303,7 +303,10 @@ public class ManiocFramework {
             if (bean != null) {
                 return bean;
             }
-            return createBean(classType);
+            if (!classType.isInterface()) {
+                return createBean(classType);
+            }
+            return null;
         }
 
         /**
