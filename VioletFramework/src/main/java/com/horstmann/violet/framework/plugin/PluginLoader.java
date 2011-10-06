@@ -19,11 +19,11 @@ import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.VFSClassLoader;
 
 import com.horstmann.violet.framework.file.persistence.Violet016BackportFormatService;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.framework.plugin.extensionpoint.Violet016FileFilterExtensionPoint;
 
-@InjectableBean
+@ManagedBean
 public class PluginLoader extends ClassLoader
 {
 

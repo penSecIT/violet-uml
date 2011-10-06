@@ -29,14 +29,14 @@ import java.util.StringTokenizer;
 import javax.swing.JOptionPane;
 
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 
 /**
  * Checks if the Java version of the current VM is at least a given version.
  */
-@InjectableBean
+@ManagedBean
 public class VersionChecker
 {
     

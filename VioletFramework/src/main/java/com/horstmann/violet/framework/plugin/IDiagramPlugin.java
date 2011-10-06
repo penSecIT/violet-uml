@@ -1,8 +1,5 @@
 package com.horstmann.violet.framework.plugin;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
 /**

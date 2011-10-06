@@ -34,8 +34,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -45,10 +43,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
-import com.horstmann.violet.framework.injection.resources.ResourceFactory;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 
 /**
@@ -58,7 +54,7 @@ import com.horstmann.violet.framework.injection.resources.annotation.ResourceBun
  * @author Alexandre de Pellegrin
  * 
  */
-@InjectableBean(autoCreate=false)
+@ManagedBean(registeredManually=true)
 public class DialogFactory
 {
 

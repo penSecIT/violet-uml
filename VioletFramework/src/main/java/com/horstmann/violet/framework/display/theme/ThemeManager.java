@@ -24,9 +24,9 @@ package com.horstmann.violet.framework.display.theme;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.horstmann.violet.framework.injection.bean.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 
 /**
@@ -35,7 +35,7 @@ import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
  * @author Alexandre de Pellegrin
  * 
  */
-@InjectableBean(autoCreate=false)
+@ManagedBean(registeredManually=true)
 public class ThemeManager
 {
 

@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.horstmann.violet.framework.display.theme.DarkAmbianceTheme;
 import com.horstmann.violet.framework.file.IFile;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 
 
 /**
@@ -16,7 +16,7 @@ import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
  * @author alexandre de pellegrin
  *
  */
-@InjectableBean
+@ManagedBean
 public class UserPreferencesService
 {
 

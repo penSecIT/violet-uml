@@ -24,8 +24,6 @@ package com.horstmann.violet.framework.display.theme;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.LookAndFeel;
-
 /**
  * GUI theme. It includes look and feel and colors
  * 

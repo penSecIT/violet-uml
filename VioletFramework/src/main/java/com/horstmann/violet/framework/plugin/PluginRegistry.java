@@ -3,7 +3,7 @@ package com.horstmann.violet.framework.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 
 /**
  * Plugin registry
@@ -11,7 +11,7 @@ import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
  * @author Alexandre de Pellegrin
  *
  */
-@InjectableBean
+@ManagedBean
 public class PluginRegistry
 {
 

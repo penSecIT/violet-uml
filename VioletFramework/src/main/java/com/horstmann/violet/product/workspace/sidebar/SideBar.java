@@ -27,8 +27,8 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import com.horstmann.violet.framework.injection.bean.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.product.workspace.IWorkspace;
 import com.horstmann.violet.product.workspace.sidebar.editortools.EditorToolsPanel;

@@ -39,9 +39,9 @@ import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
 import com.horstmann.violet.framework.file.persistence.JFileReader;
 import com.horstmann.violet.framework.file.persistence.JFileWriter;
-import com.horstmann.violet.framework.injection.bean.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectableBean;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
@@ -49,7 +49,7 @@ import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 /**
  * This class implements a FileService with a JFileChooser
  */
-@InjectableBean(autoCreate=false)
+@ManagedBean(registeredManually=true)
 public class JFileChooserService implements IFileChooserService
 {
 

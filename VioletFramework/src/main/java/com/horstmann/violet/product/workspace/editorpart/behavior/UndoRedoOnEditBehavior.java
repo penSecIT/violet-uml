@@ -11,7 +11,6 @@ import javax.swing.undo.UndoableEdit;
 import com.horstmann.violet.framework.util.PropertyUtils;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
-import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 
 
 /**

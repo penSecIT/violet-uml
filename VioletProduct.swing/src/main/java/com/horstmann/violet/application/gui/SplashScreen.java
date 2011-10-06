@@ -33,7 +33,6 @@ import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
 import com.horstmann.violet.application.help.AboutDialog;
-import com.horstmann.violet.application.menu.MenuFactory;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 

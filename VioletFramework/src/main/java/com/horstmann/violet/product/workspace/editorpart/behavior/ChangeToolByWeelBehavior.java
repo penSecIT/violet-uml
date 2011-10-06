@@ -4,8 +4,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import com.horstmann.violet.product.workspace.WorkspacePanel;
-import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.product.workspace.sidebar.graphtools.IGraphToolsBar;
 
 public class ChangeToolByWeelBehavior extends AbstractEditorPartBehavior
