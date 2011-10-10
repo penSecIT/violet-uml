@@ -38,7 +38,7 @@ import javax.swing.JOptionPane;
 
 import com.horstmann.violet.application.ApplicationStopper;
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.display.dialog.DialogFactory;
+import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.IGraphFile;
@@ -55,8 +55,8 @@ import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.PluginRegistry;
 import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
-import com.horstmann.violet.product.workspace.IWorkspace;
-import com.horstmann.violet.product.workspace.Workspace;
+import com.horstmann.violet.workspace.IWorkspace;
+import com.horstmann.violet.workspace.Workspace;
 
 /**
  * Represents the file menu on the editor frame

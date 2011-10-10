@@ -35,16 +35,16 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.display.dialog.DialogFactory;
-import com.horstmann.violet.framework.display.theme.ITheme;
-import com.horstmann.violet.framework.display.theme.ThemeInfo;
-import com.horstmann.violet.framework.display.theme.ThemeManager;
+import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
-import com.horstmann.violet.product.workspace.IWorkspace;
-import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.framework.theme.ITheme;
+import com.horstmann.violet.framework.theme.ThemeInfo;
+import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.workspace.IWorkspace;
+import com.horstmann.violet.workspace.editorpart.IEditorPart;
 
 /**
  * View menu

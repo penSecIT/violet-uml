@@ -47,7 +47,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
-import com.horstmann.violet.framework.display.swingextension.VerticalAutoScrollPane;
+import com.horstmann.violet.application.swingextension.VerticalAutoScrollPane;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 

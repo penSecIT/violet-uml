@@ -29,13 +29,8 @@ import javax.swing.JApplet;
 import javax.swing.JFrame;
 
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.framework.display.dialog.DialogFactory;
-import com.horstmann.violet.framework.display.dialog.DialogFactoryMode;
-import com.horstmann.violet.framework.display.theme.ClassicMetalTheme;
-import com.horstmann.violet.framework.display.theme.DarkAmbianceTheme;
-import com.horstmann.violet.framework.display.theme.ITheme;
-import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.display.theme.VistaBlueTheme;
+import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.dialog.DialogFactoryMode;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.chooser.JFileChooserService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
@@ -44,6 +39,11 @@ import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanFactory
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
+import com.horstmann.violet.framework.theme.ClassicMetalTheme;
+import com.horstmann.violet.framework.theme.DarkAmbianceTheme;
+import com.horstmann.violet.framework.theme.ITheme;
+import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.theme.VistaBlueTheme;
 import com.horstmann.violet.framework.userpreferences.AppletUserPreferencesDao;
 import com.horstmann.violet.framework.userpreferences.IUserPreferencesDao;
 
