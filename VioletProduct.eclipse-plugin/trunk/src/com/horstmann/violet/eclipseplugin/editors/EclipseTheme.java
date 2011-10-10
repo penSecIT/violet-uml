@@ -24,11 +24,10 @@ package com.horstmann.violet.eclipseplugin.editors;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import com.horstmann.violet.framework.display.theme.AbstractTheme;
+import com.horstmann.violet.framework.display.theme.ThemeInfo;
 
 
 /**
@@ -49,23 +48,14 @@ public class EclipseTheme extends AbstractTheme {
 		this.colorManager = colorManager;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.horstmann.violet.framework.display.clipboard.theme.Theme#getLookAndFeelInfo()
-	 */
-	public LookAndFeelInfo getLookAndFeelInfo() {
-		LookAndFeelInfo themeInfo = new UIManager.LookAndFeelInfo("Eclipse",
-				MetalLookAndFeel.class.getName());
-		return themeInfo;
+	
+	@Override
+	public ThemeInfo getThemeInfo() {
+		return new ThemeInfo("Eclipse", EclipseTheme.class, MetalLookAndFeel.class);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.horstmann.violet.framework.display.clipboard.theme.AbstractTheme#setup()
-	 */
-	protected void setup() {
+	
+	@Override
+	protected void configure() {
 	}
 
 	public Color getBlackColor() {

@@ -42,8 +42,8 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
 
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 
@@ -122,7 +122,7 @@ public abstract class NewWizard extends Wizard implements INewWizard
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         this.selection = selection;
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
     }
 
     /**
@@ -215,7 +215,7 @@ public abstract class NewWizard extends Wizard implements INewWizard
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 try
                 {
-                    IDE.openEditor(page, file, "com.horstmann.violet.eclipseplugin.editors.UMLEditor", true);
+                    IDE.openEditor(page, file, "com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor", true);
                 }
                 catch (PartInitException e)
                 {
@@ -230,7 +230,7 @@ public abstract class NewWizard extends Wizard implements INewWizard
      */
     public abstract String getFileExtension();
     
-    @SpringBean
+    @InjectedBean
     private IFilePersistenceService filePersistenceService;
 
 }

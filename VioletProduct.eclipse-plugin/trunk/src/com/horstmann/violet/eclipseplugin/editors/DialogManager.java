@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Shell;
 import com.horstmann.violet.framework.display.dialog.DialogFactory;
 import com.horstmann.violet.framework.display.dialog.DialogFactoryListener;
 import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 
 /**
  * The dialog manager has to display dialogs sent by the Violet dialog factory (since Violet cannot display its directly when it is
@@ -57,7 +57,7 @@ public class DialogManager
      */
     private DialogManager()
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         dialogFactory.setListener(new DialogFactoryListener()
         {
 
@@ -136,6 +136,6 @@ public class DialogManager
      */
     private static DialogManager dialogManager;
     
-    @SpringBean
+    @InjectedBean
     private DialogFactory dialogFactory;
 }

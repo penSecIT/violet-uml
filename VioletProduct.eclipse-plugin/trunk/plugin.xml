@@ -8,7 +8,7 @@
             class="com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor"
             extensions="violet"
             icon="META-INF/eclipse_plugin_icon.png"
-            id="com.horstmann.violet.eclipseplugin.editors.UMLEditor"
+            id="com.horstmann.violet.eclipseplugin.editors.VioletUMLEditor"
             name="Violet UML Editor">
       </editor>
    </extension>

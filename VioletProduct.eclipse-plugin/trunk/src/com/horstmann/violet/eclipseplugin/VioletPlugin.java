@@ -24,11 +24,9 @@ package com.horstmann.violet.eclipseplugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
 
 /**
@@ -42,7 +40,7 @@ public class VioletPlugin extends AbstractUIPlugin
     // The shared instance.
     private static VioletPlugin plugin;
 
-    @SpringBean(name = "pluginLoader")
+    @InjectedBean
     private PluginLoader pluginLoader;
 
     /**
@@ -59,9 +57,7 @@ public class VioletPlugin extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        ApplicationContext springContext = getApplicationContext();
-        SpringDependencyInjector injector = (SpringDependencyInjector) springContext.getBean("springDependencyInjector");
-        injector.inject(this);
+        BeanInjector.getInjector().inject(this);
         installPlugins();
     }
 
@@ -102,33 +98,5 @@ public class VioletPlugin extends AbstractUIPlugin
         this.pluginLoader.installPlugins();
     }
 
-    /**
-     * @return a new application context instance
-     */
-    private ApplicationContext getApplicationContext()
-    {
-        String[] configLocations =
-        {
-                "classpath*:applicationContext*.xml",
-                "classpath*:applicationContext-framework.xml",
-                "classpath:dedicatedApplicationContext-eclipse.xml"
-        };
-        ApplicationContext context = null;
-        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        try
-        {
-            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            context = new ClassPathXmlApplicationContext(configLocations);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader(oldLoader);
-        }
-        return context;
-    }
 
 }

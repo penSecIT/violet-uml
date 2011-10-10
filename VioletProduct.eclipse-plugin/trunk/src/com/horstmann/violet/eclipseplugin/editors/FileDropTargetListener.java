@@ -90,14 +90,14 @@ public class FileDropTargetListener implements DropTargetListener {
 	 * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
 	 */
 	public void drop(DropTargetEvent event) {
-		Point UMLGraphPanelLocationOnScreen = this.UMLGraphPanel.getAWTComponent().getLocationOnScreen();
+		Point UMLGraphPanelLocationOnScreen = this.UMLGraphPanel.getSwingComponent().getLocationOnScreen();
 		Point mouseLocationOnUMLGraphPanel = new Point(event.x - UMLGraphPanelLocationOnScreen.x, event.y - UMLGraphPanelLocationOnScreen.y);
 
 		Object dropObject = event.data;
 		// A drop has occurred, copy over the data
 		if (dropObject != null && dropObject instanceof IResource[]) {
 			IResource rs = ((IResource[]) dropObject)[0];
-			this.UMLGraphPanel.getAWTComponent().repaint();
+			this.UMLGraphPanel.getSwingComponent().repaint();
 			if (VIOLET_FILE_EXTENSION.equals(rs.getFileExtension().toLowerCase())) {
 				addVioletLinkNode(event, mouseLocationOnUMLGraphPanel, rs);
 				return;
@@ -136,7 +136,7 @@ public class FileDropTargetListener implements DropTargetListener {
 
 		if (added) {
 			this.UMLGraphPanel.selectElement(node);
-			this.UMLGraphPanel.getAWTComponent().repaint();
+			this.UMLGraphPanel.getSwingComponent().repaint();
 		}
 	}
 
@@ -156,7 +156,7 @@ public class FileDropTargetListener implements DropTargetListener {
 			boolean added = this.UMLGraphPanel.getGraph().addNode(linkNode, mouseLocationOnUMLGraphPanel);
 			if (added) {
 				this.UMLGraphPanel.selectElement(linkNode);
-				this.UMLGraphPanel.getAWTComponent().repaint();
+				this.UMLGraphPanel.getSwingComponent().repaint();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

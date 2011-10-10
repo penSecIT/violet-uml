@@ -48,8 +48,8 @@ import com.horstmann.violet.framework.display.theme.ThemeManager;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.framework.file.LocalFile;
-import com.horstmann.violet.framework.injection.bean.SpringDependencyInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.SpringBean;
+import com.horstmann.violet.framework.injection.bean.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
 import com.horstmann.violet.product.workspace.IWorkspace;
 import com.horstmann.violet.product.workspace.IWorkspaceListener;
 import com.horstmann.violet.product.workspace.Workspace;
@@ -91,7 +91,7 @@ public class VioletUMLEditor extends EditorPart
 	@Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException
     {
-        SpringDependencyInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         setInput(input);
         setSite(site);
         // Retreive file input
@@ -112,7 +112,9 @@ public class VioletUMLEditor extends EditorPart
 	@Override
     public boolean isDirty()
     {
-        return this.getUMLDiagramPanel().isSaveNeeded();
+        IWorkspace umlDiagramPanel = this.getUMLDiagramPanel();
+		IGraphFile graphFile = umlDiagramPanel.getGraphFile();
+		return graphFile.isSaveRequired();
     }
 
     /**
@@ -223,7 +225,7 @@ public class VioletUMLEditor extends EditorPart
     /** UML diagram swing panel */
     private IWorkspace UMLWorkspace;
     
-    @SpringBean
+    @InjectedBean
     private EclipseFileChooserService fileChooserService;
 
 }
