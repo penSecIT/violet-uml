@@ -26,8 +26,8 @@ import java.awt.Font;
 
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import com.horstmann.violet.framework.display.theme.AbstractTheme;
-import com.horstmann.violet.framework.display.theme.ThemeInfo;
+import com.horstmann.violet.framework.theme.AbstractTheme;
+import com.horstmann.violet.framework.theme.ThemeInfo;
 
 
 /**
@@ -67,7 +67,7 @@ public class EclipseTheme extends AbstractTheme {
 	}
 
 	public Color getGridColor() {
-		return new Color(192, 220, 242);
+		return new Color(240, 240, 240);
 	}
 
 	public Color getBackgroundColor() {

@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import com.horstmann.violet.product.workspace.IWorkspace;
-import com.horstmann.violet.product.workspace.WorkspacePanel;
-import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
-import com.horstmann.violet.product.workspace.sidebar.ISideBar;
+import com.horstmann.violet.workspace.IWorkspace;
+import com.horstmann.violet.workspace.WorkspacePanel;
+import com.horstmann.violet.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.workspace.sidebar.ISideBar;
 
 /**
  * Main Eclipse plugin GUI component

@@ -37,7 +37,7 @@ import com.horstmann.violet.product.diagram.classes.ClassDiagramGraph;
 import com.horstmann.violet.product.diagram.common.DiagramLink;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.sequence.SequenceDiagramGraph;
-import com.horstmann.violet.product.workspace.editorpart.IEditorPart;
+import com.horstmann.violet.workspace.editorpart.IEditorPart;
 
 /**
  * Class used to manage drag n' drop between Eclipse package explorer and

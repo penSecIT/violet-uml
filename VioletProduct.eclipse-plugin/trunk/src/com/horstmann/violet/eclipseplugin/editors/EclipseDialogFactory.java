@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.horstmann.violet.framework.display.dialog.DialogFactory;
-import com.horstmann.violet.framework.display.dialog.DialogFactoryListener;
-import com.horstmann.violet.framework.display.theme.ThemeManager;
-import com.horstmann.violet.framework.injection.bean.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.dialog.DialogFactoryListener;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
+import com.horstmann.violet.framework.theme.ThemeManager;
 
 /**
  * The dialog manager has to display dialogs sent by the Violet dialog factory (since Violet cannot display its directly when it is
@@ -50,12 +50,12 @@ import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
  * @author Alexandre de Pellegrin
  * 
  */
-public class DialogManager
+public class EclipseDialogFactory
 {
     /**
      * Private constructor (singleton)
      */
-    private DialogManager()
+    private EclipseDialogFactory()
     {
         BeanInjector.getInjector().inject(this);
         dialogFactory.setListener(new DialogFactoryListener()
@@ -71,11 +71,11 @@ public class DialogManager
     /**
      * Initializes singleton instance (called on pluhin startup)
      */
-    public static void createSingleton()
+    public static void init()
     {
         if (dialogManager == null)
         {
-            dialogManager = new DialogManager();
+            dialogManager = new EclipseDialogFactory();
         }
     }
 
@@ -134,7 +134,7 @@ public class DialogManager
     /**
      * Unique class instance
      */
-    private static DialogManager dialogManager;
+    private static EclipseDialogFactory dialogManager;
     
     @InjectedBean
     private DialogFactory dialogFactory;

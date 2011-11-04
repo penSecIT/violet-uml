@@ -21,13 +21,28 @@
 
 package com.horstmann.violet.eclipseplugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.horstmann.violet.framework.injection.bean.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.annotation.InjectedBean;
+import com.horstmann.violet.eclipseplugin.editors.EclipseDialogFactory;
+import com.horstmann.violet.eclipseplugin.file.EclipseFileChooserService;
+import com.horstmann.violet.framework.dialog.DialogFactory;
+import com.horstmann.violet.framework.dialog.DialogFactoryMode;
+import com.horstmann.violet.framework.file.chooser.IFileChooserService;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanFactory;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
+import com.horstmann.violet.framework.theme.ITheme;
+import com.horstmann.violet.framework.theme.ThemeManager;
+import com.horstmann.violet.framework.userpreferences.DefaultUserPreferencesDao;
+import com.horstmann.violet.framework.userpreferences.IUserPreferencesDao;
 
 /**
  * The main plugin class to be used in the desktop. This plugin embeds Violet in Eclipse
@@ -57,10 +72,31 @@ public class VioletPlugin extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
+        initBeanFactory();
         BeanInjector.getInjector().inject(this);
+        EclipseDialogFactory.init();
         installPlugins();
     }
 
+    private void initBeanFactory() {
+        IUserPreferencesDao userPreferencesDao = new DefaultUserPreferencesDao();
+        BeanFactory.getFactory().register(IUserPreferencesDao.class, userPreferencesDao);
+        
+        ThemeManager themeManager = new ThemeManager();
+        List<ITheme> themeList = new ArrayList<ITheme>();
+        themeManager.setInstalledThemes(themeList);
+        BeanFactory.getFactory().register(ThemeManager.class, themeManager);
+
+        IFilePersistenceService filePersistenceService = new StandardJavaFilePersistenceService();
+        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
+        
+        DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.DELEGATED);
+        BeanFactory.getFactory().register(DialogFactory.class, dialogFactory);
+        
+        IFileChooserService fileChooserService = new EclipseFileChooserService();
+        BeanFactory.getFactory().register(IFileChooserService.class, fileChooserService);
+    }
+    
     /**
      * This method is called when the plug-in is stopped
      */

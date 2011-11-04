@@ -9,7 +9,9 @@ import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
 import com.horstmann.violet.framework.file.persistence.IFileReader;
 import com.horstmann.violet.framework.file.persistence.IFileWriter;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 
+@ManagedBean(registeredManually=true)
 public class EclipseFileChooserService implements IFileChooserService
 {
 
