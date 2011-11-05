@@ -20,10 +20,10 @@ import com.l2fprod.common.swing.JTaskPane;
 import com.l2fprod.common.swing.JTaskPaneGroup;
 
 @ResourceBundleBean(resourceReference=SideBar.class)
-public class SideBarLargeUI extends PanelUI
+public class SideBarUI extends PanelUI
 {
 
-    public SideBarLargeUI(SideBar sideBar)
+    public SideBarUI(SideBar sideBar)
     {
         this.sideBar = sideBar;
         ResourceBundleInjector.getInjector().inject(this);
@@ -38,11 +38,7 @@ public class SideBarLargeUI extends PanelUI
         addElementToTaskPane(this.sideBar.getEditorToolsBar().getAWTComponent(), standardButtonsTitle);
         addElementToTaskPane(this.sideBar.getGraphToolsBar().getAWTComponent(), diagramToolsTitle);
         addElementToTaskPane(this.sideBar.getOptionalToolsBar().getAWTComponent(), extendedFunctionsTitle);
-        this.sideBar.getEditorToolsBar().setLargeUI();
-        this.sideBar.getGraphToolsBar().setLargeUI();
-        this.sideBar.getOptionalToolsBar().setLargeUI();
         for (ISideBarElement anExternalElement : this.sideBar.getExternalContributionElements().keySet()) {
-            anExternalElement.setLargeUI();
             String externalElementTitle = this.sideBar.getExternalContributionElements().get(anExternalElement);
             addElementToTaskPane(anExternalElement.getAWTComponent(), externalElementTitle);
         }

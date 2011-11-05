@@ -6,7 +6,6 @@ import com.horstmann.violet.framework.file.IGraphFile;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.workspace.sidebar.ISideBar;
-import com.horstmann.violet.workspace.statusbar.IStatusBar;
 
 public interface IWorkspace
 {
@@ -25,11 +24,6 @@ public interface IWorkspace
      * @return current side bar
      */
     public ISideBar getSideBar();
-    
-    /**
-     * @return current status bar
-     */
-    public IStatusBar getStatusBar();
     
     /**
      * @return current diagram's title

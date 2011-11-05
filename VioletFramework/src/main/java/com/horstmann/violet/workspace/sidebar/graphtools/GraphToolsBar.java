@@ -48,6 +48,7 @@ public class GraphToolsBar implements IGraphToolsBar, ISideBarElement
         this.nodeTools = getStandardNodeTools(graph);
         this.edgeTools = getStandardEdgeTools(graph);
         this.panel = new GraphToolsBarPanel(this);
+        this.panel.setUI(new GraphToolsBarPanelUI());
         reset();
         editorPart.getSelectionHandler().setSelectedTool(getSelectedTool());
     }
@@ -117,18 +118,6 @@ public class GraphToolsBar implements IGraphToolsBar, ISideBarElement
         return this.panel;
     }
 
-
-    public void setLargeUI()
-    {
-        this.panel.setUI(new GraphToolsBarPanelLargeUI());
-    }
-
-    public void setSmallUI()
-    {
-        this.panel.setUI(new GraphToolsBarPanelSmallUI());
-    }
-
-    
     /**
      * @return current graph node tools
      */

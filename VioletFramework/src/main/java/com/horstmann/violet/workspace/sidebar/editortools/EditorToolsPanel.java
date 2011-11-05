@@ -47,6 +47,7 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
     {
         super();
         ResourceBundleInjector.getInjector().inject(this);
+        this.setUI(new EditorToolsPanelUI(this));
         this.bZoomIn.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -177,26 +178,6 @@ public class EditorToolsPanel extends JPanel implements ISideBarElement
     public Component getAWTComponent()
     {
         return this;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.sidebar.ISideBarElement#setLargeUI()
-     */
-    public void setLargeUI()
-    {
-        this.setUI(new EditorToolsPanelLargeUI(this));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.sidebar.ISideBarElement#setSmallUI()
-     */
-    public void setSmallUI()
-    {
-        this.setUI(new EditorToolsPanelSmallUI(this));
     }
 
     /**

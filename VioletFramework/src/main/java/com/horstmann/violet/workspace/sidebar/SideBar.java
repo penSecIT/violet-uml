@@ -27,9 +27,6 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
-import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
-import com.horstmann.violet.framework.userpreferences.UserPreferencesService;
 import com.horstmann.violet.workspace.IWorkspace;
 import com.horstmann.violet.workspace.sidebar.editortools.EditorToolsPanel;
 import com.horstmann.violet.workspace.sidebar.graphtools.GraphToolsBar;
@@ -41,44 +38,13 @@ public class SideBar extends JPanel implements ISideBar
 
     public SideBar(IWorkspace diagramPanel)
     {
-        BeanInjector.getInjector().inject(this);
         this.diagramPanel = diagramPanel;
-        this.isSmallSize = this.userPreferencesService.isSmallSideBarPreferred();
         setupUI();
     }
     
     private void setupUI() {
-        if (this.isSmallSize)
-        {
-            setUI(new SideBarSmallUI(this));
-        }
-        else
-        {
-            setUI(new SideBarLargeUI(this));
-        }
+        setUI(new SideBarUI(this));
     }
-
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.display.clipboard.sidebar.ISideBar#reduceOrMaximizeSize()
-     */
-    public void reduceOrMaximizeSize()
-    {
-        if (this.isSmallSize)
-        {
-            this.isSmallSize = false;
-            this.userPreferencesService.setSmallSideBarPreferred(Boolean.FALSE);
-            setupUI();
-            return;
-        }
-        if (!this.isSmallSize)
-        {
-            this.isSmallSize = true;
-            this.userPreferencesService.setSmallSideBarPreferred(Boolean.TRUE);
-            setupUI();
-            return;
-        }
-    }
-
 
     /*
      * (non-Javadoc)
@@ -90,14 +56,6 @@ public class SideBar extends JPanel implements ISideBar
     {
         element.install(this.diagramPanel);
         this.externalContributionElements.put(element, title);
-        if (this.isSmallSize)
-        {
-            setUI(new SideBarSmallUI(this));
-        }
-        else
-        {
-            setUI(new SideBarLargeUI(this));
-        }
     }
 
     public IGraphToolsBar getGraphToolsBar()
@@ -150,9 +108,6 @@ public class SideBar extends JPanel implements ISideBar
     private ISideBarElement editorToolsBar;
     private ISideBarElement optionalToolsBar;
     private Map<ISideBarElement, String> externalContributionElements = new HashMap<ISideBarElement, String>();
-    private boolean isSmallSize;
     
-    @InjectedBean
-    private UserPreferencesService userPreferencesService;
     
 }

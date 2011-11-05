@@ -22,16 +22,6 @@ public interface ISideBarElement
 
 
     /**
-     * Method called to change current element UI to its large size
-     */
-    public void setLargeUI();
-
-    /**
-     * Method called to change current element UI to its small size
-     */
-    public void setSmallUI();
-
-    /**
      * @return the AWT component representing this side bar
      */
     public Component getAWTComponent();

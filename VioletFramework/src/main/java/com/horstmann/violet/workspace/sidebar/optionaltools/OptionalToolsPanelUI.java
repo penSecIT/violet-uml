@@ -18,7 +18,7 @@ import com.horstmann.violet.framework.theme.ThemeManager;
  * @author Alexandre de Pellegrin
  * 
  */
-public class OptionalToolsPanelLargeUI extends PanelUI
+public class OptionalToolsPanelUI extends PanelUI
 {
 
     /**
@@ -26,7 +26,7 @@ public class OptionalToolsPanelLargeUI extends PanelUI
      * 
      * @param optionalToolsPanel
      */
-    public OptionalToolsPanelLargeUI(OptionalToolsPanel optionalToolsPanel)
+    public OptionalToolsPanelUI(OptionalToolsPanel optionalToolsPanel)
     {
         this.optionalToolsPanel = optionalToolsPanel;
     }

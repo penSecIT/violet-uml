@@ -178,5 +178,5 @@ public class TinyScrollBarUI extends BasicScrollBarUI
     /**
      * Default bar tickness
      */
-    private static final int DEFAULT_THICKNESS = 3;
+    private static final int DEFAULT_THICKNESS = 4;
 }

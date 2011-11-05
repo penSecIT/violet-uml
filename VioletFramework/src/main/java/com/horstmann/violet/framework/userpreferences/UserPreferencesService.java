@@ -34,14 +34,7 @@ public class UserPreferencesService
         return preferedLAF;
     }
     
-    public Boolean isSmallSideBarPreferred() {
-        return new Boolean(this.dao.get(PreferencesConstant.SMALL_SIDEBAR_PREFERRED, Boolean.FALSE.toString()));
-    }
-    
-    public void setSmallSideBarPreferred(Boolean isSmallSideBarPreferred) {
-        this.dao.put(PreferencesConstant.SMALL_SIDEBAR_PREFERRED, isSmallSideBarPreferred.toString());
-    }
-    
+  
     /**
      * @return the list of lastest opened files (as path strings)
      */

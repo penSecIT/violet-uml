@@ -44,6 +44,7 @@ public class OptionalToolsPanel extends JPanel implements ISideBarElement
     public OptionalToolsPanel()
     {
         ResourceBundleInjector.getInjector().inject(this);
+        this.setUI(new OptionalToolsPanelUI(this));
     }
 
     /*
@@ -65,27 +66,6 @@ public class OptionalToolsPanel extends JPanel implements ISideBarElement
     {
         return this;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.sidebar.ISideBarElement#setLargeUI()
-     */
-    public void setLargeUI()
-    {
-        this.setUI(new OptionalToolsPanelLargeUI(this));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.sidebar.ISideBarElement#setSmallUI()
-     */
-    public void setSmallUI()
-    {
-        this.setUI(new OptionalToolsPanelSmallUI());
-    }
-
 
 
     protected JButton getExportToClipboardButton()

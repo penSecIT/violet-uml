@@ -22,6 +22,7 @@
 package com.horstmann.violet.framework.theme;
 
 import java.awt.Frame;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,6 +88,14 @@ public abstract class AbstractTheme implements ITheme
             abortWithError(e);
         }
         updateTaskPaneUI();
+        updateTabbedPaneUI();
+    }
+
+    /**
+     * Inits tabbed pane look and feel
+     */
+    private void updateTabbedPaneUI() {
+        UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 1, 1));
     }
 
     /**

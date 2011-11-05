@@ -8,7 +8,7 @@ import javax.swing.plaf.PanelUI;
 
 import com.horstmann.violet.framework.theme.ThemeManager;
 
-public class GraphToolsBarPanelLargeUI extends PanelUI
+public class GraphToolsBarPanelUI extends PanelUI
 {
 
     @Override

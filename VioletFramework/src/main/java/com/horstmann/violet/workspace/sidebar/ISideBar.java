@@ -48,11 +48,7 @@ public interface ISideBar
      * @return the graph tools bar
      */
     public IGraphToolsBar getGraphToolsBar();
-    
-    /**
-     * Changes side bar size
-     */
-    public void reduceOrMaximizeSize();
+
     
     /**
      * @return the AWT component representing this side bar

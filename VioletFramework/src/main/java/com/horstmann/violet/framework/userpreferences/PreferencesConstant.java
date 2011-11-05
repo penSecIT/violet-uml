@@ -102,11 +102,6 @@ public class PreferencesConstant
     public static final PreferencesConstant NETWORK_GUESTCONFIG_HTTP_SERVERURL = new PreferencesConstant(
             "network.guestconfig.http.serverurl");
 
-    /**
-     * Key to store that the user prefers working with the small side bar
-     */
-    public static final PreferencesConstant SMALL_SIDEBAR_PREFERRED = new PreferencesConstant("smallsidebar");
-    
     
     /**
      * Preference constants list
@@ -123,7 +118,6 @@ public class PreferencesConstant
         LIST[4] = NETWORK_HOSTCONFIG_USERID;
         LIST[5] = NETWORK_GUESTCONFIG_USERID;
         LIST[6] = NETWORK_GUESTCONFIG_HTTP_SERVERURL;
-        LIST[7] = SMALL_SIDEBAR_PREFERRED;
     }
 
 }

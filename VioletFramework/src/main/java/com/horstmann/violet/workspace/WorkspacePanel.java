@@ -15,7 +15,6 @@ import com.horstmann.violet.framework.swingextension.TinyScrollBarUI;
 import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.workspace.sidebar.ISideBar;
-import com.horstmann.violet.workspace.statusbar.IStatusBar;
 
 public class WorkspacePanel extends JPanel
 {
@@ -29,14 +28,12 @@ public class WorkspacePanel extends JPanel
     {
         LayoutManager layout = new BorderLayout();
         setLayout(layout);
-
         JScrollPane scrollGPanel = getScrollableEditorPart();
         add(scrollGPanel, BorderLayout.CENTER);
         JScrollPane scrollSideBarPanel = getScrollableSideBar();
         add(scrollSideBarPanel, BorderLayout.EAST);
-        JScrollPane scrollStatusBarPanel = getScrollableStatusBar();
-        add(scrollStatusBarPanel, BorderLayout.SOUTH);
-
+//        JScrollPane scrollStatusBarPanel = getScrollableStatusBar();
+//        add(scrollStatusBarPanel, BorderLayout.SOUTH);
         refreshDisplay();
     }
 
@@ -82,24 +79,6 @@ public class WorkspacePanel extends JPanel
         return this.scrollableSideBar;
     }
 
-    /**
-     * @return scrollpane containing status bar
-     */
-    public JScrollPane getScrollableStatusBar()
-    {
-        if (this.scrollableStatusBar == null)
-        {
-            IStatusBar statusBar = this.workspace.getStatusBar();
-            this.scrollableStatusBar = new JScrollPane(statusBar.getAWTComponent());
-            this.scrollableStatusBar.getHorizontalScrollBar().setUI(new TinyScrollBarUI());
-            this.scrollableStatusBar.getVerticalScrollBar().setUI(new TinyScrollBarUI());
-            this.scrollableStatusBar.setBorder(new MatteBorder(1, 0, 0, 0, ThemeManager.getInstance().getTheme()
-                    .getStatusbarBorderColor()));
-            this.scrollableStatusBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            this.scrollableStatusBar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        }
-        return this.scrollableStatusBar;
-    }
 
 
     public void refreshDisplay()

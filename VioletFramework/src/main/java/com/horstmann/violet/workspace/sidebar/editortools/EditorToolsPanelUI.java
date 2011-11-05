@@ -19,7 +19,7 @@ import com.horstmann.violet.framework.theme.ThemeManager;
  * @author Alexandre de Pellegrin
  * 
  */
-public class EditorToolsPanelLargeUI extends PanelUI
+public class EditorToolsPanelUI extends PanelUI
 {
 
     /**
@@ -27,7 +27,7 @@ public class EditorToolsPanelLargeUI extends PanelUI
      * 
      * @param editorToolsPanel
      */
-    public EditorToolsPanelLargeUI(EditorToolsPanel editorToolsPanel)
+    public EditorToolsPanelUI(EditorToolsPanel editorToolsPanel)
     {
         this.editorToolsPanel = editorToolsPanel;
     }

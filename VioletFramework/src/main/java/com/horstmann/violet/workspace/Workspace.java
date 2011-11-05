@@ -58,8 +58,6 @@ import com.horstmann.violet.workspace.sidebar.ISideBar;
 import com.horstmann.violet.workspace.sidebar.SideBar;
 import com.horstmann.violet.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.workspace.sidebar.graphtools.IGraphToolsBarListener;
-import com.horstmann.violet.workspace.statusbar.IStatusBar;
-import com.horstmann.violet.workspace.statusbar.StatusBar;
 
 /**
  * Diagram workspace. It is a kind of package composed by a diagram put in a scroll panel, a side bar for tools and a status bar.
@@ -196,19 +194,6 @@ public class Workspace implements IWorkspace
         return this.sideBar;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IWorkspace#getStatusBar()
-     */
-    public IStatusBar getStatusBar()
-    {
-        if (this.statusBar == null)
-        {
-            this.statusBar = new StatusBar(this);
-        }
-        return this.statusBar;
-    }
 
     /*
      * (non-Javadoc)
@@ -378,7 +363,6 @@ public class Workspace implements IWorkspace
     private IGraphFile graphFile;
     private IEditorPart graphEditor;
     private ISideBar sideBar;
-    private IStatusBar statusBar;
     private String filePath;
     private String title;
     private Vector<IWorkspaceListener> listeners = new Vector<IWorkspaceListener>();
