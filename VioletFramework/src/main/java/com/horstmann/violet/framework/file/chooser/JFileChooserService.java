@@ -29,6 +29,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.IFile;
@@ -171,9 +172,12 @@ public class JFileChooserService implements IFileChooserService
     public IFileWriter chooseAndGetFileWriter(ExtensionFilter... filters) throws FileNotFoundException
     {
         fileChooser.resetChoosableFileFilters();
+        fileChooser.setAcceptAllFileFilterUsed(false);
         for (int i = 0; i < filters.length; i++)
         {
-            fileChooser.addChoosableFileFilter(filters[i]);
+            ExtensionFilter aFilter = filters[i];
+            fileChooser.addChoosableFileFilter(aFilter);
+            fileChooser.setFileFilter(aFilter);
         }
         List<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
         if (!recentFiles.isEmpty())
