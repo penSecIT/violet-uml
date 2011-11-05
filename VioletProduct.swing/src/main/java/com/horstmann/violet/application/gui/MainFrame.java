@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.application.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -37,8 +38,10 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
 import com.horstmann.violet.application.help.AboutDialog;
 import com.horstmann.violet.application.menu.MenuFactory;
@@ -84,7 +87,7 @@ public class MainFrame extends JFrame
         decorateFrame();
         setInitialSize();
         createMenuBar();
-        getContentPane().add(this.getWelcomePanel());
+        getContentPane().add(this.getMainPanel());
     }
 
     /**
@@ -190,8 +193,8 @@ public class MainFrame extends JFrame
     {
         WelcomePanel welcomePanel = this.getWelcomePanel();
         JTabbedPane tabbedPane = getTabbedPane();
-        getContentPane().remove(welcomePanel);
-        getContentPane().add(tabbedPane);
+        getMainPanel().remove(welcomePanel);
+        getMainPanel().add(tabbedPane, BorderLayout.CENTER);
         repaint();
     }
 
@@ -200,8 +203,8 @@ public class MainFrame extends JFrame
         this.welcomePanel = null;
         WelcomePanel welcomePanel = this.getWelcomePanel();
         JTabbedPane tabbedPane = getTabbedPane();
-        getContentPane().remove(tabbedPane);
-        getContentPane().add(welcomePanel);
+        getMainPanel().remove(tabbedPane);
+        getMainPanel().add(welcomePanel, BorderLayout.CENTER);
         repaint();
     }
 
@@ -316,6 +319,21 @@ public class MainFrame extends JFrame
         return this.welcomePanel;
     }
 
+    private JPanel getMainPanel() {
+        if (this.mainPanel == null) {
+            this.mainPanel = new JPanel(new BorderLayout());
+            this.mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+            this.mainPanel.add(this.getWelcomePanel(), BorderLayout.CENTER);
+            JPanel bottomBorderPanel = new JPanel();
+            ITheme cLAF = this.themeManager.getTheme();
+            bottomBorderPanel.setBackground(cLAF.getMenubarBackgroundColor().darker());
+            bottomBorderPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+            bottomBorderPanel.setSize(getContentPane().getWidth(), 8);
+            this.mainPanel.add(bottomBorderPanel, BorderLayout.SOUTH);
+        }
+        return this.mainPanel;
+    }
+    
     /**
      * @return the menu factory instance
      */
@@ -337,6 +355,11 @@ public class MainFrame extends JFrame
      * Panel added is not diagram is opened
      */
     private WelcomePanel welcomePanel;
+    
+    /**
+     * Main panel
+     */
+    private JPanel mainPanel;
 
     /**
      * Menu factory instance
