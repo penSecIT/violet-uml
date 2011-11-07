@@ -29,7 +29,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.IFile;
@@ -58,8 +57,6 @@ public class JFileChooserService implements IFileChooserService
     {
         ResourceBundleInjector.getInjector().inject(this);
         BeanInjector.getInjector().inject(this);
-        File initialDirectory = getLastOpenedDir();
-        fileChooser.setCurrentDirectory(initialDirectory);
     }
 
     /**
@@ -68,21 +65,17 @@ public class JFileChooserService implements IFileChooserService
     private File getLastOpenedDir()
     {
         List<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
-        File lastDir = new File(".");
-        if (recentFiles.size() > 0)
-        {
-            try
-            {
-                LocalFile localFile;
-                localFile = new LocalFile(recentFiles.get(0));
-                lastDir = new File(localFile.getDirectory());
-            }
-            catch (IOException e)
-            {
-                // Log here
-            }
+        for (IFile aFile : recentFiles) {
+        	try {
+				LocalFile localFile = new LocalFile(aFile);
+				File lastDir = new File(localFile.getDirectory());
+				return lastDir;
+			} catch (IOException e) {
+				// File deleted ? Ok, let's take the next one.
+			}
         }
-        return lastDir;
+        File currentDir = new File(".");
+        return currentDir;
     }
 
     @Override
@@ -117,27 +110,13 @@ public class JFileChooserService implements IFileChooserService
     @Override
     public IFileReader chooseAndGetFileReader() throws FileNotFoundException
     {
-        ExtensionFilter[] filters = fileNamingService.getFileFilters();
-        fileChooser.resetChoosableFileFilters();
+    	JFileChooser fileChooser = new JFileChooser();
+        File initialDirectory = getLastOpenedDir();
+        fileChooser.setCurrentDirectory(initialDirectory);
+    	ExtensionFilter[] filters = fileNamingService.getFileFilters();
         for (int i = 0; i < filters.length; i++)
         {
             fileChooser.addChoosableFileFilter(filters[i]);
-        }
-        List<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
-        if (!recentFiles.isEmpty())
-        {
-            IFile lastEntryFile = recentFiles.get(recentFiles.size() - 1);
-            try
-            {
-                LocalFile lastSavedFile = new LocalFile(lastEntryFile);
-                File physicalFile = lastSavedFile.toFile();
-                File directory = physicalFile.getParentFile();
-                fileChooser.setCurrentDirectory(directory);
-            }
-            catch (IOException e)
-            {
-                // Nothing to do
-            }
         }
         int response = fileChooser.showOpenDialog(null);
         File selectedFile = null;
@@ -171,29 +150,15 @@ public class JFileChooserService implements IFileChooserService
     @Override
     public IFileWriter chooseAndGetFileWriter(ExtensionFilter... filters) throws FileNotFoundException
     {
-        fileChooser.resetChoosableFileFilters();
+        JFileChooser fileChooser = new JFileChooser();
+        File initialDirectory = getLastOpenedDir();
+        fileChooser.setCurrentDirectory(initialDirectory);
         fileChooser.setAcceptAllFileFilterUsed(false);
         for (int i = 0; i < filters.length; i++)
         {
             ExtensionFilter aFilter = filters[i];
             fileChooser.addChoosableFileFilter(aFilter);
             fileChooser.setFileFilter(aFilter);
-        }
-        List<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
-        if (!recentFiles.isEmpty())
-        {
-            IFile lastEntryFile = recentFiles.get(recentFiles.size() - 1);
-            try
-            {
-                LocalFile lastSavedFile = new LocalFile(lastEntryFile);
-                File physicalFile = lastSavedFile.toFile();
-                File directory = physicalFile.getParentFile();
-                fileChooser.setCurrentDirectory(directory);
-            }
-            catch (IOException e)
-            {
-                // Nothing to do
-            }
         }
         int response = fileChooser.showSaveDialog(null);
         File selectedFile = null;
@@ -235,8 +200,6 @@ public class JFileChooserService implements IFileChooserService
         return fsh;
     }    
     
-    
-    private JFileChooser fileChooser = new JFileChooser();
 
     @InjectedBean
     private UserPreferencesService userPreferencesService;

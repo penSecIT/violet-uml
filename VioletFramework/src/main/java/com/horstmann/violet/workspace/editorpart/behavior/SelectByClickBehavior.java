@@ -126,6 +126,23 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
     {
         INode node = this.graph.findNode(mouseLocation);
         IEdge edge = this.graph.findEdge(mouseLocation);
+        if (edge != null)
+        {
+        	if (this.selectionHandler.isElementAlreadySelected(edge))
+        	{
+        		// This edge will be removed only on mouse button released
+        		// to avoid conflicts with dragging events
+        		this.unprocessedEdge = edge;
+        	}
+        	else
+        	{
+        		if (isResetSelectionFirst) {
+        			resetSelectedElements();
+        		}
+        		this.selectionHandler.addSelectedElement(edge);
+        	}
+        	return;
+        }
         if (node != null)
         {
             if (this.selectionHandler.isElementAlreadySelected(node))
@@ -141,22 +158,7 @@ public class SelectByClickBehavior extends AbstractEditorPartBehavior
                 }
                 this.selectionHandler.addSelectedElement(node);
             }
-        }
-        if (edge != null)
-        {
-            if (this.selectionHandler.isElementAlreadySelected(edge))
-            {
-                // This edge will be removed only on mouse button released
-                // to avoid conflicts with dragging events
-                this.unprocessedEdge = edge;
-            }
-            else
-            {
-                if (isResetSelectionFirst) {
-                    resetSelectedElements();
-                }
-                this.selectionHandler.addSelectedElement(edge);
-            }
+            return;
         }
     }
     

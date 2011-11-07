@@ -105,7 +105,8 @@ public class Workspace implements IWorkspace
 
             public void onFileSaved()
             {
-                updateTitle(false);
+                setTitle(getGraphName());
+            	updateTitle(false);
             }
         });
         getAWTComponent().prepareLayout();
@@ -133,18 +134,12 @@ public class Workspace implements IWorkspace
     }
     
     
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.product.workspace.IWorkspace#getGraphFile()
-     */
+    @Override
     public IGraphFile getGraphFile() {
         return this.graphFile;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#getGraph()
-     */
+    @Override
     public IEditorPart getEditorPart()
     {
         if (this.graphEditor == null)
@@ -172,11 +167,7 @@ public class Workspace implements IWorkspace
         return this.graphEditor;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#getSideBar()
-     */
+    @Override
     public ISideBar getSideBar()
     {
         if (this.sideBar == null)
@@ -195,11 +186,7 @@ public class Workspace implements IWorkspace
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#getTitle()
-     */
+    @Override
     public String getTitle()
     {
         return title;
@@ -259,21 +246,13 @@ public class Workspace implements IWorkspace
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#getFilePath()
-     */
+    @Override
     public String getFilePath()
     {
         return filePath;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#setFilePath(java.lang.String)
-     */
+    @Override
     public void setFilePath(String path)
     {
         filePath = path;
@@ -282,11 +261,7 @@ public class Workspace implements IWorkspace
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#addListener(com.horstmann.violet.framework.display.clipboard.DiagramPanelListener)
-     */
+    @Override
     public synchronized void addListener(IWorkspaceListener l)
     {
         if (!this.listeners.contains(l))
@@ -331,11 +306,7 @@ public class Workspace implements IWorkspace
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IDiagramPanel#getId()
-     */
+    @Override
     public Id getId()
     {
         if (this.id == null)
@@ -345,11 +316,7 @@ public class Workspace implements IWorkspace
         return this.id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.display.clipboard.IWorkspace#getAWTComponent()
-     */
+    @Override
     public WorkspacePanel getAWTComponent()
     {
         if (this.workspacePanel == null)

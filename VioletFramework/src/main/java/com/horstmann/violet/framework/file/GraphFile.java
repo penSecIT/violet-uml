@@ -107,10 +107,25 @@ public class GraphFile implements IGraphFile
     	return this.isSaveRequired;
     }
     
+    /**
+     * Indicates if this file is new
+     * @return b
+     */
+    private boolean isNewFile() {
+    	if (this.currentFilename == null && this.currentDirectory == null) {
+    		return true;
+    	}
+    	return false;
+    }
+    
     @Override
     public void save()
     {
-        try
+        if (this.isNewFile()) {
+        	saveToNewLocation();
+        	return;
+        }
+    	try
         {
             IFileWriter fileSaver = getFileSaver(false);
             OutputStream outputStream = fileSaver.getOutputStream();
@@ -139,9 +154,9 @@ public class GraphFile implements IGraphFile
             OutputStream outputStream = fileSaver.getOutputStream();
             this.filePersistenceService.write(this.graph, outputStream);
             this.isSaveRequired = false;
-            fireGraphSaved();
             this.currentFilename = fileSaver.getFileDefinition().getFilename();
             this.currentDirectory = fileSaver.getFileDefinition().getDirectory();
+            fireGraphSaved();
         }
         catch (Exception e)
         {
@@ -205,8 +220,9 @@ public class GraphFile implements IGraphFile
     {
         synchronized (listeners)
         {
-            for (IGraphFileListener listener : listeners)
-                listener.onFileModified();
+            for (IGraphFileListener listener : listeners) {
+            	listener.onFileModified();
+            }
         }
     }
 
@@ -217,8 +233,9 @@ public class GraphFile implements IGraphFile
     {
         synchronized (listeners)
         {
-            for (IGraphFileListener listener : listeners)
-                listener.onFileSaved();
+            for (IGraphFileListener listener : listeners) {
+            	listener.onFileSaved();
+            }
         }
     }
 

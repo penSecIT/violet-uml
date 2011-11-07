@@ -30,8 +30,8 @@ import com.horstmann.violet.framework.file.persistence.IFileWriter;
 
 
 /**
- * Services needed to choose a file on the filesystem when opening or saveiong a graph. This service 
- * could seem bizarre but, for examùle, the dialog box will be different when the program
+ * Services needed to choose a file on the filesystem when opening or saving a graph. This service 
+ * could seem bizarre but, for example, the dialog box will be different when the program
  * is started from Eclipse than when it is started from JavaWebStart. M'kay!!!...
  * @author Alexandre de Pellegrin
  *
