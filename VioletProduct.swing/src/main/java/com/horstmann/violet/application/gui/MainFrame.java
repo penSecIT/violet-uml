@@ -45,7 +45,6 @@ import javax.swing.border.EmptyBorder;
 
 import com.horstmann.violet.application.help.AboutDialog;
 import com.horstmann.violet.application.menu.MenuFactory;
-import com.horstmann.violet.application.swingextension.MenuUtils;
 import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IFile;
@@ -124,7 +123,6 @@ public class MainFrame extends JFrame
         menuBar.add(menuFactory.getViewMenu(this));
         menuBar.add(menuFactory.getHelpMenu(this));
         setJMenuBar(menuBar);
-        MenuUtils.alterMenuBar(menuBar);
     }
 
     /**

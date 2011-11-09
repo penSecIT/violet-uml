@@ -167,8 +167,8 @@ public class FileMenu extends JMenu
 
         this.fileExportMenu.add(this.fileExportToImageItem);
         this.fileExportMenu.add(this.fileExportToClipBoardItem);
-        this.fileExportMenu.add(this.fileExportToJavaItem);
-        this.fileExportMenu.add(this.fileExportToPythonItem);
+        // this.fileExportMenu.add(this.fileExportToJavaItem);
+        // this.fileExportMenu.add(this.fileExportToPythonItem);
 
         if (this.fileChooserService == null) this.fileExportMenu.setEnabled(false);
     }
@@ -439,31 +439,15 @@ public class FileMenu extends JMenu
      */
     public void initFileRecentMenu()
     {
-        this.fileRecentMenu.addFocusListener(new FocusListener()
+        // Set entries on startup
+        refreshFileRecentMenu();
+        // Refresh recent files list each time the global file menu gets the focus
+        this.addFocusListener(new FocusListener()
         {
-
+            
             public void focusGained(FocusEvent e)
             {
-                fileRecentMenu.removeAll();
-                for (final IFile aFile : userPreferencesService.getRecentFiles())
-                {
-                    String name = aFile.getFilename();
-                    JMenuItem item = new JMenuItem(name);
-                    fileRecentMenu.add(item);
-                    item.addActionListener(new ActionListener()
-                    {
-                        public void actionPerformed(ActionEvent event)
-                        {
-                            try {
-                                IGraphFile graphFile = new GraphFile(aFile);
-                                IWorkspace workspace = new Workspace(graphFile);
-                                mainFrame.addTabbedPane(workspace);
-                            } catch (IOException e) {
-                                dialogFactory.showErrorDialog(e.getMessage());
-                            }
-                        }
-                    });
-                }
+                refreshFileRecentMenu();
             }
 
             public void focusLost(FocusEvent e)
@@ -475,6 +459,33 @@ public class FileMenu extends JMenu
         if (this.fileChooserService == null || (this.fileChooserService != null && this.fileChooserService.isWebStart()))
         {
             this.fileRecentMenu.setEnabled(false);
+        }
+    }
+
+    /**
+     * Updates file recent menu
+     */
+    private void refreshFileRecentMenu()
+    {
+        fileRecentMenu.removeAll();
+        for (final IFile aFile : userPreferencesService.getRecentFiles())
+        {
+            String name = aFile.getFilename();
+            JMenuItem item = new JMenuItem(name);
+            fileRecentMenu.add(item);
+            item.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent event)
+                {
+                    try {
+                        IGraphFile graphFile = new GraphFile(aFile);
+                        IWorkspace workspace = new Workspace(graphFile);
+                        mainFrame.addTabbedPane(workspace);
+                    } catch (IOException e) {
+                        dialogFactory.showErrorDialog(e.getMessage());
+                    }
+                }
+            });
         }
     }
 

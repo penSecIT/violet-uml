@@ -23,8 +23,10 @@ package com.horstmann.violet;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.JFrame;
 
@@ -149,8 +151,8 @@ public class UMLEditorApplication
         MainFrame mainFrame = new MainFrame();
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         SplashScreen.displayOverEditor(mainFrame, 1000);
-        List<IFile> fullList = new ArrayList<IFile>();
-        List<IFile> lastSessionFiles = this.userPreferencesService.getOpenedFilesDuringLastSession();
+        Set<IFile> fullList = new HashSet<IFile>();
+        Set<IFile> lastSessionFiles = this.userPreferencesService.getOpenedFilesDuringLastSession();
         fullList.addAll(lastSessionFiles);
         for (String aFileToOpen : filesToOpen)
         {
