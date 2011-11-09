@@ -457,6 +457,12 @@ public class ActivationBarNode extends RectangularNode
         if (oldValue != newValue)
         {
             lifeline = newValue;
+            for (INode aChildNode : getChildren()) {
+                if (ActivationBarNode.class.isInstance(aChildNode)) {
+                    ActivationBarNode aChildActivationBarNode = (ActivationBarNode) aChildNode;
+                    aChildActivationBarNode.setImplicitParameter(newValue);
+                }
+            }
         }
     }
 
