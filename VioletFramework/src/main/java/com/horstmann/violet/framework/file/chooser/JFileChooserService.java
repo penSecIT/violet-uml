@@ -24,7 +24,7 @@ package com.horstmann.violet.framework.file.chooser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -64,7 +64,7 @@ public class JFileChooserService implements IFileChooserService
      */
     private File getLastOpenedDir()
     {
-        List<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
+        Set<IFile> recentFiles = this.userPreferencesService.getRecentFiles();
         for (IFile aFile : recentFiles) {
         	try {
 				LocalFile localFile = new LocalFile(aFile);

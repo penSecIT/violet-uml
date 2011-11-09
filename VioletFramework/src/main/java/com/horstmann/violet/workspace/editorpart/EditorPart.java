@@ -205,6 +205,7 @@ public class EditorPart extends JPanel implements IEditorPart
         Rectangle2D bounds = g.getClipBounds();
         bounds.add(getBounds());
         g.setBounds(new Double(0, 0, GROW_SCALE_FACTOR * bounds.getWidth(), GROW_SCALE_FACTOR * bounds.getHeight()));
+        invalidate();
         repaint();
     }
 
@@ -217,6 +218,7 @@ public class EditorPart extends JPanel implements IEditorPart
     {
         IGraph g = getGraph();
         g.setBounds(null);
+        invalidate();
         repaint();
     }
 
