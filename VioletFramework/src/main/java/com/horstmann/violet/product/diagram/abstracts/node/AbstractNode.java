@@ -240,6 +240,9 @@ public abstract class AbstractNode implements INode
     public void setGraph(IGraph g)
     {
         graph = g;
+        for (INode aChild : children) {
+        	aChild.setGraph(g);
+        }
     }
 
     @Override
