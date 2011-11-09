@@ -224,8 +224,17 @@ public class LifelineNode extends RectangularNode
     @Override
     public Rectangle2D getBounds()
     {
-        double topRectHeight = getTopRectangle().getHeight();
         double topRectWidth = getTopRectangle().getWidth();
+        double height = getLocalHeight();
+        Point2D nodeLocation = getLocation();
+        Rectangle2D bounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
+        Rectangle2D scaledBounds = getScaledBounds(bounds);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(scaledBounds);
+        return snappedBounds;
+    }
+    
+    public double getLocalHeight() {
+        double topRectHeight = getTopRectangle().getHeight();
         double height = topRectHeight; // default initial height
         List<INode> children = getChildren();
         for (INode n : children)
@@ -237,11 +246,7 @@ public class LifelineNode extends RectangularNode
             }
         }
         height = height + ActivationBarNode.CALL_YGAP * 2;
-        Point2D nodeLocation = getLocation();
-        Rectangle2D bounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), topRectWidth, height);
-        Rectangle2D scaledBounds = getScaledBounds(bounds);
-        Rectangle2D snappedBounds = getGraph().getGrid().snap(scaledBounds);
-        return snappedBounds;
+        return height;
     }
 
     private Rectangle2D getScaledBounds(Rectangle2D bounds)
@@ -295,7 +300,7 @@ public class LifelineNode extends RectangularNode
 
     private double getMaxYOverAllLifeLineNodes()
     {
-        double maxY = this.getBounds().getMaxY();
+        double maxY = this.getLocalHeight();
         IGraph graph = getGraph();
         if (graph == null)
         {
@@ -308,9 +313,9 @@ public class LifelineNode extends RectangularNode
             {
                 continue;
             }
-            Rectangle2D aLifeLineBounds = node.getBounds();
-            double currentMaxY = aLifeLineBounds.getMaxY();
-            maxY = Math.max(maxY, currentMaxY);
+            LifelineNode aLifeLineNode = (LifelineNode) node;
+            double localY = aLifeLineNode.getLocalHeight();
+            maxY = Math.max(maxY, localY);
         }
         this.maxYOverAllLifeLineNodes = maxY;
         return maxY;
