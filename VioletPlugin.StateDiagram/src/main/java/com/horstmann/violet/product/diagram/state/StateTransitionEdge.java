@@ -168,17 +168,7 @@ public class StateTransitionEdge extends ShapeEdge
             if (node.equals(getStart())) return Direction.EAST.turn(-30);
             if (node.equals(getEnd())) return Direction.EAST.turn(30);
         }
-        else
-        {
-            angle = 10;
-            Rectangle2D start = getStart().getBounds();
-            Rectangle2D end = getEnd().getBounds();
-            Point2D startCenter = new Point2D.Double(start.getCenterX(), start.getCenterY());
-            Point2D endCenter = new Point2D.Double(end.getCenterX(), end.getCenterY());
-            if (node.equals(getStart())) return new Direction(startCenter, endCenter).turn(-5);
-            if (node.equals(getEnd())) return new Direction(endCenter, startCenter).turn(5);
-        }
-        // Should never happen
+        angle = 10;
         return super.getDirection(node);
     }
 
