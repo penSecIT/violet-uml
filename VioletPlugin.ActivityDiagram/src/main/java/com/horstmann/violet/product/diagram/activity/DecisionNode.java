@@ -26,7 +26,9 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
@@ -43,7 +45,38 @@ public class DecisionNode extends RectangularNode
     {
         condition = new MultiLineString();
     }
+    
+    @Override
+    public Point2D getConnectionPoint(IEdge e)
+    {
+       
+        Rectangle2D b = getBounds();
+        
+        double x = b.getCenterX();
+        double y = b.getCenterY();
 
+        Direction d = e.getDirection(this);
+        
+        Direction nearestCardinalDirection = d.getNearestCardinalDirection();
+        if (Direction.NORTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / 2);
+            y = b.getMaxY();
+        }
+        if (Direction.SOUTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / 2);
+            y = b.getMinY();
+        }
+        if (Direction.EAST.equals(nearestCardinalDirection)) {
+            x = b.getMinX();
+            y = b.getMaxY() - (b.getHeight() / 2);
+        }
+        if (Direction.WEST.equals(nearestCardinalDirection)) {
+            x = b.getMaxX();
+            y = b.getMaxY() - (b.getHeight() / 2);
+        }
+        return new Point2D.Double(x, y);
+    }
+    
     @Override
     public boolean addConnection(IEdge e)
     {

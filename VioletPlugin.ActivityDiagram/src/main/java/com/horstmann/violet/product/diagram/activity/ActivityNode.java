@@ -26,7 +26,11 @@ import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 
@@ -48,6 +52,54 @@ public class ActivityNode extends RectangularNode
         super.draw(g2);
         g2.draw(getShape());
         name.draw(g2, getBounds());
+    }
+    
+    @Override
+    public Point2D getConnectionPoint(IEdge e)
+    {
+        INode startingNode = e.getStart();
+        INode endingNode = e.getEnd();
+        
+        if (DecisionNode.class.isInstance(startingNode) && this.equals(endingNode)) {
+            List<IEdge> edgesOnSameSide = getEdgesOnSameSide(e);
+            int position = edgesOnSameSide.indexOf(e);
+            int size = edgesOnSameSide.size();
+            
+            Rectangle2D b = getBounds();
+            double x = b.getCenterX();
+            double y = b.getCenterY();
+
+            Direction d = e.getDirection(this);
+            Direction nearestCardinalDirection = d.getNearestCardinalDirection();
+            double xD = d.getX();
+            double yD = d.getY();
+            
+            if (Direction.EAST.equals(nearestCardinalDirection) || Direction.WEST.equals(nearestCardinalDirection)) {
+                if (yD > 0) {
+                    x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
+                    y = b.getMinY();
+                }
+                if (yD < 0) {
+                    x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
+                    y = b.getMaxY();
+                }
+                return new Point2D.Double(x, y);
+            }
+            if (Direction.NORTH.equals(nearestCardinalDirection) || Direction.SOUTH.equals(nearestCardinalDirection)) {
+                if (xD > 0) {
+                    x = b.getMinX();
+                    y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
+                }
+                if (xD < 0) {
+                    x = b.getMaxX();
+                    y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
+                }
+                return new Point2D.Double(x, y);
+            }
+            
+        }
+        
+        return super.getConnectionPoint(e);
     }
 
     @Override

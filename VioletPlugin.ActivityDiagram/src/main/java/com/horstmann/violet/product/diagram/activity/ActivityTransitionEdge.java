@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 
@@ -70,35 +71,54 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
      */
     public ArrayList<Point2D> getPoints()
     {
+        Point2D startingPoint = getStart().getConnectionPoint(this);
+        Point2D endingPoint = getEnd().getConnectionPoint(this);
+        Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
+        Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
         
-        
-        Rectangle2D startBounds = getStart().getBounds();
-        Rectangle2D endBounds = getEnd().getBounds();
-        ArrayList<Point2D> r = new ArrayList<Point2D>();
+        if (BentStyle.AUTO.equals(getBentStyle())) {
+            Rectangle2D startBounds = getStart().getBounds();
+            Rectangle2D endBounds = getEnd().getBounds();
+            ArrayList<Point2D> r = new ArrayList<Point2D>();
 
-        if (getEnd() instanceof SynchronizationBarNode)
-        {
-            double startY = startBounds.getCenterY();
-            double endY = endBounds.getCenterY();
-            Direction toEnd = startY >= endY ? Direction.NORTH : Direction.SOUTH;
-            Point2D startPoint = getStart().getConnectionPoint(this); 
-            r.add(startPoint);
-            r.add(new Point2D.Double(startPoint.getX(), startY >= endY ? endBounds.getMaxY() : endBounds.getY()));
-            return r;
+            if (getEnd() instanceof SynchronizationBarNode)
+            {
+                double startY = startBounds.getCenterY();
+                double endY = endBounds.getCenterY();
+                Point2D startPoint = getStart().getConnectionPoint(this); 
+                r.add(startPoint);
+                r.add(new Point2D.Double(startPoint.getX(), startY >= endY ? endBounds.getMaxY() : endBounds.getY()));
+                return r;
+            }
+            if (getStart() instanceof SynchronizationBarNode)
+            {
+                double startY = startBounds.getCenterY();
+                double endY = endBounds.getCenterY();
+                Point2D endPoint = getEnd().getConnectionPoint(this); 
+                r.add(new Point2D.Double(endPoint.getX(), startY >= endY ? startBounds.getY() : startBounds.getMaxY()));
+                r.add(endPoint);
+                return r;
+            }
+            if (getStart() instanceof DecisionNode) {
+                return BentStyle.HV.getPath(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
+            }
         }
-        else if (getStart() instanceof SynchronizationBarNode)
-        {
-            double startY = startBounds.getCenterY();
-            double endY = endBounds.getCenterY();
-            Direction toStart = startY >= endY ? Direction.SOUTH : Direction.NORTH;
-            Point2D endPoint = getEnd().getConnectionPoint(this); 
-            r.add(new Point2D.Double(endPoint.getX(), startY >= endY ? startBounds.getY() : startBounds.getMaxY()));
-            r.add(endPoint);
-            return r;
+
+        
+
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.VHV.getPath(startingPoint, endingPoint);
         }
-        else if (getStart() instanceof DecisionNode)
-            return BentStyle.HV.getPath(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
-        else return bentStyle.getPath(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.VH.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.HV.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.HVH.getPath(startingPoint, endingPoint);
+        }
+        return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
     }
 
     /**

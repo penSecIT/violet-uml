@@ -96,7 +96,7 @@ public class ActivityDiagramGraph extends AbstractGraph
         NODE_PROTOTYPES.add(node8);
 
         ActivityTransitionEdge transition = new ActivityTransitionEdge();
-        transition.setBentStyle(BentStyle.VHV);
+        transition.setBentStyle(BentStyle.AUTO);
         transition.setEndArrowHead(ArrowHead.V);
         transition.setToolTip(rs.getString("edge0.tooltip"));
         EDGE_PROTOTYPES.add(transition);
