@@ -30,7 +30,6 @@ import java.awt.geom.Rectangle2D;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
-import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 
 /**
@@ -49,54 +48,31 @@ public class DecisionNode extends RectangularNode
     @Override
     public Point2D getConnectionPoint(IEdge e)
     {
-//        if (!ActivityTransitionEdge.class.isInstance(e))
-//        {
-//            return super.getConnectionPoint(e);
-//        }
-//        if (!this.equals(e.getStart()))
-//        {
-//            return super.getConnectionPoint(e);
-//        }
-//
-//        ActivityTransitionEdge transitionEdge = (ActivityTransitionEdge) e;
-//        BentStyle bentStyle = transitionEdge.getBentStyle();
-//        if (BentStyle.HV.equals(bentStyle))
-//        {
-//            Rectangle2D b = getBounds();
-//            Direction d = e.getDirection(this);
-//            double dX = d.getX();
-//            if (dX >= 0)
-//            {
-//                double x = b.getMinX();
-//                double y = b.getMaxY() - (b.getHeight() / 2);
-//                return new Point2D.Double(x, y);
-//            }
-//            if (dX < 0)
-//            {
-//                double x = b.getMaxX();
-//                double y = b.getMaxY() - (b.getHeight() / 2);
-//                return new Point2D.Double(x, y);
-//            }
-//        }
-//        if (BentStyle.VH.equals(bentStyle))
-//        {
-//            Rectangle2D b = getBounds();
-//            Direction d = e.getDirection(this);
-//            double dY = d.getY();
-//            if (dY >= 0)
-//            {
-//                double x = b.getMaxX() - (b.getWidth() / 2);
-//                double y = b.getMinY();
-//                return new Point2D.Double(x, y);
-//            }
-//            if (dY < 0)
-//            {
-//                double x = b.getMaxX() - (b.getWidth() / 2);
-//                double y = b.getMaxY();
-//                return new Point2D.Double(x, y);
-//            }
-//        }
-        return super.getConnectionPoint(e);
+        Rectangle2D b = getBounds();
+        
+        double x = b.getCenterX();
+        double y = b.getCenterY();
+
+        Direction d = e.getDirection(this);
+        
+        Direction nearestCardinalDirection = d.getNearestCardinalDirection();
+        if (Direction.NORTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / 2);
+            y = b.getMaxY();
+        }
+        if (Direction.SOUTH.equals(nearestCardinalDirection)) {
+            x = b.getMaxX() - (b.getWidth() / 2);
+            y = b.getMinY();
+        }
+        if (Direction.EAST.equals(nearestCardinalDirection)) {
+            x = b.getMinX();
+            y = b.getMaxY() - (b.getHeight() / 2);
+        }
+        if (Direction.WEST.equals(nearestCardinalDirection)) {
+            x = b.getMaxX();
+            y = b.getMaxY() - (b.getHeight() / 2);
+        }
+        return new Point2D.Double(x, y);
     }
 
     @Override
