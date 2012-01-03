@@ -43,11 +43,7 @@ public class ClassRelationshipEdge extends SegmentedLineEdge
         return bentStyle;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.SegmentedLineEdge#getPoints()
-     */
+    @Override
     public ArrayList<Point2D> getPoints()
     {
         Point2D startingPoint = getStart().getConnectionPoint(this);
