@@ -39,7 +39,8 @@ public class ReturnEdge extends SegmentedLineEdge
         setEndArrowHead(ArrowHead.V);
         setLineStyle(LineStyle.DOTTED);
     }
-
+    
+    @Override
     public ArrayList<Point2D> getPoints()
     {
         INode endingNode = getEnd();
