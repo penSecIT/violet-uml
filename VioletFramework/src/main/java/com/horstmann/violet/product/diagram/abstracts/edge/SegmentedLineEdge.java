@@ -30,6 +30,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 
@@ -42,7 +43,7 @@ import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 public abstract class SegmentedLineEdge extends ShapeEdge
 {
     /**
-     * Costructs an edge with no adornments.
+     * Constructs an edge with no adornments.
      */
     public SegmentedLineEdge()
     {
@@ -172,6 +173,31 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     public String getEndLabel()
     {
         return endLabel;
+    }
+
+    /**
+     * Gets points to draw this edge using a free path instead of an automatic one <br/>
+     * IMPORTANT : only used if the edge implementation contains a BentStyle property <br/>
+     * because BentStyle can be switched to BentStyle.MANUAL <br/>
+     * 
+     * @return l
+     */
+    public List<Point2D> getFreePathPoints()
+    {
+        return this.freePathPoints;
+    }
+
+    /**
+     * Sets a new list of points used to draw this edge using a free path instead of an automatic one IMPORTANT : only used if the
+     * edge implementation contains a BentStyle property <br/>
+     * because BentStyle can be switched to BentStyle.MANUAL <br/>
+     * 
+     * @param newFreePathPoints
+     */
+    public void setFreePathPoints(List<Point2D> newFreePathPoints)
+    {
+        this.freePathPoints.clear();
+        this.freePathPoints.addAll(newFreePathPoints);
     }
 
     /**
@@ -310,6 +336,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         return r;
     }
 
+    @Override
     public Shape getShape()
     {
         GeneralPath path = getSegmentPath();
@@ -341,6 +368,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public abstract ArrayList<Point2D> getPoints();
 
+    private List<Point2D> freePathPoints = new ArrayList<Point2D>();
     private LineStyle lineStyle;
     private ArrowHead startArrowHead;
     private ArrowHead endArrowHead;

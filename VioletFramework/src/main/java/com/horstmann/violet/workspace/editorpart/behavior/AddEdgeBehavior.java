@@ -5,11 +5,19 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
+import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.workspace.editorpart.IEditorPartSelectionHandler;
@@ -25,71 +33,81 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         this.graph = editorPart.getGraph();
         this.selectionHandler = editorPart.getSelectionHandler();
         this.behaviorManager = editorPart.getBehaviorManager();
-        this.graphToolsBar = graphToolsBar;
+    }
+
+    private void resetAttributes()
+    {
+        this.startEdgeLocation = null;
+        this.freePathPoints.clear();
+        this.endEdgeLocation = null;
+        this.isEligibleToFreePath = false;
     }
 
     @Override
-    public void onMousePressed(MouseEvent event)
+    public void onMouseClicked(MouseEvent event)
     {
-        if (event.getClickCount() > 1)
-        {
-            return;
-        }
-        if (event.getButton() != MouseEvent.BUTTON1) {
-            return;
-        }
-        if (GraphTool.SELECTION_TOOL.equals(this.graphToolsBar.getSelectedTool()))
-        {
-            return;
-        }
         GraphTool selectedTool = this.selectionHandler.getSelectedTool();
-        if (!IEdge.class.isInstance(selectedTool.getNodeOrEdge()))
+        boolean isNoEdgeSelected = !IEdge.class.isInstance(selectedTool.getNodeOrEdge());
+        boolean isDoubleClick = event.getClickCount() > 1;
+        boolean isWrongButton = event.getButton() != MouseEvent.BUTTON1;
+        if (isDoubleClick || isWrongButton || isNoEdgeSelected)
         {
+            resetAttributes();
             return;
         }
+
+        this.isEligibleToFreePath = isEligibleToFreePath((IEdge) selectedTool.getNodeOrEdge());
+
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        INode targetNode = graph.findNode(mousePoint);
-        this.isDraggingInProgress = (targetNode != null);
-        mouseDownPoint = mousePoint;
-        lastMousePoint = mousePoint;
+        boolean isClickOnNode = (graph.findNode(mousePoint) != null);
+        if (isClickOnNode)
+        {
+            boolean isStartLocationSet = (startEdgeLocation != null);
+            boolean isEndLocationSet = (endEdgeLocation != null);
+            if (!isStartLocationSet)
+            {
+                startEdgeLocation = mousePoint;
+            }
+            if (isStartLocationSet && !isEndLocationSet)
+            {
+                endEdgeLocation = mousePoint;
+            }
+        }
+        if (!isClickOnNode)
+        {
+            boolean isStartLocationSet = (startEdgeLocation != null);
+            if (!isStartLocationSet)
+            {
+                return;
+            }
+            if (this.isEligibleToFreePath)
+            {
+                this.freePathPoints.add(mousePoint);
+            }
+        }
+        boolean isReadyToConnectEdge = (startEdgeLocation != null && endEdgeLocation != null);
+        if (isReadyToConnectEdge)
+        {
+            IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
+            IEdge newEdge = (IEdge) prototype.clone();
+            newEdge.setId(new Id());
+            boolean added = addEdgeAtPoints(newEdge, startEdgeLocation, endEdgeLocation);
+            if (added)
+            {
+                selectionHandler.setSelectedElement(newEdge);
+            }
+            resetAttributes();
+        }
     }
 
     @Override
-    public void onMouseDragged(MouseEvent event)
+    public void onMouseMoved(MouseEvent event)
     {
-        if (!isDraggingInProgress)
-        {
-            return;
-        }
         double zoom = editorPart.getZoomFactor();
         Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        lastMousePoint = mousePoint;
-    }
-
-    @Override
-    public void onMouseReleased(MouseEvent event)
-    {
-        if (!isDraggingInProgress)
-        {
-            return;
-        }
-        GraphTool selectedTool = this.selectionHandler.getSelectedTool();
-        if (!IEdge.class.isInstance(selectedTool.getNodeOrEdge()))
-        {
-            isDraggingInProgress = false;
-            return;
-        }
-        IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
-        IEdge newEdge = (IEdge) prototype.clone();
-        newEdge.setId(new Id());
-        
-        boolean added = addEdgeAtPoints(newEdge, mouseDownPoint, lastMousePoint);
-        if (added)
-        {
-            selectionHandler.setSelectedElement(newEdge);
-            isDraggingInProgress = false;
-        }
+        this.currentMouseLocation = mousePoint;
+        editorPart.getSwingComponent().repaint();
     }
 
     /**
@@ -112,22 +130,30 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
                 INode endNode = graph.findNode(endPoint);
                 Point2D relativeStartPoint = null;
                 Point2D relativeEndPoint = null;
-                if (startNode != null) {
+                if (startNode != null)
+                {
                     Point2D startNodeLocationOnGraph = startNode.getLocationOnGraph();
                     double relativeStartX = startPoint.getX() - startNodeLocationOnGraph.getX();
                     double relativeStartY = startPoint.getY() - startNodeLocationOnGraph.getY();
                     relativeStartPoint = new Point2D.Double(relativeStartX, relativeStartY);
                 }
-                if (endNode != null) {
+                if (endNode != null)
+                {
                     Point2D endNodeLocationOnGraph = endNode.getLocationOnGraph();
                     double relativeEndX = endPoint.getX() - endNodeLocationOnGraph.getX();
                     double relativeEndY = endPoint.getY() - endNodeLocationOnGraph.getY();
                     relativeEndPoint = new Point2D.Double(relativeEndX, relativeEndY);
                 }
-                if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint));
+                if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint))
+                ;
                 {
                     newEdge.incrementRevision();
                     isAdded = true;
+                }
+                if (this.isEligibleToFreePath)
+                {
+                    SegmentedLineEdge segmentedLineEdge = (SegmentedLineEdge) newEdge;
+                    segmentedLineEdge.setFreePathPoints(this.freePathPoints);
                 }
             }
             finally
@@ -138,36 +164,79 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         return isAdded;
     }
 
+    /**
+     * Checks if the edge could support free path. The two conditions are to be a subclass of SegmentedLineEdge and to have a
+     * BentStyle property
+     * 
+     * @param edge to check
+     * @return true if all the conditions are verified
+     */
+    private boolean isEligibleToFreePath(IEdge edge)
+    {
+        boolean isSegmentLineEdge = SegmentedLineEdge.class.isInstance(edge);
+        if (!isSegmentLineEdge)
+        {
+            return false;
+        }
+        try
+        {
+            Class<? extends IEdge> edgeClass = edge.getClass();
+            BeanInfo info = Introspector.getBeanInfo(edgeClass);
+            PropertyDescriptor[] propertyDescriptors = info.getPropertyDescriptors();
+            for (PropertyDescriptor aPropDesc : propertyDescriptors)
+            {
+                Class<?> propertyType = aPropDesc.getPropertyType();
+                boolean isBentStyleFound = propertyType.isAssignableFrom(BentStyle.class);
+                if (isBentStyleFound)
+                {
+                    return true;
+                }
+            }
+        }
+        catch (IntrospectionException e)
+        {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
     @Override
     public void onPaint(Graphics2D g2)
     {
-        if (!isDraggingInProgress)
+        if (this.startEdgeLocation == null)
         {
             return;
         }
+        List<Point2D> edgePoints = new ArrayList<Point2D>();
+        edgePoints.add(startEdgeLocation);
+        if (this.isEligibleToFreePath)
+        {
+            edgePoints.addAll(freePathPoints);
+        }
+        edgePoints.add(currentMouseLocation);
         Color oldColor = g2.getColor();
         g2.setColor(PURPLE);
-        g2.draw(new Line2D.Double(mouseDownPoint, lastMousePoint));
+        for (int i = 1; i < edgePoints.size(); i++)
+        {
+            Point2D p1 = edgePoints.get(i - 1);
+            Point2D p2 = edgePoints.get(i);
+            g2.draw(new Line2D.Double(p1, p2));
+        }
         g2.setColor(oldColor);
     }
 
     private static final Color PURPLE = new Color(0.7f, 0.4f, 0.7f);
-
     private static final int CONNECT_THRESHOLD = 8;
 
-    private Point2D mouseDownPoint = null;
-
-    private Point2D lastMousePoint = null;
+    private Point2D startEdgeLocation = null;
+    private Point2D currentMouseLocation = null;
+    private List<Point2D> freePathPoints = new ArrayList<Point2D>();
+    private Point2D endEdgeLocation = null;
+    private boolean isEligibleToFreePath = false;
 
     private IEditorPart editorPart;
-
     private IGraph graph;
-
     private IEditorPartSelectionHandler selectionHandler;
-
     private IEditorPartBehaviorManager behaviorManager;
 
-    private IGraphToolsBar graphToolsBar;
-
-    private boolean isDraggingInProgress = false;
 }

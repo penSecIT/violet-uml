@@ -274,5 +274,7 @@ public class BentStyle extends SerializableEnumeration
     public static final BentStyle VHV = new BentStyle();
     /** Automatic bent style */
     public static final BentStyle AUTO = new BentStyle();
+    /** Manual bent style **/
+    public static final BentStyle MANUAL = new BentStyle();
 
 }

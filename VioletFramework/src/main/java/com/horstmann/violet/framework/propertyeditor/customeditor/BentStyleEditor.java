@@ -47,7 +47,8 @@ public class BentStyleEditor extends CustomPropertyEditorSupport
             "HV",
             "VH",
             "HVH",
-            "VHV"
+            "VHV",
+            "Manual"
     };
 
     /** bent style technical values */
@@ -58,6 +59,7 @@ public class BentStyleEditor extends CustomPropertyEditorSupport
             BentStyle.HV,
             BentStyle.VH,
             BentStyle.HVH,
-            BentStyle.VHV
+            BentStyle.VHV,
+            BentStyle.MANUAL
     };
 }
