@@ -21,6 +21,7 @@ import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.workspace.editorpart.IEditorPart;
 import com.horstmann.violet.workspace.editorpart.IEditorPartBehaviorManager;
 import com.horstmann.violet.workspace.editorpart.IEditorPartSelectionHandler;
+import com.horstmann.violet.workspace.editorpart.IGrid;
 import com.horstmann.violet.workspace.sidebar.graphtools.GraphTool;
 import com.horstmann.violet.workspace.sidebar.graphtools.IGraphToolsBar;
 
@@ -31,6 +32,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
     {
         this.editorPart = editorPart;
         this.graph = editorPart.getGraph();
+        this.grid = editorPart.getGrid();
         this.selectionHandler = editorPart.getSelectionHandler();
         this.behaviorManager = editorPart.getBehaviorManager();
     }
@@ -83,7 +85,8 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
             }
             if (this.isEligibleToFreePath)
             {
-                this.freePathPoints.add(mousePoint);
+                Point2D snapPoint = this.grid.snap(mousePoint);
+                this.freePathPoints.add(snapPoint);
             }
         }
         boolean isReadyToConnectEdge = (startEdgeLocation != null && endEdgeLocation != null);
@@ -106,8 +109,15 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
     {
         double zoom = editorPart.getZoomFactor();
         Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
-        this.currentMouseLocation = mousePoint;
-        editorPart.getSwingComponent().repaint();
+        Point2D snapPoint = this.grid.snap(mousePoint);
+        if (this.currentMouseLocation == null) {
+            this.currentMouseLocation = snapPoint;
+            editorPart.getSwingComponent().repaint();
+        }
+        if (!snapPoint.equals(this.currentMouseLocation)) {
+            this.currentMouseLocation = snapPoint;
+            editorPart.getSwingComponent().repaint();
+        }
     }
 
     /**
@@ -236,6 +246,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
 
     private IEditorPart editorPart;
     private IGraph graph;
+    private IGrid grid; 
     private IEditorPartSelectionHandler selectionHandler;
     private IEditorPartBehaviorManager behaviorManager;
 
