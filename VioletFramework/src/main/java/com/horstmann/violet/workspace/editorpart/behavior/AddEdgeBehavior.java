@@ -85,8 +85,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
             }
             if (this.isEligibleToFreePath)
             {
-                Point2D snapPoint = this.grid.snap(mousePoint);
-                this.freePathPoints.add(snapPoint);
+                this.freePathPoints.add(mousePoint);
             }
         }
         boolean isReadyToConnectEdge = (startEdgeLocation != null && endEdgeLocation != null);
@@ -230,7 +229,9 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         {
             Point2D p1 = edgePoints.get(i - 1);
             Point2D p2 = edgePoints.get(i);
-            g2.draw(new Line2D.Double(p1, p2));
+            Point2D snapP1 = this.grid.snap(p1);
+            Point2D snapP2 = this.grid.snap(p2);
+            g2.draw(new Line2D.Double(snapP1, snapP2));
         }
         g2.setColor(oldColor);
     }
