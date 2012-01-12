@@ -50,17 +50,30 @@ public class ActivityDiagramGraph extends AbstractGraph
     {
         return EDGE_PROTOTYPES;
     }
-    
+
     @Override
-    public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation) {
-    	if (!ActivityTransitionEdge.class.isInstance(e)) {
-    		return super.connect(e, start, startLocation, end, endLocation);
-    	}
-    	ActivityTransitionEdge transitionEdge = (ActivityTransitionEdge) e;
-    	if (DecisionNode.class.isInstance(start)) {
-    		transitionEdge.setBentStyle(BentStyle.HV);
-    	}
-    	return super.connect(e, start, startLocation, end, endLocation);
+    public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation)
+    {
+        if (!ActivityTransitionEdge.class.isInstance(e))
+        {
+            return super.connect(e, start, startLocation, end, endLocation);
+        }
+        ActivityTransitionEdge transitionEdge = (ActivityTransitionEdge) e;
+        if (DecisionNode.class.isInstance(start))
+        {
+            boolean isSyncBarAtEnd = SynchronizationBarNode.class.isInstance(end);
+            if (isSyncBarAtEnd)
+            {
+                // For syn bar, we want to connect edge to north or south points
+                transitionEdge.setBentStyle(BentStyle.AUTO);
+            }
+            if (!isSyncBarAtEnd)
+            {
+                // For all the other cases, decision node are connected from east or west
+                transitionEdge.setBentStyle(BentStyle.HV);
+            }
+        }
+        return super.connect(e, start, startLocation, end, endLocation);
     }
 
     private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
@@ -70,40 +83,39 @@ public class ActivityDiagramGraph extends AbstractGraph
     static
     {
         ResourceBundle rs = ResourceBundle.getBundle(ActivityDiagramConstant.ACTIVITY_DIAGRAM_STRINGS, Locale.getDefault());
-        
-        
+
         ActivityNode node0 = new ActivityNode();
         node0.setToolTip(rs.getString("node0.tooltip"));
         NODE_PROTOTYPES.add(node0);
-        
+
         DecisionNode node1 = new DecisionNode();
         node1.setToolTip(rs.getString("node1.tooltip"));
         NODE_PROTOTYPES.add(node1);
-        
+
         SynchronizationBarNode node2 = new SynchronizationBarNode();
         node2.setToolTip(rs.getString("node2.tooltip"));
         NODE_PROTOTYPES.add(node2);
-        
+
         SignalSendingNode node3 = new SignalSendingNode();
         node3.setToolTip(rs.getString("node3.tooltip"));
         NODE_PROTOTYPES.add(node3);
-        
+
         SignalReceiptNode node4 = new SignalReceiptNode();
         node4.setToolTip(rs.getString("node4.tooltip"));
         NODE_PROTOTYPES.add(node4);
-        
+
         ScenarioStartNode node5 = new ScenarioStartNode();
         node5.setToolTip(rs.getString("node5.tooltip"));
         NODE_PROTOTYPES.add(node5);
-        
+
         ScenarioEndNode node6 = new ScenarioEndNode();
         node6.setToolTip(rs.getString("node6.tooltip"));
         NODE_PROTOTYPES.add(node6);
-        
+
         NoteNode node7 = new NoteNode();
         node7.setToolTip(rs.getString("node7.tooltip"));
         NODE_PROTOTYPES.add(node7);
-        
+
         DiagramLinkNode node8 = new DiagramLinkNode();
         node8.setToolTip(rs.getString("node8.tooltip"));
         NODE_PROTOTYPES.add(node8);

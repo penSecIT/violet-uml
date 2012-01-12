@@ -42,30 +42,34 @@ public class SynchronizationBarNode extends RectangularNode
     {
         return e.getEnd() != null && this != e.getEnd();
     }
-    
+
     @Override
-    public Point2D getConnectionPoint(IEdge e) {
-    	Point2D defaultConnectionPoint = super.getConnectionPoint(e);
-		if (!ActivityTransitionEdge.class.isInstance(e)) {
-    		return defaultConnectionPoint;
-    	}
-    	
-    	INode end = e.getEnd();
-    	INode start = e.getStart();
-    	if (this == start) {
-    		Point2D endConnectionPoint = end.getConnectionPoint(e);
-    		double y = defaultConnectionPoint.getY();
-    		double x = endConnectionPoint.getX();
-    		return new Point2D.Double(x, y);
-    	}
-    	if (this == end) {
-    		Point2D startConnectionPoint = start.getConnectionPoint(e);
-    		double y = defaultConnectionPoint.getY();
-    		double x = startConnectionPoint.getX();
-    		return new Point2D.Double(x, y);
-    	}
-    	
-    	return defaultConnectionPoint;
+    public Point2D getConnectionPoint(IEdge e)
+    {
+        Point2D defaultConnectionPoint = super.getConnectionPoint(e);
+        if (!ActivityTransitionEdge.class.isInstance(e))
+        {
+            return defaultConnectionPoint;
+        }
+
+        INode end = e.getEnd();
+        INode start = e.getStart();
+        if (this == start)
+        {
+            Point2D endConnectionPoint = end.getConnectionPoint(e);
+            double y = defaultConnectionPoint.getY();
+            double x = endConnectionPoint.getX();
+            return new Point2D.Double(x, y);
+        }
+        if (this == end)
+        {
+            Point2D startConnectionPoint = start.getConnectionPoint(e);
+            double y = defaultConnectionPoint.getY();
+            double x = startConnectionPoint.getX();
+            return new Point2D.Double(x, y);
+        }
+
+        return defaultConnectionPoint;
     }
 
     @Override
@@ -79,7 +83,7 @@ public class SynchronizationBarNode extends RectangularNode
             double maxX = Double.MIN_VALUE;
             for (INode n : connectedNodes)
             {
-                Rectangle2D b2  = n.getBounds();
+                Rectangle2D b2 = n.getBounds();
                 minX = Math.min(minX, b2.getMinX());
                 maxX = Math.max(maxX, b2.getMaxX());
             }
