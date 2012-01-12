@@ -147,7 +147,7 @@ public class SynchronizationBarNode extends RectangularNode
         return (SynchronizationBarNode) super.clone();
     }
 
-    private static int DEFAULT_WIDTH = 24;
+    private static int DEFAULT_WIDTH = 100;
     private static int DEFAULT_HEIGHT = 4;
     private static int EXTRA_WIDTH = 12;
 }
