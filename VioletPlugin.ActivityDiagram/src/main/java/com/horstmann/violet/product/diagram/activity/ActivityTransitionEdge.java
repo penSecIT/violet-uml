@@ -58,33 +58,6 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
     @Override
     public ArrayList<Point2D> getPoints()
     {
-        // Special case for syn bars
-        if (getEnd() instanceof SynchronizationBarNode)
-        {
-            Rectangle2D startBounds = getStart().getBounds();
-            Rectangle2D endBounds = getEnd().getBounds();
-            ArrayList<Point2D> r = new ArrayList<Point2D>();
-            double startY = startBounds.getCenterY();
-            double endY = endBounds.getCenterY();
-            Point2D startPoint = getStart().getConnectionPoint(this); 
-            r.add(startPoint);
-            r.add(new Point2D.Double(startPoint.getX(), startY >= endY ? endBounds.getMaxY() : endBounds.getY()));
-            return r;
-        }
-        if (getStart() instanceof SynchronizationBarNode)
-        {
-            Rectangle2D startBounds = getStart().getBounds();
-            Rectangle2D endBounds = getEnd().getBounds();
-            ArrayList<Point2D> r = new ArrayList<Point2D>();
-            double startY = startBounds.getCenterY();
-            double endY = endBounds.getCenterY();
-            Point2D endPoint = getEnd().getConnectionPoint(this); 
-            r.add(new Point2D.Double(endPoint.getX(), startY >= endY ? startBounds.getY() : startBounds.getMaxY()));
-            r.add(endPoint);
-            return r;
-        }
-        
-        // Default behavior
         Point2D startingPoint = getStart().getConnectionPoint(this);
         Point2D endingPoint = getEnd().getConnectionPoint(this);
         if (!BentStyle.AUTO.equals(bentStyle))
@@ -144,6 +117,28 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
             {
                 return (x >= 0) ? Direction.EAST : Direction.WEST;
             }
+        }
+        if (SynchronizationBarNode.class.isInstance(getStart()) || SynchronizationBarNode.class.isInstance(getEnd())) {
+        	if (node.equals(getStart())) {
+        		Point2D p1 = node.getLocationOnGraph();
+        		Point2D p2 = getEnd().getLocationOnGraph();
+        		if (p1.getY() < p2.getY()) {
+        			return Direction.NORTH;
+        		}
+       		    if (p1.getY() > p2.getY()) {
+        			return Direction.SOUTH;
+        		}
+        	}
+        	if (node.equals(getEnd())) {
+        		Point2D p1 = node.getLocationOnGraph();
+        		Point2D p2 = getStart().getLocationOnGraph();
+        		if (p1.getY() < p2.getY()) {
+        			return Direction.NORTH;
+        		}
+       		    if (p1.getY() > p2.getY()) {
+        			return Direction.SOUTH;
+        		}
+        	}
         }
         return straightDirection;
     }

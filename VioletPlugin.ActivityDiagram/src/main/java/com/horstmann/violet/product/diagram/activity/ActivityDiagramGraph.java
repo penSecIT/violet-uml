@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.activity;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,18 @@ public class ActivityDiagramGraph extends AbstractGraph
     public List<IEdge> getEdgePrototypes()
     {
         return EDGE_PROTOTYPES;
+    }
+    
+    @Override
+    public boolean connect(IEdge e, INode start, Point2D startLocation, INode end, Point2D endLocation) {
+    	if (!ActivityTransitionEdge.class.isInstance(e)) {
+    		return super.connect(e, start, startLocation, end, endLocation);
+    	}
+    	ActivityTransitionEdge transitionEdge = (ActivityTransitionEdge) e;
+    	if (DecisionNode.class.isInstance(start)) {
+    		transitionEdge.setBentStyle(BentStyle.HV);
+    	}
+    	return super.connect(e, start, startLocation, end, endLocation);
     }
 
     private static final List<INode> NODE_PROTOTYPES = new ArrayList<INode>();
@@ -96,7 +109,7 @@ public class ActivityDiagramGraph extends AbstractGraph
         NODE_PROTOTYPES.add(node8);
 
         ActivityTransitionEdge transition = new ActivityTransitionEdge();
-        transition.setBentStyle(BentStyle.HV);
+        transition.setBentStyle(BentStyle.AUTO);
         transition.setEndArrowHead(ArrowHead.V);
         transition.setToolTip(rs.getString("edge0.tooltip"));
         EDGE_PROTOTYPES.add(transition);
