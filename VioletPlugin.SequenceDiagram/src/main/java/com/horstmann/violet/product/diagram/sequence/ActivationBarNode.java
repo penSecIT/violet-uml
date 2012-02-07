@@ -265,7 +265,7 @@ public class ActivationBarNode extends RectangularNode
     public Point2D getLocation()
     {
         double x = getHorizontalLocation();
-        double y = getVerticalLocation() + this.verticalLocationAdjustment;
+        double y = getVerticalLocation();
         return new Point2D.Double(x, y);
     }
 
@@ -411,7 +411,6 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public void draw(Graphics2D g2)
     {
-        adjustedVerticalLocation();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
@@ -575,51 +574,6 @@ public class ActivationBarNode extends RectangularNode
     }
 
     /**
-     * Adjust vertical location to be able to align ActivationBarNodes that are connected This method is called when nodes are
-     * painted.
-     */
-    private void adjustedVerticalLocation()
-    {
-        IGraph currentGraph = getGraph();
-        if (currentGraph == null)
-        {
-            return;
-        }
-        Collection<IEdge> edges = currentGraph.getAllEdges();
-        for (IEdge edge : edges)
-        {
-            if (edge.getClass().isAssignableFrom(CallEdge.class) && edge.getStart().getClass().isAssignableFrom(ActivationBarNode.class)
-                    && edge.getEnd().getClass().isAssignableFrom(ActivationBarNode.class))
-            {
-                ActivationBarNode startingNode = (ActivationBarNode) edge.getStart();
-                ActivationBarNode endingNode = (ActivationBarNode) edge.getEnd();
-                LifelineNode startingLifeLineNode = startingNode.getImplicitParameter();
-                LifelineNode endingLifeLineNode = endingNode.getImplicitParameter();
-                boolean isSameLifeLine = (startingLifeLineNode == endingLifeLineNode);
-                boolean isThisInvolved = (startingNode == this || endingNode == this);
-                if (isThisInvolved && !isSameLifeLine)
-                {
-                    Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
-                    Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
-                    double startingY = startingNodeLocationOnGraph.getY();
-                    double endingY = endingNodeLocationOnGraph.getY() - CALL_YGAP / 2;
-                    if (startingNode == this && endingY > startingY)
-                    {
-                        this.verticalLocationAdjustment = endingY - startingY;
-                    }
-                    if (endingNode == this && startingY > endingY)
-                    {
-                        this.verticalLocationAdjustment = startingY - endingY;
-                    }
-                    return;
-                }
-            }
-        }
-        // If there's no edge connected
-        this.verticalLocationAdjustment = 0;
-    }
-
-    /**
      * @return x location relative to the parent
      */
     private double getHorizontalLocation()
@@ -663,6 +617,7 @@ public class ActivationBarNode extends RectangularNode
         }
         if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class))
         {
+            // Case 1 : the activation bar is adjusted with all the others top level activation bars on the same lifeline
             LifelineNode lifeLineNode = (LifelineNode) parentNode;
             Rectangle2D lifeLineTopRectangle = lifeLineNode.getTopRectangle();
             double y = lifeLineTopRectangle.getHeight() + CALL_YGAP;
@@ -678,8 +633,25 @@ public class ActivationBarNode extends RectangularNode
                     break;
                 }
             }
+            
+            // Case 2 : the activation bar can be connected to another bar which is not on the same lifeline
+            List<IEdge> connectedEdges = getConnectedEdges();
+            for (IEdge anEdge : connectedEdges) {
+                if (!anEdge.getClass().isAssignableFrom(CallEdge.class)) {
+                    continue;
+                }
+                ActivationBarNode startingNode = (ActivationBarNode) anEdge.getStart();
+                ActivationBarNode endingNode = (ActivationBarNode) anEdge.getEnd();
+                if (endingNode == this) {
+                    // FIXME : This code is not perfect (startingNode.getLocationOnGraph() instead of getting real child bar position) but it works in many cases
+                    double minY = startingNode.getLocationOnGraph().getY() + CALL_YGAP / 2;
+                    y = Math.max(y, minY);
+                }
+            }
             return y;
         }
+        
+        
         return 0;
     }
 
@@ -687,9 +659,6 @@ public class ActivationBarNode extends RectangularNode
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
-
-    /** Adjust y to align connected nodes */
-    private transient double verticalLocationAdjustment = 0;
 
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
