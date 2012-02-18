@@ -69,6 +69,7 @@ public class NoteNode extends RectangularNode
         return INFINITE_Z_LEVEL;
     }
 
+    @Override
     public boolean addConnection(IEdge e)
     {
         if (e.getStart() == e.getEnd()) {
@@ -77,10 +78,6 @@ public class NoteNode extends RectangularNode
         return super.addConnection(e);
     }
 
-    public void removeConnection(IEdge e)
-    {
-        if (e.getStart() == this) getGraph().removeNode(e.getEnd());
-    }
 
     @Override
     public Rectangle2D getBounds()
@@ -138,6 +135,7 @@ public class NoteNode extends RectangularNode
         color = newValue;
     }
 
+    @Override
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
@@ -164,6 +162,7 @@ public class NoteNode extends RectangularNode
         text.draw(g2, getBounds());
     }
 
+    @Override
     public Shape getShape()
     {
         Rectangle2D bounds = getBounds();
@@ -177,6 +176,7 @@ public class NoteNode extends RectangularNode
         return path;
     }
 
+    @Override
     public NoteNode clone()
     {
        NoteNode cloned = (NoteNode)super.clone();

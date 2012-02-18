@@ -83,10 +83,6 @@ public class ObjectReferenceEdge extends ShapeEdge
         return p;
     }
 
-    public Line2D getConnectionPoints()
-    {
-        return new Line2D.Double(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
-    }
     
     @Override
     public Direction getDirection(INode node) {

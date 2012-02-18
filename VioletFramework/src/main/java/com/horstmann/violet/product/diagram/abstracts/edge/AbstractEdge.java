@@ -118,7 +118,17 @@ public abstract class AbstractEdge implements IEdge
     @Override
     public Line2D getConnectionPoints()
     {
-        return new Line2D.Double(start.getConnectionPoint(this), end.getConnectionPoint(this));
+        INode startingNode = getStart();
+        INode endingNode = getEnd();
+        Point2D startingNodeLocation = startingNode.getLocation();
+        Point2D endingNodeLocation = endingNode.getLocation();
+        Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+        Point2D endingNodeLocationOnGraph = endingNode.getLocationOnGraph();
+        Point2D relativeStartingConnectionPoint = startingNode.getConnectionPoint(this);
+        Point2D relativeEndingConnectionPoint = endingNode.getConnectionPoint(this);
+        Point2D absoluteStartingConnectionPoint = new Point2D.Double(startingNodeLocationOnGraph.getX() - startingNodeLocation.getX() + relativeStartingConnectionPoint.getX(), startingNodeLocationOnGraph.getY() - startingNodeLocation.getY() + relativeStartingConnectionPoint.getY());
+        Point2D absoluteEndingConnectionPoint = new Point2D.Double(endingNodeLocationOnGraph.getX() - endingNodeLocation.getX() + relativeEndingConnectionPoint.getX(), endingNodeLocationOnGraph.getY() - endingNodeLocation.getY() + relativeEndingConnectionPoint.getY());
+        return new Line2D.Double(absoluteStartingConnectionPoint, absoluteEndingConnectionPoint);
     }
 
     @Override

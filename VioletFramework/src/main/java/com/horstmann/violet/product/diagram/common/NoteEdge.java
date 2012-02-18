@@ -27,14 +27,18 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 
 import com.horstmann.violet.product.diagram.abstracts.edge.ShapeEdge;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 
 /**
  * A dotted line that connects a note to its attachment.
  */
 public class NoteEdge extends ShapeEdge
 {
+    
+    @Override
     public void draw(Graphics2D g2)
     {
         Stroke oldStroke = g2.getStroke();
@@ -43,11 +47,8 @@ public class NoteEdge extends ShapeEdge
         g2.setStroke(oldStroke);
     }
 
-    public Line2D getConnectionPoints()
-    {
-        return new Line2D.Double(getStart().getConnectionPoint(this), getEnd().getConnectionPoint(this));
-    }
 
+    @Override
     public Shape getShape()
     {
         GeneralPath path = new GeneralPath();

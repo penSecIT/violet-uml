@@ -172,12 +172,6 @@ public class StateTransitionEdge extends ShapeEdge
         return super.getDirection(node);
     }
 
-    public Line2D getConnectionPoints()
-    {
-        Point2D p = getStart().getConnectionPoint(this);
-        Point2D q = getEnd().getConnectionPoint(this);
-        return new Line2D.Double(p, q);
-    }
 
     private double angle;
     private String labelText = "";

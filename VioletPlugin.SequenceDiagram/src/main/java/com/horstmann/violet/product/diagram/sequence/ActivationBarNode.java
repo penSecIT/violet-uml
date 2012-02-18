@@ -640,8 +640,8 @@ public class ActivationBarNode extends RectangularNode
                 if (!anEdge.getClass().isAssignableFrom(CallEdge.class)) {
                     continue;
                 }
-                ActivationBarNode startingNode = (ActivationBarNode) anEdge.getStart();
-                ActivationBarNode endingNode = (ActivationBarNode) anEdge.getEnd();
+                INode startingNode = anEdge.getStart();
+                INode endingNode = anEdge.getEnd();
                 if (endingNode == this) {
                     // FIXME : This code is not perfect (startingNode.getLocationOnGraph() instead of getting real child bar position) but it works in many cases
                     double minY = startingNode.getLocationOnGraph().getY() + CALL_YGAP / 2;
