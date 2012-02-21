@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -33,7 +34,10 @@ import java.util.ArrayList;
 
 import javax.swing.JLabel;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
+import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
 
 /**
@@ -47,12 +51,34 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     public SegmentedLineEdge()
     {
         lineStyle = LineStyle.SOLID;
+        bentStyle = BentStyle.AUTO;
         startArrowHead = ArrowHead.NONE;
         endArrowHead = ArrowHead.NONE;
         startLabel = "";
         middleLabel = "";
         endLabel = "";
     }
+    
+    /**
+     * Sets the bentStyle property
+     * 
+     * @param newValue the bent style
+     */
+    public void setBentStyle(BentStyle newValue)
+    {
+        bentStyle = newValue;
+    }
+
+    /**
+     * Gets the bentStyle property
+     * 
+     * @return the bent style
+     */
+    public BentStyle getBentStyle()
+    {
+        return bentStyle;
+    }
+
 
     /**
      * Sets the line style property.
@@ -340,9 +366,58 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      * 
      * @return an array list of Point2D objects, containing the corner points
      */
-    public abstract ArrayList<Point2D> getPoints();
+    public ArrayList<Point2D> getPoints() {
+        Line2D connectionPoints = getConnectionPoints();
+        Point2D startingPoint = connectionPoints.getP1();
+        Point2D endingPoint = connectionPoints.getP2();
+        if (!BentStyle.AUTO.equals(bentStyle)) {
+            return bentStyle.getPath(startingPoint, endingPoint);
+        }
+        
+        Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
+        Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.VHV.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.VH.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+            return BentStyle.HV.getPath(startingPoint, endingPoint);
+        }
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+            return BentStyle.HVH.getPath(startingPoint, endingPoint);
+        }
+        return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
+    }
 
+    @Override
+    public Direction getDirection(INode node)
+    {
+        Direction straightDirection = super.getDirection(node);
+        double x = straightDirection.getX();
+        double y = straightDirection.getY();
+        if (node.equals(getStart())) {
+            if (BentStyle.HV.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+                return (x >= 0) ? Direction.EAST : Direction.WEST;
+            }
+            if (BentStyle.VH.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+                return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
+            }
+        }
+        if (node.equals(getEnd())) {
+            if (BentStyle.HV.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+                return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
+            }
+            if (BentStyle.VH.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+                return (x >= 0) ? Direction.EAST : Direction.WEST;
+            }
+        }
+        return straightDirection;
+    }
+    
     private LineStyle lineStyle;
+    private BentStyle bentStyle;
     private ArrowHead startArrowHead;
     private ArrowHead endArrowHead;
     private String startLabel;

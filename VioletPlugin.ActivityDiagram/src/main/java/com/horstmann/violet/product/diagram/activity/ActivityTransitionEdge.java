@@ -35,85 +35,33 @@ import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
  */
 public class ActivityTransitionEdge extends SegmentedLineEdge
 {
-    /**
-     * Sets the bentStyle property
-     * 
-     * @param newValue the bent style
-     */
-    public void setBentStyle(BentStyle newValue)
-    {
-        bentStyle = newValue;
-    }
 
-    /**
-     * Gets the bentStyle property
-     * 
-     * @return the bent style
-     */
-    public BentStyle getBentStyle()
-    {
-        return bentStyle;
-    }
-
-    @Override
-    public ArrayList<Point2D> getPoints()
-    {
-        Point2D startingPoint = getStart().getConnectionPoint(this);
-        Point2D endingPoint = getEnd().getConnectionPoint(this);
-        if (!BentStyle.AUTO.equals(bentStyle))
-        {
-            return bentStyle.getPath(startingPoint, endingPoint);
-        }
-
-        Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
-        Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
-        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection))
-                && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection)))
-        {
-            return BentStyle.VHV.getPath(startingPoint, endingPoint);
-        }
-        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection))
-                && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection)))
-        {
-            return BentStyle.VH.getPath(startingPoint, endingPoint);
-        }
-        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection))
-                && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection)))
-        {
-            return BentStyle.HV.getPath(startingPoint, endingPoint);
-        }
-        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection))
-                && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection)))
-        {
-            return BentStyle.HVH.getPath(startingPoint, endingPoint);
-        }
-        return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
-    }
 
     @Override
     public Direction getDirection(INode node)
     {
+        BentStyle bStyle = getBentStyle();
         Direction straightDirection = super.getDirection(node);
         double x = straightDirection.getX();
         double y = straightDirection.getY();
         if (node.equals(getStart()))
         {
-            if (BentStyle.HV.equals(bentStyle) || BentStyle.HVH.equals(bentStyle))
+            if (BentStyle.HV.equals(bStyle) || BentStyle.HVH.equals(bStyle))
             {
                 return (x >= 0) ? Direction.EAST : Direction.WEST;
             }
-            if (BentStyle.VH.equals(bentStyle) || BentStyle.VHV.equals(bentStyle))
+            if (BentStyle.VH.equals(bStyle) || BentStyle.VHV.equals(bStyle))
             {
                 return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
             }
         }
         if (node.equals(getEnd()))
         {
-            if (BentStyle.HV.equals(bentStyle) || BentStyle.VHV.equals(bentStyle))
+            if (BentStyle.HV.equals(bStyle) || BentStyle.VHV.equals(bStyle))
             {
                 return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
             }
-            if (BentStyle.VH.equals(bentStyle) || BentStyle.HVH.equals(bentStyle))
+            if (BentStyle.VH.equals(bStyle) || BentStyle.HVH.equals(bStyle))
             {
                 return (x >= 0) ? Direction.EAST : Direction.WEST;
             }
@@ -143,8 +91,5 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
         return straightDirection;
     }
 
-    /**
-     * Bent style
-     */
-    private BentStyle bentStyle;
+
 }

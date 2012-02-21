@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.sequence;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -64,6 +65,15 @@ public class CallEdge extends SegmentedLineEdge
         else setEndArrowHead(ArrowHead.BLACK_TRIANGLE);
     }
 
+    @Override
+    public Line2D getConnectionPoints()
+    {
+        ArrayList<Point2D> points = getPoints();
+        Point2D p1 = points.get(0);
+        Point2D p2 = points.get(points.size() -1);
+        return new Line2D.Double(p1, p2);
+    }
+    
     @Override
     public ArrayList<Point2D> getPoints()
     {

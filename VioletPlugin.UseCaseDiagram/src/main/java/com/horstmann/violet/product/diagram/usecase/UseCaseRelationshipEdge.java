@@ -21,56 +21,12 @@
 
 package com.horstmann.violet.product.diagram.usecase;
 
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
-import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
  * An edge that is shaped like a line with up to three segments with an arrowhead
  */
 public class UseCaseRelationshipEdge extends SegmentedLineEdge
 {
-    /**
-     * Constructs a straight edge.
-     */
-    public UseCaseRelationshipEdge()
-    {
-        bentStyle = BentStyle.STRAIGHT;
-    }
 
-    /**
-     * Sets the bentStyle property
-     * 
-     * @param newValue the bent style
-     */
-    public void setBentStyle(BentStyle newValue)
-    {
-        bentStyle = newValue;
-    }
-
-    /**
-     * Gets the bentStyle property
-     * 
-     * @return the bent style
-     */
-    public BentStyle getBentStyle()
-    {
-        return bentStyle;
-    }
-
-    public ArrayList<Point2D> getPoints()
-    {
-
-        Line2D connectionPoints = getConnectionPoints();
-        Point2D p = connectionPoints.getP1();
-        Point2D q = connectionPoints.getP2();
-        return bentStyle.getPath(p, q);
-    }
-
-    
-
-    private BentStyle bentStyle;
 }
