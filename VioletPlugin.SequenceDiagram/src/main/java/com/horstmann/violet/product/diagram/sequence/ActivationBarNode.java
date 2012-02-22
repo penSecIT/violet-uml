@@ -25,14 +25,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.lang.model.type.NullType;
 
 import com.horstmann.violet.product.diagram.abstracts.Direction;
-import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
@@ -634,7 +631,7 @@ public class ActivationBarNode extends RectangularNode
                 }
             }
             
-            // Case 2 : the activation bar can be connected to another bar which is not on the same lifeline
+            // Case 2 : the activation bar can be connected to another bar which IS NOT on the same lifeline
             List<IEdge> connectedEdges = getConnectedEdges();
             for (IEdge anEdge : connectedEdges) {
                 if (!anEdge.getClass().isAssignableFrom(CallEdge.class)) {
@@ -643,9 +640,8 @@ public class ActivationBarNode extends RectangularNode
                 INode startingNode = anEdge.getStart();
                 INode endingNode = anEdge.getEnd();
                 if (endingNode == this) {
-                    // FIXME : This code is not perfect (startingNode.getLocationOnGraph() instead of getting real child bar position) but it works in many cases
                     double minY = startingNode.getLocationOnGraph().getY() + CALL_YGAP / 2;
-                    y = Math.max(y, minY);
+                    y = Math.max(y, minY) - this.lifeline.getLocationOnGraph().getY();
                 }
             }
             return y;
@@ -654,8 +650,6 @@ public class ActivationBarNode extends RectangularNode
         
         return 0;
     }
-
-    Point2D currentLocation = getLocation();
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
