@@ -314,7 +314,7 @@ public class LifelineNode extends RectangularNode
                 continue;
             }
             LifelineNode aLifeLineNode = (LifelineNode) node;
-            double localY = aLifeLineNode.getLocalHeight();
+            double localY = aLifeLineNode.getLocalHeight() + aLifeLineNode.getLocationOnGraph().getY();
             maxY = Math.max(maxY, localY);
         }
         this.maxYOverAllLifeLineNodes = maxY;
