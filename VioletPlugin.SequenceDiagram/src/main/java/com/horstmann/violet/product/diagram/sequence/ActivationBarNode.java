@@ -96,7 +96,6 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public void removeConnection(IEdge e)
     {
-        if (e.getStart() == this) removeChild(e.getEnd());
         this.verticalStaticLocation = 0;
     }
 
