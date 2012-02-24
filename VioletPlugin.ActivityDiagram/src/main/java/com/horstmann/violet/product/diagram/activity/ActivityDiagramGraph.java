@@ -84,6 +84,10 @@ public class ActivityDiagramGraph extends AbstractGraph
     {
         ResourceBundle rs = ResourceBundle.getBundle(ActivityDiagramConstant.ACTIVITY_DIAGRAM_STRINGS, Locale.getDefault());
 
+        ScenarioStartNode node5 = new ScenarioStartNode();
+        node5.setToolTip(rs.getString("node5.tooltip"));
+        NODE_PROTOTYPES.add(node5);
+        
         ActivityNode node0 = new ActivityNode();
         node0.setToolTip(rs.getString("node0.tooltip"));
         NODE_PROTOTYPES.add(node0);
@@ -103,10 +107,6 @@ public class ActivityDiagramGraph extends AbstractGraph
         SignalReceiptNode node4 = new SignalReceiptNode();
         node4.setToolTip(rs.getString("node4.tooltip"));
         NODE_PROTOTYPES.add(node4);
-
-        ScenarioStartNode node5 = new ScenarioStartNode();
-        node5.setToolTip(rs.getString("node5.tooltip"));
-        NODE_PROTOTYPES.add(node5);
 
         ScenarioEndNode node6 = new ScenarioEndNode();
         node6.setToolTip(rs.getString("node6.tooltip"));

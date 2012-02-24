@@ -56,13 +56,13 @@ public class StateDiagramGraph extends AbstractGraph
     {
         ResourceBundle rs = ResourceBundle.getBundle(StateDiagramConstant.STATE_DIAGRAM_STRINGS, Locale.getDefault());
         
-        StateNode stateNode = new StateNode();
-        stateNode.setToolTip(rs.getString("node0.tooltip"));
-        NODE_PROTOTYPES.add(stateNode);
-        
         CircularInitialStateNode circularInitialStateNode = new CircularInitialStateNode();
         circularInitialStateNode.setToolTip(rs.getString("node1.tooltip"));
         NODE_PROTOTYPES.add(circularInitialStateNode);
+        
+        StateNode stateNode = new StateNode();
+        stateNode.setToolTip(rs.getString("node0.tooltip"));
+        NODE_PROTOTYPES.add(stateNode);
         
         CircularFinalStateNode circularFinalStateNode = new CircularFinalStateNode();
         circularFinalStateNode.setToolTip(rs.getString("node2.tooltip"));
