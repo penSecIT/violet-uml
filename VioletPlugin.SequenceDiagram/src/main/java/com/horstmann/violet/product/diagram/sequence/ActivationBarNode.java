@@ -349,6 +349,15 @@ public class ActivationBarNode extends RectangularNode
     {
         Point2D nodeLocation = getLocation();
         // Height
+        double height = getHeight();
+        // TODO : manage openbottom
+        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
+        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
+        return snappedBounds;
+    }
+
+    public double getHeight()
+    {
         double height = DEFAULT_HEIGHT;
         boolean isCallingNode = isCallingNode();
         if (isCallingNode)
@@ -359,10 +368,7 @@ public class ActivationBarNode extends RectangularNode
         {
             height = getHeightWhenHasChildren();
         }
-        // TODO : manage openbottom
-        Rectangle2D currentBounds = new Rectangle2D.Double(nodeLocation.getX(), nodeLocation.getY(), DEFAULT_WIDTH, height);
-        Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
-        return snappedBounds;
+        return height;
     }
 
     /**
@@ -382,6 +388,10 @@ public class ActivationBarNode extends RectangularNode
             if (edge.getStart() == this)
             {
                 INode endingNode = edge.getEnd();
+                if (endingNode instanceof ActivationBarNode)
+                {
+                    return CALL_YGAP / 2 + ((ActivationBarNode) endingNode).getHeight() + CALL_YGAP / 2;
+                }
                 Rectangle2D endingNodeBounds = endingNode.getBounds();
                 return CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
 
@@ -407,7 +417,7 @@ public class ActivationBarNode extends RectangularNode
         }
         if (childVisibleNodesCounter > 0)
         {
-            //height = CALL_YGAP;
+            // height = CALL_YGAP;
             for (INode aNode : getChildren())
             {
                 if (aNode instanceof ActivationBarNode)
@@ -615,7 +625,8 @@ public class ActivationBarNode extends RectangularNode
      */
     private double getVerticalLocation()
     {
-        if (this.verticalStaticLocation > 0) {
+        if (this.verticalStaticLocation > 0)
+        {
             return this.verticalStaticLocation;
         }
         // Les cas sont :
@@ -672,44 +683,120 @@ public class ActivationBarNode extends RectangularNode
             {
                 continue;
             }
-            boolean isEndingNode = (this == anEdge.getEnd());
-            if (!isEndingNode)
+            INode startingNode = anEdge.getStart();
+            INode endingNode = anEdge.getEnd();
+            boolean isActivationBarOnStart = startingNode.getClass().isAssignableFrom(ActivationBarNode.class);
+            boolean isActivationBarOnEnd = endingNode.getClass().isAssignableFrom(ActivationBarNode.class);
+            if (!isActivationBarOnStart)
             {
                 continue;
             }
-            INode startingNode = anEdge.getStart();
-            boolean isActivationBarOnStart = startingNode.getClass().isAssignableFrom(ActivationBarNode.class);
-            if (!isActivationBarOnStart)
+            if (!isActivationBarOnEnd)
             {
                 continue;
             }
             ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
             LifelineNode startingLifelineNode = startingActivationBarNode.getImplicitParameter();
-            boolean isSameLifeline = (this.lifeline == startingLifelineNode);
+            ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
+            LifelineNode endingLifelineNode = endingActivationBarNode.getImplicitParameter();
+            boolean isSameLifeline = (endingLifelineNode == startingLifelineNode);
             if (isSameLifeline)
             {
                 continue;
             }
-            double gapBetweenLifelines = parentNode.getLocationOnGraph().getY() - startingLifelineNode.getLocationOnGraph().getY();
-            double startingNodeY = startingActivationBarNode.getLocationOnGraph().getY()
-                    - startingLifelineNode.getLocationOnGraph().getY();
-            double minY = startingNodeY + CALL_YGAP / 2  - gapBetweenLifelines;
-            if (y > minY) {
-                // As we can't change dynamically vertical location on starting node to avoid infinite loop, we set a static location
-                startingActivationBarNode.verticalStaticLocation = gapBetweenLifelines + y - CALL_YGAP / 2 - startingActivationBarNode.getParent().getLocation().getY();
+            boolean isEndingNode = (this == endingNode);
+            if (isEndingNode)
+            {
+                double gapBetweenLifelines = parentNode.getLocationOnGraph().getY()
+                        - startingLifelineNode.getLocationOnGraph().getY();
+                double startingNodeY = startingActivationBarNode.getTheoricalVerticalLocationOnGraph()
+                        - startingLifelineNode.getLocationOnGraph().getY();
+                double minY = startingNodeY + CALL_YGAP / 2 - gapBetweenLifelines;
+                y = Math.max(y, minY);
             }
-            y = Math.max(y, minY);
+            if (!isEndingNode)
+            {
+                double gapBetweenLifelines = parentNode.getLocationOnGraph().getY()
+                        - endingLifelineNode.getLocationOnGraph().getY();
+                double endingNodeY = endingActivationBarNode.getTheoricalVerticalLocationOnGraph()
+                        - endingLifelineNode.getLocationOnGraph().getY();
+                double minY = endingNodeY - CALL_YGAP / 2 - gapBetweenLifelines;
+                y = Math.max(y, minY);
+            }
+
+            // - startingLifelineNode.getLocationOnGraph().getY();
+            // double minY = startingNodeY + CALL_YGAP / 2 - gapBetweenLifelines;
+            // if (y > minY) {
+            // // As we can't change dynamically vertical location on starting node to avoid infinite loop, we set a static location
+            // startingActivationBarNode.verticalStaticLocation = gapBetweenLifelines + y - CALL_YGAP / 2 -
+            // startingActivationBarNode.getParent().getLocation().getY();
+            // }
+            // y = Math.max(y, minY);
             break;
         }
         return y;
     }
 
+    private double getTheoricalVerticalLocationOnGraph()
+    {
+        INode previousNode = getPreviousNode();
+        boolean isParent = previousNode.equals(getParent());
+        boolean isActivationBarNode = previousNode.getClass().isAssignableFrom(ActivationBarNode.class);
+        boolean isLifelineNode = previousNode.getClass().isAssignableFrom(LifelineNode.class);
+        if (isActivationBarNode)
+        {
+            if (!isParent)
+            {
+                Rectangle2D previousNodeBounds = previousNode.getBounds();
+                double previousNodeHeight = previousNodeBounds.getHeight();
+                Point2D previousNodeLocationOnGraph = previousNode.getLocationOnGraph();
+                double y = previousNodeLocationOnGraph.getY() + previousNodeHeight + CALL_YGAP;
+                return y;
+            }
+            if (isParent)
+            {
+                Point2D previousNodeLocationOnGraph = previousNode.getLocationOnGraph();
+                double y = previousNodeLocationOnGraph.getY() + CALL_YGAP;
+                return y;
+            }
+        }
+        if (isLifelineNode)
+        {
+            LifelineNode lifelineParent = (LifelineNode) previousNode;
+            Rectangle2D topRectangle = lifelineParent.getTopRectangle();
+            Point2D lifeLineParentLocationOnGraph = lifelineParent.getLocationOnGraph();
+            double y = lifeLineParentLocationOnGraph.getY() + topRectangle.getHeight() + CALL_YGAP;
+            return y;
+        }
+        return 0;
+    }
+
+    private INode getPreviousNode()
+    {
+        INode parentNode = getParent();
+        List<INode> brotherNodes = parentNode.getChildren();
+        INode previousNode = null;
+        for (INode aNode : brotherNodes)
+        {
+            if (aNode.equals(this))
+            {
+                break;
+            }
+            previousNode = aNode;
+        }
+        if (previousNode == null)
+        {
+            previousNode = parentNode;
+        }
+        return previousNode;
+    }
+
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private LifelineNode lifeline;
-    
+
     /** This (hack) is to force a vertical location we want */
     private double verticalStaticLocation = 0;
-    
+
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
 
