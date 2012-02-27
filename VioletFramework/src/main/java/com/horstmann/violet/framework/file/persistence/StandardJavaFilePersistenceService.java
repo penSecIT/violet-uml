@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -250,7 +252,9 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
             {
                 super.initialize(type, oldInstance, newInstance, out);
                 INode n = (INode) oldInstance;
-                List<INode> children = n.getChildren();
+                List<INode> children = new ArrayList<INode>(n.getChildren());
+                // Note : it's important to reserve order because deserialization reload the graph in the reversed order
+                Collections.reverse(children);
                 for (int i = 0; i < children.size(); i++)
                 {
                     INode c = (INode) children.get(i);
