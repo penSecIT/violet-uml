@@ -650,9 +650,20 @@ public class ActivationBarNode extends RectangularNode
             {
                 continue;
             }
+            double y0 = this.getParent().getLocationOnGraph().getY() + CALL_YGAP + this.getVerticalLocationBeforeAdjustment();
             double y1 = startingActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP + startingActivationBarNode.getVerticalLocationBeforeAdjustment();
             double y2 = endingActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP + endingActivationBarNode.getVerticalLocationBeforeAdjustment();
-            y = this.getVerticalLocationBeforeAdjustment() + Math.abs(y1 - y2);
+            if (y0 == Math.max(y1, y2) || y0 == Math.max(y1, y2)) {
+            	continue;
+            }
+            double minY = this.getVerticalLocationBeforeAdjustment() + Math.abs(y1 - y2);
+            if (this.equals(anEdge.getEnd())) {
+            	minY = minY + CALL_YGAP / 2;
+            }
+            if (this.equals(anEdge.getStart())) {
+            	minY = minY - CALL_YGAP / 2;
+            }
+            y = Math.max(y, minY);
             break;
         }
         return y;
