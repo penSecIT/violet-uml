@@ -21,8 +21,10 @@
 
 package com.horstmann.violet.product.diagram.sequence;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -41,6 +43,8 @@ public class SequenceDiagramGraph extends AbstractGraph
 {
 
     
+    
+    
     @Override
     public boolean addNode(INode newNode, Point2D p)
     {
@@ -51,8 +55,29 @@ public class SequenceDiagramGraph extends AbstractGraph
         return super.addNode(newNode, p);
     }
 
- 
 
+    @Override
+    public void draw(Graphics2D g2)
+    {
+        optimizeRenderingPerformances();
+        super.draw(g2);
+    }
+
+
+    private void optimizeRenderingPerformances()
+    {
+        Collection<INode> allNodes = getAllNodes();
+        for (INode aNode : allNodes) {
+            boolean isActivationBar = aNode.getClass().isAssignableFrom(ActivationBarNode.class);
+            if (!isActivationBar)
+            {
+                continue;
+            }
+            ActivationBarNode activationBarNode = (ActivationBarNode) aNode;
+            activationBarNode.resetLocation();
+        }
+    }
+    
     public List<INode> getNodePrototypes()
     {
         return NODE_PROTOTYPES;
