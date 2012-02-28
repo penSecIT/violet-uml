@@ -158,7 +158,7 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     public Rectangle2D getClipBounds()
     {
         Rectangle2D r = minBounds;
-        for (INode n : getAllNodes())
+        for (INode n : nodes)
         {
             Rectangle2D b = n.getBounds();
             if (r == null) r = b;
