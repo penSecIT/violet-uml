@@ -53,17 +53,20 @@ public class PackageNode extends RectangularNode implements IResizableNode
         Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
         Rectangle2D contentsBounds = contents.getBounds();
         globalBounds.add(contentsBounds);
-        globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT - DEFAULT_TOP_HEIGHT));
+        globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        Rectangle2D childrenBounds = new Rectangle2D.Double(0, 0, 0, 0);
         for (INode child : getChildren())
         {
             Rectangle2D childBounds = child.getBounds();
-            globalBounds.add(childBounds);
+            childrenBounds.add(childBounds);
         }
+        childrenBounds.setFrame(childrenBounds.getX(), childrenBounds.getY(), childrenBounds.getWidth() + CHILD_GAP, childrenBounds.getHeight() + CHILD_GAP);
+        globalBounds.add(childrenBounds);
         Rectangle2D topBounds = getTopRectangleBounds();
         double x = topBounds.getX();
         double y = topBounds.getMaxY();
         double w = Math.max(globalBounds.getWidth(), topBounds.getWidth() + 2 * NAME_GAP);
-        double h = globalBounds.getHeight();
+        double h = globalBounds.getHeight() - topBounds.getHeight();
         globalBounds.setFrame(x, y, w, h);
         Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
         return snappedBounds;
@@ -98,12 +101,30 @@ public class PackageNode extends RectangularNode implements IResizableNode
         // Draw its children
         for (INode node : getChildren())
         {
-            node.draw(g2);
+            fixChildLocation(topBounds, node);
+        	node.draw(g2);
         }
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
     }
 
+	/**
+	 * Ensure that child node respects the minimum gap with package borders
+	 * 
+	 * @param topBounds
+	 * @param node
+	 */
+	private void fixChildLocation(Rectangle2D topBounds, INode node) {
+		Point2D childLocation = node.getLocation();
+		if (childLocation.getY() <= topBounds.getHeight() + CHILD_GAP) {
+			node.translate(0, topBounds.getHeight() + CHILD_GAP - childLocation.getY());
+		}
+		if (childLocation.getX() < CHILD_GAP) {
+			node.translate(CHILD_GAP - childLocation.getX(), 0);
+		}
+	}
+
+    
     @Override
     public Shape getShape()
     {
@@ -184,6 +205,6 @@ public class PackageNode extends RectangularNode implements IResizableNode
     private static int DEFAULT_WIDTH = 100;
     private static int DEFAULT_HEIGHT = 80;
     private static final int NAME_GAP = 3;
-
+    private static final int CHILD_GAP = 20;
 
 }
