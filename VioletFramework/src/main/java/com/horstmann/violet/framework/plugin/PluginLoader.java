@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.plugin;
 
+import java.beans.PersistenceDelegate;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
@@ -18,9 +19,11 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.VFSClassLoader;
 
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.file.persistence.Violet016BackportFormatService;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
+import com.horstmann.violet.framework.plugin.extensionpoint.IFilePersistenceServiceExtentionPoint;
 import com.horstmann.violet.framework.plugin.extensionpoint.Violet016FileFilterExtensionPoint;
 
 @ManagedBean
@@ -41,6 +44,14 @@ public class PluginLoader extends ClassLoader
                 Violet016FileFilterExtensionPoint extensionPoint = (Violet016FileFilterExtensionPoint) aPlugin;
                 Map<String, String> mappingToKeepViolet016Compatibility = extensionPoint.getMappingToKeepViolet016Compatibility();
                 Violet016BackportFormatService.addViolet016CompatibilityEntries(mappingToKeepViolet016Compatibility);
+            }
+            if (aPlugin instanceof IFilePersistenceServiceExtentionPoint) {
+            	IFilePersistenceServiceExtentionPoint extensionPoint = (IFilePersistenceServiceExtentionPoint) aPlugin;
+            	Map<Class<?>, PersistenceDelegate> mapOfSpecificPersistenceDelegate = extensionPoint.getMapOfSpecificPersistenceDelegate();
+            	for (Class<?> classType : mapOfSpecificPersistenceDelegate.keySet()) {
+            		PersistenceDelegate persistenceDelegate = mapOfSpecificPersistenceDelegate.get(classType);
+            		this.filePersistenceService.addCustomPersistanceDelegate(classType, persistenceDelegate);
+            	}
             }
         }
     }
@@ -118,5 +129,9 @@ public class PluginLoader extends ClassLoader
     /** Registry where we register loaded plugins */
     @InjectedBean
     private PluginRegistry pluginRegistry;
+    
+    /** Service to convert IGraph to XML content (and XML to IGraph of course) */
+    @InjectedBean
+    private IFilePersistenceService filePersistenceService;
 
 }

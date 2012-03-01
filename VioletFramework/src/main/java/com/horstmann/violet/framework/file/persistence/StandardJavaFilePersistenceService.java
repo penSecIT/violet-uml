@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.ExceptionListener;
+import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -17,7 +18,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +45,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
 {
 
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.file.persistence.IFilePersistenceService#write(com.horstmann.violet.product.diagram.abstracts.IGraph, java.io.OutputStream)
-     */
+    @Override
     public void write(IGraph graph, OutputStream out)
     {
         XMLEncoder encoder = getXMLEncoder(Violet016BackportFormatService.convertToViolet016(out));
@@ -55,9 +54,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
     }
 
 
-    /* (non-Javadoc)
-     * @see com.horstmann.violet.framework.file.persistence.IFilePersistenceService#read(java.io.InputStream)
-     */
+    @Override
     public IGraph read(InputStream in) throws IOException
     {
         XMLDecoder reader = new XMLDecoder(Violet016BackportFormatService.convertFromViolet016(in), null, new ExceptionListener()
@@ -70,6 +67,11 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
         IGraph graph = (IGraph) reader.readObject();
         in.close();
         return graph;
+    }
+    
+    @Override
+    public void addCustomPersistanceDelegate(Class<?> classType, PersistenceDelegate persistenceDelegate) {
+    	this.customPersistenceDelegates.put(classType, persistenceDelegate);
     }
     
     /**
@@ -253,7 +255,7 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 for ( INode n : g.getAllNodes())
                 {
                     INode parent = n.getParent();
-                    //if (parent != null) continue;
+                    if (parent != null) continue;
                     Point2D p = n.getLocation();
                     out.writeStatement(new Statement(oldInstance, "addNode", new Object[]
                     {
@@ -310,7 +312,14 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                     throw new RuntimeException("Error while serializing ImageNode", e);
                 }
             }
-        });        
+        });
+        for (Class<?> aClass : this.customPersistenceDelegates.keySet()) {
+        	PersistenceDelegate aPersistenceDelegate = this.customPersistenceDelegates.get(aClass);
+        	encoder.setPersistenceDelegate(aClass, aPersistenceDelegate);
+        }
     }
+    
+    /** Used to produce specific XML content */ 
+    private Map<Class<?>, PersistenceDelegate> customPersistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
 
 }

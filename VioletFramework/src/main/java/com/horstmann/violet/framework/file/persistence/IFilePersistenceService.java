@@ -1,5 +1,6 @@
 package com.horstmann.violet.framework.file.persistence;
 
+import java.beans.PersistenceDelegate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,5 +31,13 @@ public interface IFilePersistenceService
      * @return the graph that is read in
      */
     public IGraph read(InputStream in) throws IOException;
+    
+    /**
+     * Allow to register custom persistenceDelegate to produce specific XML content
+     * 
+     * @param classType
+     * @param persistenceDelegate
+     */
+    public void addCustomPersistanceDelegate(Class<?> classType, PersistenceDelegate persistenceDelegate);
     
 }
