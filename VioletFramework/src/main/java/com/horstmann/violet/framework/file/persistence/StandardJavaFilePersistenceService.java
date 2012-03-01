@@ -215,37 +215,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 }
             }
         });
-        encoder.setPersistenceDelegate(AbstractGraph.class, new DefaultPersistenceDelegate()
-        {
-            protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
-            {
-                super.initialize(type, oldInstance, newInstance, out);
-                AbstractGraph g = (AbstractGraph) oldInstance;
-
-                for ( INode n : g.getAllNodes())
-                {
-                    INode parent = n.getParent();
-                    if (parent != null) continue;
-                    Point2D p = n.getLocation();
-                    out.writeStatement(new Statement(oldInstance, "addNode", new Object[]
-                    {
-                            n,
-                            p
-                    }));
-                }
-                for (IEdge e : g.getAllEdges())
-                {
-                    out.writeStatement(new Statement(oldInstance, "connect", new Object[]
-                    {
-                            e,
-                            e.getStart(),
-                            e.getStartLocation(),
-                            e.getEnd(),
-                            e.getEndLocation()
-                    }));
-                }
-            }
-        });
         encoder.setPersistenceDelegate(AbstractNode.class, new DefaultPersistenceDelegate()
         {
             protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
@@ -253,8 +222,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 super.initialize(type, oldInstance, newInstance, out);
                 INode n = (INode) oldInstance;
                 List<INode> children = new ArrayList<INode>(n.getChildren());
-                // Note : it's important to reserve order because deserialization reload the graph in the reversed order
-                Collections.reverse(children);
                 for (int i = 0; i < children.size(); i++)
                 {
                     INode c = (INode) children.get(i);
@@ -272,6 +239,37 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                     out.writeStatement(new Statement(oldInstance, "setId", new Object[]
                     {
                         id
+                    }));
+                }
+            }
+        });
+        encoder.setPersistenceDelegate(AbstractGraph.class, new DefaultPersistenceDelegate()
+        {
+            protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
+            {
+                super.initialize(type, oldInstance, newInstance, out);
+                AbstractGraph g = (AbstractGraph) oldInstance;
+
+                for ( INode n : g.getAllNodes())
+                {
+                    INode parent = n.getParent();
+                    //if (parent != null) continue;
+                    Point2D p = n.getLocation();
+                    out.writeStatement(new Statement(oldInstance, "addNode", new Object[]
+                    {
+                            n,
+                            p
+                    }));
+                }
+                for (IEdge e : g.getAllEdges())
+                {
+                    out.writeStatement(new Statement(oldInstance, "connect", new Object[]
+                    {
+                            e,
+                            e.getStart(),
+                            e.getStartLocation(),
+                            e.getEnd(),
+                            e.getEndLocation()
                     }));
                 }
             }
