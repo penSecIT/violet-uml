@@ -140,11 +140,10 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
      */
     private void configure(XMLEncoder encoder)
     {
-        /*
-         * The following does not work due to bug #4741757
-         * 
-         * encoder.setPersistenceDelegate( Point2D.Double.class, new DefaultPersistenceDelegate( new String[]{ "x", "y" }) );
-         */
+        for (Class<?> aClass : this.customPersistenceDelegates.keySet()) {
+        	PersistenceDelegate aPersistenceDelegate = this.customPersistenceDelegates.get(aClass);
+        	encoder.setPersistenceDelegate(aClass, aPersistenceDelegate);
+        }
         encoder.setPersistenceDelegate(Point2D.Double.class, new DefaultPersistenceDelegate()
         {
             protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
@@ -313,10 +312,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
                 }
             }
         });
-        for (Class<?> aClass : this.customPersistenceDelegates.keySet()) {
-        	PersistenceDelegate aPersistenceDelegate = this.customPersistenceDelegates.get(aClass);
-        	encoder.setPersistenceDelegate(aClass, aPersistenceDelegate);
-        }
     }
     
     /** Used to produce specific XML content */ 
