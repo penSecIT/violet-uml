@@ -201,26 +201,26 @@ public class MultiLineString implements Serializable, Cloneable
             }
         }
 
-        label.setText(htmlText.toString());
-        if (justification == LEFT) label.setHorizontalAlignment(JLabel.LEFT);
-        else if (justification == CENTER) label.setHorizontalAlignment(JLabel.CENTER);
-        else if (justification == RIGHT) label.setHorizontalAlignment(JLabel.RIGHT);
+        getLabel().setText(htmlText.toString());
+        if (justification == LEFT) getLabel().setHorizontalAlignment(JLabel.LEFT);
+        else if (justification == CENTER) getLabel().setHorizontalAlignment(JLabel.CENTER);
+        else if (justification == RIGHT) getLabel().setHorizontalAlignment(JLabel.RIGHT);
 
     }
+
 
     /**
      * Gets the bounding rectangle for this multiline string.
      * 
      * @param g2 the graphics context
      * @return the bounding rectangle (with top left corner (0,0))
-     * @deprecated use getBounds() instead
      */
-    public Rectangle2D getBounds(Graphics2D g2)
+    private Rectangle2D getBounds(Graphics2D g2)
     {
-        label.setFont(g2.getFont());
-        label.validate();
+        getLabel().setFont(g2.getFont());
+        getLabel().validate();
         if (text.length() == 0) return new Rectangle2D.Double(0, 0, 0, 0);
-        Dimension dim = label.getPreferredSize();
+        Dimension dim = getLabel().getPreferredSize();
         return new Rectangle2D.Double(0, 0, dim.getWidth(), dim.getHeight());
     }
 
@@ -249,10 +249,10 @@ public class MultiLineString implements Serializable, Cloneable
      */
     public void draw(Graphics2D g2, Rectangle2D r)
     {
-        label.setFont(g2.getFont());
-        label.setBounds(0, 0, (int) r.getWidth(), (int) r.getHeight());
+    	getLabel().setFont(g2.getFont());
+    	getLabel().setBounds(0, 0, (int) r.getWidth(), (int) r.getHeight());
         g2.translate(r.getX(), r.getY());
-        label.paint(g2);
+        getLabel().paint(g2);
         g2.translate(-r.getX(), -r.getY());
     }
 
@@ -261,7 +261,6 @@ public class MultiLineString implements Serializable, Cloneable
         try
         {
             MultiLineString cloned = (MultiLineString) super.clone();
-            cloned.label = new JLabel();
             cloned.setLabelText();
             return cloned;
         }
@@ -269,6 +268,13 @@ public class MultiLineString implements Serializable, Cloneable
         {
             return null;
         }
+    }
+    
+    private JLabel getLabel() {
+    	if (this.label == null) {
+    		this.label = new JLabel();
+    	}
+    	return this.label;
     }
 
     public static final int LEFT = 0;
@@ -282,7 +288,7 @@ public class MultiLineString implements Serializable, Cloneable
     private int justification;
     private int size;
     private boolean underlined;
-    private transient JLabel label = new JLabel();
+    private transient JLabel label;
     private transient boolean isBoundsDirty = true;
     private transient Rectangle2D bounds;
 }
