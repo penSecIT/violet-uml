@@ -49,7 +49,6 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     {
         nodes = new ArrayList<INode>();
         edges = new ArrayList<IEdge>();
-        grid = new EmptyGrid();
     }
 
     @Override
@@ -312,7 +311,10 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     @Override
     public IGrid getGrid()
     {
-        return grid;
+        if (this.grid == null) {
+        	this.grid = new EmptyGrid();
+        }
+    	return grid;
     }
 
     private ArrayList<INode> nodes;
