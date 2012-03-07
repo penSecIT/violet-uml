@@ -7,14 +7,13 @@ import java.io.OutputStream;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 
 @ManagedBean(registeredManually=true)
 public class XStreamBasedPersistenceService implements IFilePersistenceService {
 
 	@Override
 	public IGraph read(InputStream in) throws IOException {
-		XStream xStream = new XStream(new PureJavaReflectionProvider());
+		XStream xStream = new XStream();
 		Object fromXML = xStream.fromXML(in);
 		IGraph graph = (IGraph) fromXML;
 		return graph;
@@ -22,7 +21,7 @@ public class XStreamBasedPersistenceService implements IFilePersistenceService {
 
 	@Override
 	public void write(IGraph graph, OutputStream out) {
-		XStream xStream = new XStream(new PureJavaReflectionProvider());
+		XStream xStream = new XStream();
 		xStream.toXML(graph, out);
 	}
 

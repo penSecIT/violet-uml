@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
+import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
@@ -52,6 +53,7 @@ public class SequenceDiagramGraph extends AbstractGraph
         if (foundNode == null && newNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
             return false;
         }
+        newNode.setId(new Id());
         return super.addNode(newNode, p);
     }
 

@@ -211,7 +211,8 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     @Override
     public boolean addNode(INode newNode, Point2D p)
     {
-        // Case 1 : Note node always attached to the graph
+        newNode.setId(new Id());
+    	// Case 1 : Note node always attached to the graph
         if (newNode instanceof NoteNode)
         {
             newNode.setGraph(this);
@@ -281,15 +282,22 @@ public abstract class AbstractGraph implements Serializable, Cloneable, IGraph
     {
         // Step 1 : find if nodes exist
         Collection<INode> allNodes = getAllNodes();
-        if (start != null && !allNodes.contains(start)) addNode(start, start.getLocation());
-        if (end != null && !allNodes.contains(end)) addNode(end, end.getLocation());
+        if (start != null && !allNodes.contains(start)) {
+        	start.setId(new Id());
+        	addNode(start, start.getLocation());
+        }
+        if (end != null && !allNodes.contains(end)) {
+        	end.setId(new Id());
+        	addNode(end, end.getLocation());
+        }
         e.setStart(start);
         e.setStartLocation(startLocation);
         e.setEnd(end);
         e.setEndlocation(endLocation);
         if (start.addConnection(e))
         {
-            edges.add(e);
+            e.setId(new Id());
+        	edges.add(e);
             return true;
         }
         return false;

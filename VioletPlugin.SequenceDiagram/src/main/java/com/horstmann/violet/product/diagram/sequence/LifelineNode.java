@@ -335,7 +335,7 @@ public class LifelineNode extends RectangularNode
     }
 
     private MultiLineString name;
-    private double maxYOverAllLifeLineNodes = 0;
+    private transient double maxYOverAllLifeLineNodes = 0;
     private static int DEFAULT_TOP_HEIGHT = 60;
     private static int DEFAULT_WIDTH = 80;
     private static int DEFAULT_HEIGHT = 120;
