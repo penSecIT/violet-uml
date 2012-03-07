@@ -292,7 +292,7 @@ public abstract class AbstractNode implements INode
     }
 
     private ArrayList<INode> children;
-    private transient INode parent;
+    private INode parent;
     private transient IGraph graph;
     private Point2D location;
     private transient String toolTip;

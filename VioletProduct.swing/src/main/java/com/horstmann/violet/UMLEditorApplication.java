@@ -42,6 +42,7 @@ import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.chooser.JFileChooserService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.XStreamBasedPersistenceService;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanFactory;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
@@ -123,7 +124,7 @@ public class UMLEditorApplication
         BeanFactory.getFactory().register(ThemeManager.class, themeManager);
         themeManager.applyPreferedTheme();
         
-        IFilePersistenceService filePersistenceService = new StandardJavaFilePersistenceService();
+        IFilePersistenceService filePersistenceService = new XStreamBasedPersistenceService();
         BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
         
         DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.INTERNAL);
