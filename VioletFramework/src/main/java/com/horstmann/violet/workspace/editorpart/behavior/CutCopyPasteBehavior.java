@@ -9,6 +9,8 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import javax.swing.undo.UndoableEdit;
 
 import com.horstmann.violet.framework.file.GraphFile;
 import com.horstmann.violet.framework.file.IGraphFile;
-import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
@@ -45,7 +47,7 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
      * Used to convert graph to XML and to get graph back from XML
      */
     @InjectedBean
-    private StandardJavaFilePersistenceService persistenceService;
+    private IFilePersistenceService persistenceService;
 
     /**
      * Keep mouse location to paste on just above the current mouse location
@@ -110,16 +112,11 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
                 newGraph.connect(clone, startNode, startLocation, endNode, endLocation);
             }
         }
-        try
-        {
-            ByteBuffer serializedGraph = persistenceService.serializeGraph(newGraph);
-            String xmlContent = convertToString(serializedGraph);
-            pushContentToSystemClipboard(xmlContent);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        persistenceService.write(newGraph, byteArrayOutputStream);
+        byteArrayOutputStream.toString();
+        String xmlContent = byteArrayOutputStream.toString();
+        pushContentToSystemClipboard(xmlContent);
     }
 
     /**
@@ -135,8 +132,8 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             {
                 return; // If no content, we stop here
             }
-            ByteBuffer byteBuffer = convertToByteBuffer(xmlContent);
-            IGraph deserializedGraph = persistenceService.deserializeGraph(byteBuffer);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xmlContent.getBytes());
+            IGraph deserializedGraph = persistenceService.read(byteArrayInputStream);
             deserializedGraph = translateToMouseLocation(deserializedGraph, this.lastMouseLocation);
 
             Collection<INode> nodesFromClipboard = deserializedGraph.getAllNodes();

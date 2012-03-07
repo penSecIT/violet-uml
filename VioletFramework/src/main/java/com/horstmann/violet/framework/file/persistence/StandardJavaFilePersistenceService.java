@@ -10,13 +10,10 @@ import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,44 +71,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
     	this.customPersistenceDelegates.put(classType, persistenceDelegate);
     }
     
-    /**
-     * NOT USED FOR THE MOMENT
-     * 
-     * Reads a graph from a byte buffer
-     * 
-     * @param buffer byte buffer that contains the serialized graph
-     * @return the graph
-     * @throws IOException e
-     */
-    public IGraph deserializeGraph(ByteBuffer buffer) throws IOException
-    {
-        ByteArrayInputStream bis = new ByteArrayInputStream(buffer.array());
-        IGraph g = read(bis);
-        bis.close();
-        return g;
-    }
-
-    /**
-     * NOT USED FOR THE MOMENT
-     * 
-     * Saves the graph to a byte buffer
-     * 
-     * @param g the graph to save
-     * @return a byte buffer that contains the serialized graph
-     * @throws IOException e
-     */
-    public ByteBuffer serializeGraph(IGraph g) throws IOException
-    {
-        // Serialize to a byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        write(g, bos);
-        // Get the bytes of the serialized object
-        ByteBuffer buffer = ByteBuffer.wrap(bos.toByteArray());
-        bos.close();
-        return buffer;
-    }
-
-
 
     /**
      * Creates a new instance of XML Encoder pre-configured for Violet beans serailization
