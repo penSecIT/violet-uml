@@ -6,7 +6,6 @@ import java.awt.geom.Rectangle2D;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.ExceptionListener;
-import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -15,7 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +64,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
         return graph;
     }
     
-    @Override
-    public void addCustomPersistanceDelegate(Class<?> classType, PersistenceDelegate persistenceDelegate) {
-    	this.customPersistenceDelegates.put(classType, persistenceDelegate);
-    }
-    
 
     /**
      * Creates a new instance of XML Encoder pre-configured for Violet beans serailization
@@ -99,10 +92,6 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
      */
     private void configure(XMLEncoder encoder)
     {
-        for (Class<?> aClass : this.customPersistenceDelegates.keySet()) {
-        	PersistenceDelegate aPersistenceDelegate = this.customPersistenceDelegates.get(aClass);
-        	encoder.setPersistenceDelegate(aClass, aPersistenceDelegate);
-        }
         encoder.setPersistenceDelegate(Point2D.Double.class, new DefaultPersistenceDelegate()
         {
             protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out)
@@ -273,7 +262,5 @@ public class StandardJavaFilePersistenceService implements IFilePersistenceServi
         });
     }
     
-    /** Used to produce specific XML content */ 
-    private Map<Class<?>, PersistenceDelegate> customPersistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
 
 }
