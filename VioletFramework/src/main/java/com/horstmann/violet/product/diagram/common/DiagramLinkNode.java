@@ -114,7 +114,7 @@ public class DiagramLinkNode extends RectangularNode
         g2.draw(rec2);
 
         // Draw name
-        Rectangle2D bot = getLabel().getBounds(g2);
+        Rectangle2D bot = getLabel().getBounds();
 
         Rectangle2D namebox = new Rectangle2D.Double(bounds.getX() + +(bounds.getWidth() - bot.getWidth()) / 2, bounds.getY()
                 + bounds.getHeight() - bot.getHeight(), bot.getWidth(), bot.getHeight());
