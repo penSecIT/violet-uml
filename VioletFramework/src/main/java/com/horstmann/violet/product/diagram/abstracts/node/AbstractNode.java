@@ -44,25 +44,7 @@ public abstract class AbstractNode implements INode
      */
     public AbstractNode()
     {
-        children = new ArrayList<INode>();
-        parent = null;
-        this.id = new Id();
-        // Empty graph used to avoid null pointer while drawing elements not attached
-        // to a graph such as diagram tools
-        this.graph = new AbstractGraph()
-        {
-            @Override
-            public List<INode> getNodePrototypes()
-            {
-                return new ArrayList<INode>();
-            }
-
-            @Override
-            public List<IEdge> getEdgePrototypes()
-            {
-                return new ArrayList<IEdge>();
-            }
-        };
+        // Nothing to do
     }
 
     /**
@@ -87,7 +69,10 @@ public abstract class AbstractNode implements INode
     @Override
     public Point2D getLocation()
     {
-        return this.location;
+        if (this.location == null) {
+        	this.location = new Point2D.Double(0, 0);
+        }
+    	return this.location;
     }
 
     @Override
@@ -114,7 +99,10 @@ public abstract class AbstractNode implements INode
     @Override
     public Id getId()
     {
-        return this.id;
+        if (this.id == null) {
+        	this.id = new Id();
+        }
+    	return this.id;
     }
 
     @Override
@@ -126,7 +114,10 @@ public abstract class AbstractNode implements INode
     @Override
     public Integer getRevision()
     {
-        return this.revision;
+        if (this.revision == null) {
+        	this.revision = new Integer(0);
+        }
+    	return this.revision;
     }
 
     @Override
@@ -138,7 +129,7 @@ public abstract class AbstractNode implements INode
     @Override
     public void incrementRevision()
     {
-        int i = this.revision.intValue();
+        int i = getRevision().intValue();
         i++;
         this.revision = new Integer(i);
     }
@@ -146,7 +137,7 @@ public abstract class AbstractNode implements INode
     @Override
     public void translate(double dx, double dy)
     {
-        Point2D newLocation = new Point2D.Double(location.getX() + dx, location.getY() + dy);
+        Point2D newLocation = new Point2D.Double(getLocation().getX() + dx, getLocation().getY() + dy);
         setLocation(newLocation);
     }
 
@@ -165,7 +156,7 @@ public abstract class AbstractNode implements INode
     public void removeChild(INode node)
     {
         if (node.getParent() != this) return;
-        children.remove(node);
+        getChildren().remove(node);
     }
 
     @Override
@@ -189,7 +180,10 @@ public abstract class AbstractNode implements INode
     @Override
     public List<INode> getChildren()
     {
-        return children;
+        if (this.children == null) {
+        	this.children = new ArrayList<INode>();
+        }
+    	return children;
     }
 
     @Override
@@ -197,7 +191,7 @@ public abstract class AbstractNode implements INode
     {
         INode oldParent = node.getParent();
         if (oldParent != null) oldParent.removeChild(node);
-        children.add(index, node);
+        getChildren().add(index, node);
         node.setParent(this);
         node.setGraph(getGraph());
         return true;
@@ -217,17 +211,16 @@ public abstract class AbstractNode implements INode
         try
         {
             AbstractNode cloned = (AbstractNode) super.clone();
-            cloned.id = this.id.clone();
+            cloned.id = getId().clone();
             cloned.children = new ArrayList<INode>();
             cloned.location = (Point2D.Double) getLocation().clone();
 
-            for (INode child : children)
+            for (INode child : getChildren())
             {
                 INode clonedChild = child.clone();
                 cloned.children.add(clonedChild);
                 clonedChild.setParent(cloned);
             }
-            cloned.graph = null;
             return cloned;
         }
         catch (CloneNotSupportedException exception)
@@ -239,8 +232,8 @@ public abstract class AbstractNode implements INode
     @Override
     public void setGraph(IGraph g)
     {
-        graph = g;
-        for (INode aChild : children) {
+        this.graph = g;
+        for (INode aChild : getChildren()) {
         	aChild.setGraph(g);
         }
     }
@@ -248,7 +241,23 @@ public abstract class AbstractNode implements INode
     @Override
     public IGraph getGraph()
     {
-        return graph;
+        if (this.graph == null) {
+        	this.graph = new AbstractGraph()
+            {
+                @Override
+                public List<INode> getNodePrototypes()
+                {
+                    return new ArrayList<INode>();
+                }
+
+                @Override
+                public List<IEdge> getEdgePrototypes()
+                {
+                    return new ArrayList<IEdge>();
+                }
+            };
+        }
+    	return this.graph;
     }
 
     @Override
@@ -276,19 +285,22 @@ public abstract class AbstractNode implements INode
     @Override
     public String getToolTip()
     {
-        return this.toolTip;
+        if (this.toolTip == null) {
+        	this.toolTip = "";
+        }
+    	return this.toolTip;
     }
 
     private ArrayList<INode> children;
-    private INode parent;
-    private IGraph graph;
-    private Point2D location = new Point2D.Double(0, 0);
+    private transient INode parent;
+    private transient IGraph graph;
+    private Point2D location;
     private transient String toolTip;
     private transient int z;
 
     /** Node's current id (unique in all the graph) */
-    protected Id id;
+    private Id id;
 
     /** Node's current revision */
-    protected Integer revision = new Integer(0);
+    private Integer revision;
 }

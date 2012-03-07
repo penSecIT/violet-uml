@@ -36,7 +36,7 @@ public abstract class AbstractEdge implements IEdge
 {
     public AbstractEdge()
     {
-        this.id = new Id();
+        // Nothing to do
     }
 
     @Override
@@ -134,7 +134,10 @@ public abstract class AbstractEdge implements IEdge
     @Override
     public Id getId()
     {
-        return this.id;
+        if (this.id == null) {
+        	this.id = new Id();
+        }
+    	return this.id;
     }
 
     @Override
@@ -161,7 +164,10 @@ public abstract class AbstractEdge implements IEdge
     @Override
     public Integer getRevision()
     {
-        return this.revision;
+        if (this.revision == null) {
+        	this.revision =  new Integer(0);
+        }
+    	return this.revision;
     }
 
     @Override
@@ -172,7 +178,7 @@ public abstract class AbstractEdge implements IEdge
 
     public void incrementRevision()
     {
-        int i = this.revision.intValue();
+        int i = getRevision().intValue();
         i++;
         this.revision = new Integer(i);
     }
@@ -190,7 +196,10 @@ public abstract class AbstractEdge implements IEdge
     @Override
     public String getToolTip()
     {
-        return this.toolTip;
+        if (this.toolTip == null) {
+        	this.toolTip = "";
+        }
+    	return this.toolTip;
     }
 
     /** The node where the edge starts */
@@ -209,7 +218,7 @@ public abstract class AbstractEdge implements IEdge
     private Id id;
 
     /** Edge's current revision */
-    private Integer revision = new Integer(0);
+    private transient Integer revision;
 
     /** Edge tool tip */
     private transient String toolTip;

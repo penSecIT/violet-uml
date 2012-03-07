@@ -261,6 +261,7 @@ public class MultiLineString implements Serializable, Cloneable
         try
         {
             MultiLineString cloned = (MultiLineString) super.clone();
+            cloned.label = new JLabel();
             cloned.setLabelText();
             return cloned;
         }
