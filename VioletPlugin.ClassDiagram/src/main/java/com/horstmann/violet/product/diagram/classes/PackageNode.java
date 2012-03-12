@@ -6,6 +6,8 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.node.IResizableNode;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
@@ -23,9 +25,31 @@ public class PackageNode extends RectangularNode implements IResizableNode
     {
         name = new MultiLineString();
         name.setSize(MultiLineString.LARGE);
-        contents = new MultiLineString();
+        content = new MultiLineString();
     }
-    
+
+    @Override
+    public Point2D getConnectionPoint(IEdge e)
+    {
+        Point2D connectionPoint = super.getConnectionPoint(e);
+        
+        // Fix location to stick to shape (because of the top rectangle)
+        Direction d = e.getDirection(this);
+        Direction nearestCardinalDirection = d.getNearestCardinalDirection();
+        if (Direction.SOUTH.equals(nearestCardinalDirection))
+        {
+            Rectangle2D topRectangleBounds = getTopRectangleBounds();
+            if (!topRectangleBounds.contains(connectionPoint)) {
+                double x = connectionPoint.getX();
+                double y = connectionPoint.getY();
+                double h = topRectangleBounds.getHeight();
+                connectionPoint = new Point2D.Double(x, y + h);
+            }
+        }
+
+        return connectionPoint;
+    }
+
     @Override
     public void setWantedSize(Rectangle2D size)
     {
@@ -51,7 +75,7 @@ public class PackageNode extends RectangularNode implements IResizableNode
     private Rectangle2D getBottomRectangleBounds()
     {
         Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
-        Rectangle2D contentsBounds = contents.getBounds();
+        Rectangle2D contentsBounds = content.getBounds();
         globalBounds.add(contentsBounds);
         globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT));
         Rectangle2D childrenBounds = new Rectangle2D.Double(0, 0, 0, 0);
@@ -60,7 +84,8 @@ public class PackageNode extends RectangularNode implements IResizableNode
             Rectangle2D childBounds = child.getBounds();
             childrenBounds.add(childBounds);
         }
-        childrenBounds.setFrame(childrenBounds.getX(), childrenBounds.getY(), childrenBounds.getWidth() + CHILD_GAP, childrenBounds.getHeight() + CHILD_GAP);
+        childrenBounds.setFrame(childrenBounds.getX(), childrenBounds.getY(), childrenBounds.getWidth() + CHILD_GAP,
+                childrenBounds.getHeight() + CHILD_GAP);
         globalBounds.add(childrenBounds);
         Rectangle2D topBounds = getTopRectangleBounds();
         double x = topBounds.getX();
@@ -71,7 +96,7 @@ public class PackageNode extends RectangularNode implements IResizableNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
         return snappedBounds;
     }
-    
+
     @Override
     public Rectangle2D getBounds()
     {
@@ -88,7 +113,8 @@ public class PackageNode extends RectangularNode implements IResizableNode
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
-        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY()
+                - nodeLocation.getY());
         g2.translate(g2Location.getX(), g2Location.getY());
         // Perform drawing
         super.draw(g2);
@@ -97,34 +123,36 @@ public class PackageNode extends RectangularNode implements IResizableNode
         g2.draw(topBounds);
         g2.draw(bottomBounds);
         name.draw(g2, topBounds);
-        contents.draw(g2, bottomBounds);
+        content.draw(g2, bottomBounds);
+        // Restore g2 original location
+        g2.translate(-g2Location.getX(), -g2Location.getY());
         // Draw its children
         for (INode node : getChildren())
         {
             fixChildLocation(topBounds, node);
-        	node.draw(g2);
+            node.draw(g2);
         }
-        // Restore g2 original location
-        g2.translate(-g2Location.getX(), -g2Location.getY());
     }
 
-	/**
-	 * Ensure that child node respects the minimum gap with package borders
-	 * 
-	 * @param topBounds
-	 * @param node
-	 */
-	private void fixChildLocation(Rectangle2D topBounds, INode node) {
-		Point2D childLocation = node.getLocation();
-		if (childLocation.getY() <= topBounds.getHeight() + CHILD_GAP) {
-			node.translate(0, topBounds.getHeight() + CHILD_GAP - childLocation.getY());
-		}
-		if (childLocation.getX() < CHILD_GAP) {
-			node.translate(CHILD_GAP - childLocation.getX(), 0);
-		}
-	}
+    /**
+     * Ensure that child node respects the minimum gap with package borders
+     * 
+     * @param topBounds
+     * @param node
+     */
+    private void fixChildLocation(Rectangle2D topBounds, INode node)
+    {
+        Point2D childLocation = node.getLocation();
+        if (childLocation.getY() <= topBounds.getHeight() + CHILD_GAP)
+        {
+            node.translate(0, topBounds.getHeight() + CHILD_GAP - childLocation.getY());
+        }
+        if (childLocation.getX() < CHILD_GAP)
+        {
+            node.translate(CHILD_GAP - childLocation.getX(), 0);
+        }
+    }
 
-    
     @Override
     public Shape getShape()
     {
@@ -152,7 +180,7 @@ public class PackageNode extends RectangularNode implements IResizableNode
     {
         PackageNode cloned = (PackageNode) super.clone();
         cloned.name = name.clone();
-        cloned.contents = contents.clone();
+        cloned.content = content.clone();
         return cloned;
     }
 
@@ -181,9 +209,9 @@ public class PackageNode extends RectangularNode implements IResizableNode
      * 
      * @param newValue the contents of this class
      */
-    public void setContents(MultiLineString newValue)
+    public void setContent(MultiLineString newValue)
     {
-        contents = newValue;
+        content = newValue;
     }
 
     /**
@@ -191,13 +219,13 @@ public class PackageNode extends RectangularNode implements IResizableNode
      * 
      * @return the contents of this class
      */
-    public MultiLineString getContents()
+    public MultiLineString getContent()
     {
-        return contents;
+        return content;
     }
 
     private MultiLineString name;
-    private MultiLineString contents;
+    private MultiLineString content;
     private Rectangle2D wantedSize;
 
     private static int DEFAULT_TOP_WIDTH = 60;
