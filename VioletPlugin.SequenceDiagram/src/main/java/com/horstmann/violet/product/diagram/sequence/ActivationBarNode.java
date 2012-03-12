@@ -50,7 +50,6 @@ public class ActivationBarNode extends RectangularNode
             ActivationBarNode newChildNode = (ActivationBarNode) n;
             newChildNode.setParent(this);
             newChildNode.setGraph(getGraph());
-            newChildNode.setImplicitParameter(this.getImplicitParameter());
             return getChildren().add(newChildNode);
         }
         return false;
@@ -65,7 +64,6 @@ public class ActivationBarNode extends RectangularNode
             ActivationBarNode newChildNode = (ActivationBarNode) n;
             newChildNode.setParent(this);
             newChildNode.setGraph(getGraph());
-            newChildNode.setImplicitParameter(this.getImplicitParameter());
             getChildren().add(index, newChildNode);
             return true;
         }
@@ -487,7 +485,23 @@ public class ActivationBarNode extends RectangularNode
      */
     public LifelineNode getImplicitParameter()
     {
-        return lifeline;
+        if (this.lifeline == null) {
+        	INode aParent = this.getParent();
+        	List<INode> nodeStack = new ArrayList<INode>();
+        	nodeStack.add(aParent);
+        	while (!nodeStack.isEmpty()) {
+        		INode aNode = nodeStack.get(0);
+        		if (LifelineNode.class.isInstance(aNode)) {
+        			this.lifeline = (LifelineNode) aNode;
+        		}
+        		if (ActivationBarNode.class.isInstance(aNode)) {
+        			INode aNodeParent = aNode.getParent();
+        			nodeStack.add(aNodeParent);
+        		}
+        		nodeStack.remove(0);
+        	}
+        }
+    	return lifeline;
     }
 
     /**
@@ -498,19 +512,7 @@ public class ActivationBarNode extends RectangularNode
      */
     public void setImplicitParameter(LifelineNode newValue)
     {
-        Object oldValue = lifeline;
-        if (oldValue != newValue)
-        {
-            lifeline = newValue;
-            for (INode aChildNode : getChildren())
-            {
-                if (ActivationBarNode.class.isInstance(aChildNode))
-                {
-                    ActivationBarNode aChildActivationBarNode = (ActivationBarNode) aChildNode;
-                    aChildActivationBarNode.setImplicitParameter(newValue);
-                }
-            }
-        }
+        // Nothing to do. Just here to keep compatibility.
     }
 
     private boolean isReturnEdgeAcceptable(ReturnEdge edge)
@@ -735,7 +737,7 @@ public class ActivationBarNode extends RectangularNode
         }
         if (isLifeLineParent)
         {
-            Rectangle2D topRectangle = this.lifeline.getTopRectangle();
+            Rectangle2D topRectangle = getImplicitParameter().getTopRectangle();
             y = topRectangle.getHeight() + CALL_YGAP;
             List<INode> brotherNodes = parentNode.getChildren();
             for (INode aNode : brotherNodes)
@@ -887,10 +889,10 @@ public class ActivationBarNode extends RectangularNode
     }
 
     /** Hack to optimize rendering performances */
-    private Point2D currentLocation;
+    private transient Point2D currentLocation;
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
-    private LifelineNode lifeline;
+    private transient LifelineNode lifeline;
 
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
