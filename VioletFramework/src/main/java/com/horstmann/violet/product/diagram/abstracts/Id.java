@@ -1,6 +1,7 @@
 package com.horstmann.violet.product.diagram.abstracts;
 
 import com.horstmann.violet.framework.util.UniqueIDGenerator;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * This class represents an Id. To advantage to transport an id in a specific object rather than in a "standard" object like String
@@ -79,5 +80,6 @@ public class Id
     /**
      * Id value
      */
+    @XStreamAsAttribute
     private String value;
 }

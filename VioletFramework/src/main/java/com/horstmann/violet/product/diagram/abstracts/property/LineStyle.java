@@ -79,10 +79,10 @@ public class LineStyle extends SerializableEnumeration
     }
 
     /** a solid stroke */
-    private Stroke solidStroke;
+    private transient Stroke solidStroke;
 
     /** a dotted stroke */
-    private Stroke dottedStroke;
+    private transient Stroke dottedStroke;
 
     /** The unique solid linestyle instance */
     public static final LineStyle SOLID = new LineStyle();

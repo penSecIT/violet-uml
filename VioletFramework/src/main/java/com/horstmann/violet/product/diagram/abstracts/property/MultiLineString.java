@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
 
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
 /**
  * A string that can extend over multiple lines.
  */
@@ -283,8 +285,11 @@ public class MultiLineString implements Serializable, Cloneable
     public static final int SMALL = 5;
 
     private String text;
+    @XStreamAsAttribute
     private int justification;
+    @XStreamAsAttribute
     private int size;
+    @XStreamAsAttribute
     private boolean underlined;
     private transient JLabel label;
     private transient boolean isBoundsDirty = true;

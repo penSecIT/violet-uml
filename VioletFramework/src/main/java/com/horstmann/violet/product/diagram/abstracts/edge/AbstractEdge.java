@@ -28,6 +28,7 @@ import java.awt.geom.Rectangle2D;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.Id;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * A class that supplies convenience implementations for a number of methods in the Edge interface
@@ -218,7 +219,7 @@ public abstract class AbstractEdge implements IEdge
     private Id id;
 
     /** Edge's current revision */
-    private transient Integer revision;
+    private Integer revision;
 
     /** Edge tool tip */
     private transient String toolTip;

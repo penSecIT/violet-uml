@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -94,11 +96,22 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
         IGraph newGraph = newGraphFile.getGraph();
         IEditorPartSelectionHandler selectionHandler = editorPart.getSelectionHandler();
         List<INode> selectedNodes = selectionHandler.getSelectedNodes();
+        // We use an mapper for ids because they are changed when each node is added to the newGraph
+        Map<Id, Id> idMapper = new HashMap<Id, Id>();
         for (INode aSelectedNode : selectedNodes)
         {
-            INode clone = aSelectedNode.clone();
+        	if (isAncestorInCollection(aSelectedNode, selectedNodes)) {
+        		// In this case, id doesn't change. It only changes on newGraph.addNode()
+        		Id currentId = aSelectedNode.getId();
+				idMapper.put(currentId, currentId);
+        		continue;
+        	}
+        	INode clone = aSelectedNode.clone();
+            Id oldId = clone.getId();
             Point2D locationOnGraph = aSelectedNode.getLocationOnGraph();
             newGraph.addNode(clone, locationOnGraph);
+            Id newId = clone.getId();
+            idMapper.put(oldId, newId);
         }
         List<IEdge> selectedEdges = selectionHandler.getSelectedEdges();
         for (IEdge aSelectedEdge : selectedEdges)
@@ -106,8 +119,12 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             IEdge clone = aSelectedEdge.clone();
             Point2D startLocation = clone.getStartLocation();
             Point2D endLocation = clone.getEndLocation();
-            INode startNode = newGraph.findNode(clone.getStart().getId());
-            INode endNode = newGraph.findNode(clone.getEnd().getId());
+            Id oldStartId = clone.getStart().getId();
+            Id oldEndId = clone.getEnd().getId();
+            Id newStartId = idMapper.get(oldStartId);
+            Id newEndId = idMapper.get(oldEndId);
+			INode startNode = newGraph.findNode(newStartId);
+			INode endNode = newGraph.findNode(newEndId);
             if (startNode != null && endNode != null)
             {
                 newGraph.connect(clone, startNode, startLocation, endNode, endLocation);
@@ -457,6 +474,19 @@ public class CutCopyPasteBehavior extends AbstractEditorPartBehavior
             }
         }
         return false;
+    }
+    
+    private List<INode> getFamily(INode aParentNode) {
+    	List<INode> family = new ArrayList<INode>();
+    	List<INode> fifo = new ArrayList<INode>();
+    	fifo.addAll(aParentNode.getChildren());
+    	while (!fifo.isEmpty()) {
+    		INode aFamilyMember = fifo.get(0);
+    		family.add(aFamilyMember);
+    		fifo.addAll(aFamilyMember.getChildren());
+    		fifo.remove(0);
+    	}
+    	return family;
     }
 
 }
