@@ -30,7 +30,6 @@ import java.util.ResourceBundle;
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
-import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
@@ -121,8 +120,6 @@ public class ActivityDiagramGraph extends AbstractGraph
         NODE_PROTOTYPES.add(node8);
 
         ActivityTransitionEdge transition = new ActivityTransitionEdge();
-        transition.setBentStyle(BentStyle.AUTO);
-        transition.setEndArrowHead(ArrowHead.V);
         transition.setToolTip(rs.getString("edge0.tooltip"));
         EDGE_PROTOTYPES.add(transition);
 

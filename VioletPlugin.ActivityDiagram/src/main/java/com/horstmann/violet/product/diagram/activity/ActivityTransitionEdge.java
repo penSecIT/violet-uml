@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
 import com.horstmann.violet.product.diagram.abstracts.edge.SegmentedLineEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
+import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 
 /**
@@ -37,6 +38,12 @@ public class ActivityTransitionEdge extends SegmentedLineEdge
 {
 
 
+    @Override
+    public ArrowHead getEndArrowHead()
+    {
+        return ArrowHead.V;
+    }
+    
     @Override
     public Direction getDirection(INode node)
     {

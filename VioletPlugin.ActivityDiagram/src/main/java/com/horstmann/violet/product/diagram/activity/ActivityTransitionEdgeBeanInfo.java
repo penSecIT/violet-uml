@@ -30,24 +30,18 @@ import java.beans.SimpleBeanInfo;
  */
 public class ActivityTransitionEdgeBeanInfo extends SimpleBeanInfo
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.BeanInfo#getPropertyDescriptors()
-     */
+
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors()
     {
         try
         {
             PropertyDescriptor[] descriptors = new PropertyDescriptor[]
             {
-                    new PropertyDescriptor("startArrowHead", ActivityTransitionEdge.class),
                     new PropertyDescriptor("startLabel", ActivityTransitionEdge.class),
                     new PropertyDescriptor("middleLabel", ActivityTransitionEdge.class),
                     new PropertyDescriptor("endLabel", ActivityTransitionEdge.class),
-                    new PropertyDescriptor("endArrowHead", ActivityTransitionEdge.class),
                     new PropertyDescriptor("bentStyle", ActivityTransitionEdge.class),
-                    new PropertyDescriptor("lineStyle", ActivityTransitionEdge.class),
             };
             for (int i = 0; i < descriptors.length; i++)
             {
