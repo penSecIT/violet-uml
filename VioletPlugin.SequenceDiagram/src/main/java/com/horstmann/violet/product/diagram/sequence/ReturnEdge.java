@@ -35,21 +35,28 @@ import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
  */
 public class ReturnEdge extends SegmentedLineEdge
 {
-    public ReturnEdge()
+
+    @Override
+    public ArrowHead getEndArrowHead()
     {
-        setEndArrowHead(ArrowHead.V);
-        setLineStyle(LineStyle.DOTTED);
+        return ArrowHead.V;
     }
-    
+
+    @Override
+    public LineStyle getLineStyle()
+    {
+        return LineStyle.DOTTED;
+    }
+
     @Override
     public Line2D getConnectionPoints()
     {
         ArrayList<Point2D> points = getPoints();
         Point2D p1 = points.get(0);
-        Point2D p2 = points.get(points.size() -1);
+        Point2D p2 = points.get(points.size() - 1);
         return new Line2D.Double(p1, p2);
     }
-    
+
     @Override
     public ArrayList<Point2D> getPoints()
     {

@@ -1,4 +1,4 @@
-package com.horstmann.violet.product.diagram.classes;
+package com.horstmann.violet.product.diagram.classes.nodes;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;

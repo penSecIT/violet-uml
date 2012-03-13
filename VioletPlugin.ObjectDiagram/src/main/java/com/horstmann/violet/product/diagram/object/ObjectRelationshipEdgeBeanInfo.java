@@ -30,24 +30,18 @@ import java.beans.SimpleBeanInfo;
  */
 public class ObjectRelationshipEdgeBeanInfo extends SimpleBeanInfo
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.BeanInfo#getPropertyDescriptors()
-     */
+    
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors()
     {
         try
         {
             PropertyDescriptor[] descriptors = new PropertyDescriptor[]
             {
-                    new PropertyDescriptor("startArrowHead", ObjectRelationshipEdge.class),
                     new PropertyDescriptor("startLabel", ObjectRelationshipEdge.class),
                     new PropertyDescriptor("middleLabel", ObjectRelationshipEdge.class),
                     new PropertyDescriptor("endLabel", ObjectRelationshipEdge.class),
-                    new PropertyDescriptor("endArrowHead", ObjectRelationshipEdge.class),
                     new PropertyDescriptor("bentStyle", ObjectRelationshipEdge.class),
-                    new PropertyDescriptor("lineStyle", ObjectRelationshipEdge.class),
             };
             for (int i = 0; i < descriptors.length; i++)
             {

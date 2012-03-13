@@ -1,14 +1,13 @@
-package com.horstmann.violet.product.diagram.classes;
-
+package com.horstmann.violet.product.diagram.classes.nodes;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
 /**
- * The bean info for the PackageNode type.
+ * The bean info for the InterfaceNode type.
  */
-public class PackageNodeBeanInfo extends SimpleBeanInfo
+public class InterfaceNodeBeanInfo extends SimpleBeanInfo
 {
 
     @Override
@@ -16,14 +15,14 @@ public class PackageNodeBeanInfo extends SimpleBeanInfo
     {
         try
         {
-            PropertyDescriptor nameDescriptor = new PropertyDescriptor("name", PackageNode.class);
+            PropertyDescriptor nameDescriptor = new PropertyDescriptor("name", InterfaceNode.class);
             nameDescriptor.setValue("priority", new Integer(1));
-            PropertyDescriptor contentDescriptor = new PropertyDescriptor("content", PackageNode.class);
-            contentDescriptor.setValue("priority", new Integer(2));
+            PropertyDescriptor methodsDescriptor = new PropertyDescriptor("methods", InterfaceNode.class);
+            methodsDescriptor.setValue("priority", new Integer(2));
             return new PropertyDescriptor[]
             {
                     nameDescriptor,
-                    contentDescriptor
+                    methodsDescriptor
             };
         }
         catch (IntrospectionException exception)

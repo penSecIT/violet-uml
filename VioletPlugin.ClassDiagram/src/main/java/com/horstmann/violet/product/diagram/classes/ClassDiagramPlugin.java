@@ -8,6 +8,10 @@ import java.util.ResourceBundle;
 import com.horstmann.violet.framework.plugin.IDiagramPlugin;
 import com.horstmann.violet.framework.plugin.extensionpoint.Violet016FileFilterExtensionPoint;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
+import com.horstmann.violet.product.diagram.classes.edges.ClassRelationshipEdge;
+import com.horstmann.violet.product.diagram.classes.nodes.ClassNode;
+import com.horstmann.violet.product.diagram.classes.nodes.InterfaceNode;
+import com.horstmann.violet.product.diagram.classes.nodes.PackageNode;
 
 /**
  * Describes class diagram graph type

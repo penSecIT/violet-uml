@@ -29,7 +29,6 @@ import java.util.ResourceBundle;
 import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
-import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
 import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
@@ -85,7 +84,6 @@ public class ObjectDiagramGraph extends AbstractGraph
         EDGE_PROTOTYPES.add(reference);
 
         ObjectRelationshipEdge association = new ObjectRelationshipEdge();
-        association.setBentStyle(BentStyle.STRAIGHT);
         association.setToolTip(rs.getString("edge1.tooltip"));
         EDGE_PROTOTYPES.add(association);
 

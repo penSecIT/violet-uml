@@ -61,8 +61,17 @@ public class CallEdge extends SegmentedLineEdge
     public void setSignal(boolean newValue)
     {
         signal = newValue;
-        if (signal) setEndArrowHead(ArrowHead.V);
-        else setEndArrowHead(ArrowHead.BLACK_TRIANGLE);
+
+    }
+
+    @Override
+    public ArrowHead getEndArrowHead()
+    {
+        if (signal)
+        {
+            return ArrowHead.V;
+        }
+        return ArrowHead.BLACK_TRIANGLE;
     }
 
     @Override
@@ -70,10 +79,10 @@ public class CallEdge extends SegmentedLineEdge
     {
         ArrayList<Point2D> points = getPoints();
         Point2D p1 = points.get(0);
-        Point2D p2 = points.get(points.size() -1);
+        Point2D p2 = points.get(points.size() - 1);
         return new Line2D.Double(p1, p2);
     }
-    
+
     @Override
     public ArrayList<Point2D> getPoints()
     {

@@ -50,15 +50,11 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public SegmentedLineEdge()
     {
-        lineStyle = LineStyle.SOLID;
-        bentStyle = BentStyle.AUTO;
-        startArrowHead = ArrowHead.NONE;
-        endArrowHead = ArrowHead.NONE;
         startLabel = "";
         middleLabel = "";
         endLabel = "";
     }
-    
+
     /**
      * Sets the bentStyle property
      * 
@@ -66,7 +62,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public void setBentStyle(BentStyle newValue)
     {
-        bentStyle = newValue;
+        this.bentStyle = newValue;
     }
 
     /**
@@ -76,9 +72,12 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public BentStyle getBentStyle()
     {
+        if (this.bentStyle == null)
+        {
+            this.bentStyle = BentStyle.AUTO;
+        }
         return bentStyle;
     }
-
 
     /**
      * Sets the line style property.
@@ -87,7 +86,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public void setLineStyle(LineStyle newValue)
     {
-        lineStyle = newValue;
+        this.lineStyle = newValue;
     }
 
     /**
@@ -97,7 +96,11 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public LineStyle getLineStyle()
     {
-        return lineStyle;
+        if (this.lineStyle == null)
+        {
+            this.lineStyle = LineStyle.SOLID;
+        }
+        return this.lineStyle;
     }
 
     /**
@@ -107,7 +110,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public void setStartArrowHead(ArrowHead newValue)
     {
-        startArrowHead = newValue;
+        this.startArrowHead = newValue;
     }
 
     /**
@@ -117,7 +120,11 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public ArrowHead getStartArrowHead()
     {
-        return startArrowHead;
+        if (this.startArrowHead == null)
+        {
+            this.startArrowHead = ArrowHead.NONE;
+        }
+        return this.startArrowHead;
     }
 
     /**
@@ -127,7 +134,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public void setEndArrowHead(ArrowHead newValue)
     {
-        endArrowHead = newValue;
+        this.endArrowHead = newValue;
     }
 
     /**
@@ -137,7 +144,11 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      */
     public ArrowHead getEndArrowHead()
     {
-        return endArrowHead;
+        if (this.endArrowHead == null)
+        {
+            this.endArrowHead = ArrowHead.NONE;
+        }
+        return this.endArrowHead;
     }
 
     /**
@@ -210,17 +221,17 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         ArrayList<Point2D> points = getPoints();
 
         Stroke oldStroke = g2.getStroke();
-        g2.setStroke(lineStyle.getStroke());
+        g2.setStroke(getLineStyle().getStroke());
         g2.draw(getSegmentPath());
         g2.setStroke(oldStroke);
-        startArrowHead.draw(g2, (Point2D) points.get(1), (Point2D) points.get(0));
-        endArrowHead.draw(g2, (Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1));
+        getStartArrowHead().draw(g2, (Point2D) points.get(1), (Point2D) points.get(0));
+        getEndArrowHead().draw(g2, (Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1));
 
-        drawString(g2, (Point2D) points.get(1), (Point2D) points.get(0), startArrowHead, startLabel, false);
+        drawString(g2, (Point2D) points.get(1), (Point2D) points.get(0), getStartArrowHead(), startLabel, false);
         drawString(g2, (Point2D) points.get(points.size() / 2 - 1), (Point2D) points.get(points.size() / 2), null, middleLabel,
                 true);
-        drawString(g2, (Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1), endArrowHead, endLabel,
-                false);
+        drawString(g2, (Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1), getEndArrowHead(),
+                endLabel, false);
     }
 
     /**
@@ -328,10 +339,10 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     {
         ArrayList<Point2D> points = getPoints();
         Rectangle2D r = super.getBounds();
-        r.add(getStringBounds((Point2D) points.get(1), (Point2D) points.get(0), startArrowHead, startLabel, false));
+        r.add(getStringBounds((Point2D) points.get(1), (Point2D) points.get(0), getStartArrowHead(), startLabel, false));
         r.add(getStringBounds((Point2D) points.get(points.size() / 2 - 1), (Point2D) points.get(points.size() / 2), null,
                 middleLabel, true));
-        r.add(getStringBounds((Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1), endArrowHead,
+        r.add(getStringBounds((Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1), getEndArrowHead(),
                 endLabel, false));
         return r;
     }
@@ -341,8 +352,9 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     {
         GeneralPath path = getSegmentPath();
         ArrayList<Point2D> points = getPoints();
-        path.append(startArrowHead.getPath((Point2D) points.get(1), (Point2D) points.get(0)), false);
-        path.append(endArrowHead.getPath((Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1)), false);
+        path.append(getStartArrowHead().getPath((Point2D) points.get(1), (Point2D) points.get(0)), false);
+        path.append(getEndArrowHead().getPath((Point2D) points.get(points.size() - 2), (Point2D) points.get(points.size() - 1)),
+                false);
         return path;
     }
 
@@ -366,26 +378,36 @@ public abstract class SegmentedLineEdge extends ShapeEdge
      * 
      * @return an array list of Point2D objects, containing the corner points
      */
-    public ArrayList<Point2D> getPoints() {
+    public ArrayList<Point2D> getPoints()
+    {
         Line2D connectionPoints = getConnectionPoints();
         Point2D startingPoint = connectionPoints.getP1();
         Point2D endingPoint = connectionPoints.getP2();
-        if (!BentStyle.AUTO.equals(bentStyle)) {
-            return bentStyle.getPath(startingPoint, endingPoint);
+        if (!BentStyle.AUTO.equals(getBentStyle()))
+        {
+            return getBentStyle().getPath(startingPoint, endingPoint);
         }
-        
+
         Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
         Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
-        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection))
+                && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection)))
+        {
             return BentStyle.VHV.getPath(startingPoint, endingPoint);
         }
-        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+        if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection))
+                && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection)))
+        {
             return BentStyle.VH.getPath(startingPoint, endingPoint);
         }
-        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection))) {
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection))
+                && (Direction.NORTH.equals(endingCardinalDirection) || Direction.SOUTH.equals(endingCardinalDirection)))
+        {
             return BentStyle.HV.getPath(startingPoint, endingPoint);
         }
-        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection)) && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection))) {
+        if ((Direction.EAST.equals(startingCardinalDirection) || Direction.WEST.equals(startingCardinalDirection))
+                && (Direction.EAST.equals(endingCardinalDirection) || Direction.WEST.equals(endingCardinalDirection)))
+        {
             return BentStyle.HVH.getPath(startingPoint, endingPoint);
         }
         return BentStyle.STRAIGHT.getPath(startingPoint, endingPoint);
@@ -397,29 +419,35 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         Direction straightDirection = super.getDirection(node);
         double x = straightDirection.getX();
         double y = straightDirection.getY();
-        if (node.equals(getStart())) {
-            if (BentStyle.HV.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+        if (node.equals(getStart()))
+        {
+            if (BentStyle.HV.equals(getBentStyle()) || BentStyle.HVH.equals(getBentStyle()))
+            {
                 return (x >= 0) ? Direction.EAST : Direction.WEST;
             }
-            if (BentStyle.VH.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+            if (BentStyle.VH.equals(getBentStyle()) || BentStyle.VHV.equals(getBentStyle()))
+            {
                 return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
             }
         }
-        if (node.equals(getEnd())) {
-            if (BentStyle.HV.equals(bentStyle) || BentStyle.VHV.equals(bentStyle)) {
+        if (node.equals(getEnd()))
+        {
+            if (BentStyle.HV.equals(getBentStyle()) || BentStyle.VHV.equals(getBentStyle()))
+            {
                 return (y >= 0) ? Direction.SOUTH : Direction.NORTH;
             }
-            if (BentStyle.VH.equals(bentStyle) || BentStyle.HVH.equals(bentStyle)) {
+            if (BentStyle.VH.equals(getBentStyle()) || BentStyle.HVH.equals(getBentStyle()))
+            {
                 return (x >= 0) ? Direction.EAST : Direction.WEST;
             }
         }
         return straightDirection;
     }
-    
-    private LineStyle lineStyle;
+
+    private transient LineStyle lineStyle;
+    private transient ArrowHead startArrowHead;
+    private transient ArrowHead endArrowHead;
     private BentStyle bentStyle;
-    private ArrowHead startArrowHead;
-    private ArrowHead endArrowHead;
     private String startLabel;
     private String middleLabel;
     private String endLabel;

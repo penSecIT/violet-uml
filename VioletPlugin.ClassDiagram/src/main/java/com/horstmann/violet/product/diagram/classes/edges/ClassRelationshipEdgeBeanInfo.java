@@ -1,4 +1,4 @@
-package com.horstmann.violet.product.diagram.classes;
+package com.horstmann.violet.product.diagram.classes.edges;
 
 
 import java.beans.IntrospectionException;
@@ -10,11 +10,8 @@ import java.beans.SimpleBeanInfo;
  */
 public class ClassRelationshipEdgeBeanInfo extends SimpleBeanInfo
 {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.BeanInfo#getPropertyDescriptors()
-     */
+    
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors()
     {
         try

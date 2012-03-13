@@ -38,5 +38,5 @@ public class ObjectRelationshipEdge extends SegmentedLineEdge
         setBentStyle(BentStyle.STRAIGHT);
     }
 
-
+    
 }
