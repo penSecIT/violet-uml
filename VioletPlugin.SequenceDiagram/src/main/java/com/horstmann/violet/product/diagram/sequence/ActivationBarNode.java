@@ -26,7 +26,9 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.lang.model.type.NullType;
 
@@ -398,7 +400,8 @@ public class ActivationBarNode extends RectangularNode
      */
     private double getHeightWhenLinked()
     {
-        for (IEdge edge : getGraph().getAllEdges())
+    	double height = 0;
+    	for (IEdge edge : getGraph().getAllEdges())
         {
             if (!edge.getClass().isAssignableFrom(CallEdge.class))
             {
@@ -407,16 +410,21 @@ public class ActivationBarNode extends RectangularNode
             if (edge.getStart() == this)
             {
                 INode endingNode = edge.getEnd();
-                if (endingNode instanceof ActivationBarNode)
+                boolean isActivationBarNode = endingNode instanceof ActivationBarNode;
+				if (isActivationBarNode)
                 {
-                    return CALL_YGAP / 2 + ((ActivationBarNode) endingNode).getHeight() + CALL_YGAP / 2;
+					ActivationBarNode anActivationBarNode = (ActivationBarNode) endingNode;
+					LifelineNode lifelineNode = anActivationBarNode.getImplicitParameter();
+					double newHeight = (lifelineNode.getLocationOnGraph().getY() + anActivationBarNode.getVerticalLocation() + anActivationBarNode.getHeight()) - (getImplicitParameter().getLocationOnGraph().getY() + getVerticalLocation());
+					height = Math.max(height, CALL_YGAP  /2 + newHeight + CALL_YGAP  /2);
                 }
-                Rectangle2D endingNodeBounds = endingNode.getBounds();
-                return CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
-
+				if (!isActivationBarNode) {
+					Rectangle2D endingNodeBounds = endingNode.getBounds();
+					height = CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
+				}
             }
         }
-        return DEFAULT_HEIGHT;
+        return Math.max(DEFAULT_HEIGHT, height);
     }
 
     /**
@@ -691,15 +699,25 @@ public class ActivationBarNode extends RectangularNode
             double currentY = this.getParent().getLocationOnGraph().getY() + CALL_YGAP + verticalLocationBeforeAdjustment;
             List<ActivationBarNode> allLinkedNodes = getAllLinkedNodes();
             double maxY = 0;
+            Map<LifelineNode, Double> minYPerLifeLine = new HashMap<LifelineNode, Double>();
             for (ActivationBarNode anActivationBarNode : allLinkedNodes)
             {
                 if (this.getImplicitParameter().equals(anActivationBarNode.getImplicitParameter())) {
                 	continue;
                 }
-            	maxY = Math.max(
+            	// On a lifeline, only the y of the top activation bar is kept. So, we filter maxY to only keep the lowest
+                double linkedNodeMinY = anActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP
+				        + anActivationBarNode.getVerticalLocationBeforeAdjustment();
+            	LifelineNode linkedLifeLineNode = anActivationBarNode.getImplicitParameter();
+            	if (!minYPerLifeLine.containsKey(linkedLifeLineNode)) {
+            		minYPerLifeLine.put(linkedLifeLineNode, linkedNodeMinY);
+            	}
+            	Double lastLinkedMinY = minYPerLifeLine.get(linkedLifeLineNode);
+            	minYPerLifeLine.put(linkedLifeLineNode, Math.min(lastLinkedMinY, linkedNodeMinY));
+            	double currentMinYOnLifeLine = minYPerLifeLine.get(linkedLifeLineNode);
+				maxY = Math.max(
                         maxY,
-                        anActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP
-                                + anActivationBarNode.getVerticalLocationBeforeAdjustment());
+                        currentMinYOnLifeLine);
             }
             if (maxY >= currentY)
             {
@@ -732,7 +750,8 @@ public class ActivationBarNode extends RectangularNode
             {
                 if (aNode != this && aNode.getClass().isAssignableFrom(ActivationBarNode.class))
                 {
-                    y = y + aNode.getBounds().getHeight() + CALL_YGAP;
+                    ActivationBarNode anActivationbarNode = (ActivationBarNode) aNode;
+                	y = y + anActivationbarNode.getHeight() + CALL_YGAP;
                 }
                 if (aNode == this)
                 {
@@ -749,7 +768,9 @@ public class ActivationBarNode extends RectangularNode
             {
                 if (aNode != this && aNode.getClass().isAssignableFrom(ActivationBarNode.class))
                 {
-                    y = aNode.getBounds().getMaxY() + CALL_YGAP;
+                    ActivationBarNode anActivationbarNode = (ActivationBarNode) aNode;
+                    double maxY = anActivationbarNode.getVerticalLocation() + anActivationbarNode.getHeight();
+                	y = maxY + CALL_YGAP;
                 }
                 if (aNode == this)
                 {
@@ -845,7 +866,7 @@ public class ActivationBarNode extends RectangularNode
         List<IEdge> linkedEdges = new ArrayList<IEdge>();
         for (ActivationBarNode aNode : linkedNodes)
         {
-            List<IEdge> connectedEdges = aNode.getConnectedEdges();
+        	List<IEdge> connectedEdges = aNode.getConnectedEdges();
             for (IEdge anEdge : connectedEdges)
             {
                 boolean isCallEdge = (anEdge.getClass().isAssignableFrom(CallEdge.class));
