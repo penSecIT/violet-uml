@@ -436,13 +436,15 @@ public class ActivationBarNode extends RectangularNode
         }
         if (childVisibleNodesCounter > 0)
         {
-            // height = CALL_YGAP;
             for (INode aNode : getChildren())
             {
                 if (aNode instanceof ActivationBarNode)
                 {
-                    Rectangle2D aNodeBounds = aNode.getBounds();
-                    height = Math.max(height, aNodeBounds.getMaxY());
+                	ActivationBarNode anActivationBarNode = (ActivationBarNode) aNode;
+                	double h = anActivationBarNode.getHeight();
+                	double v = anActivationBarNode.getVerticalLocation();
+                	double maxY = v + h;
+                    height = Math.max(height, maxY);
                 }
             }
             height = height + CALL_YGAP;
@@ -691,7 +693,10 @@ public class ActivationBarNode extends RectangularNode
             double maxY = 0;
             for (ActivationBarNode anActivationBarNode : allLinkedNodes)
             {
-                maxY = Math.max(
+                if (this.getImplicitParameter().equals(anActivationBarNode.getImplicitParameter())) {
+                	continue;
+                }
+            	maxY = Math.max(
                         maxY,
                         anActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP
                                 + anActivationBarNode.getVerticalLocationBeforeAdjustment());
