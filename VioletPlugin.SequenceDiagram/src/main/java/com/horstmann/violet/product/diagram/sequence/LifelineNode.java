@@ -83,27 +83,11 @@ public class LifelineNode extends RectangularNode
         {
             return false;
         }
-        ((ActivationBarNode) n).setImplicitParameter(this);
+        n.setParent(this);
         n.setGraph(getGraph());
-        int pos = getChildren().size();
-        INode nearestNodeBeforePoint = getNearestNodeAfterThisPoint(p);
-        if (nearestNodeBeforePoint != null)
-        {
-            pos = getChildren().indexOf(nearestNodeBeforePoint);
-        }
-        return super.addChild(n, pos);
-    }
-
-    @Override
-    public boolean addChild(INode n, int index)
-    {
-        if (!n.getClass().isAssignableFrom(ActivationBarNode.class))
-        {
-            return false;
-        }
-        ((ActivationBarNode) n).setImplicitParameter(this);
-        n.setGraph(getGraph());
-        return super.addChild(n, index);
+        n.setLocation(p);
+        addChild(n, getChildren().size());
+        return true;
     }
 
     /**

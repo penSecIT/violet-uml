@@ -26,9 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.lang.model.type.NullType;
 
@@ -46,31 +44,17 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public boolean addChild(INode n, Point2D p)
     {
-        boolean isActivationBarNode = n instanceof ActivationBarNode;
-        if (isActivationBarNode)
+        if (!n.getClass().isAssignableFrom(ActivationBarNode.class))
         {
-            ActivationBarNode newChildNode = (ActivationBarNode) n;
-            newChildNode.setParent(this);
-            newChildNode.setGraph(getGraph());
-            return getChildren().add(newChildNode);
+            return false;
         }
-        return false;
+        n.setParent(this);
+        n.setGraph(getGraph());
+        n.setLocation(p);
+        addChild(n, getChildren().size());
+        return true;
     }
 
-    @Override
-    public boolean addChild(INode n, int index)
-    {
-        boolean isActivationBarNode = n instanceof ActivationBarNode;
-        if (isActivationBarNode)
-        {
-            ActivationBarNode newChildNode = (ActivationBarNode) n;
-            newChildNode.setParent(this);
-            newChildNode.setGraph(getGraph());
-            getChildren().add(index, newChildNode);
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void removeChild(INode node)
@@ -282,25 +266,7 @@ public class ActivationBarNode extends RectangularNode
 
     }
 
-    @Override
-    public Point2D getLocation()
-    {
-        if (this.currentLocation == null)
-        {
-            double x = getHorizontalLocation();
-            double y = getVerticalLocation();
-            this.currentLocation = new Point2D.Double(x, y);
-        }
-        return this.currentLocation;
-    }
 
-    /**
-     * This is a hack to optimize performances It avoids to recalculate location many times when the diagram is drawn
-     */
-    public void resetLocation()
-    {
-        this.currentLocation = null;
-    }
 
     /**
      * 
@@ -415,7 +381,7 @@ public class ActivationBarNode extends RectangularNode
                 {
 					ActivationBarNode anActivationBarNode = (ActivationBarNode) endingNode;
 					LifelineNode lifelineNode = anActivationBarNode.getImplicitParameter();
-					double newHeight = (lifelineNode.getLocationOnGraph().getY() + anActivationBarNode.getVerticalLocation() + anActivationBarNode.getHeight()) - (getImplicitParameter().getLocationOnGraph().getY() + getVerticalLocation());
+					double newHeight = (lifelineNode.getLocationOnGraph().getY() + anActivationBarNode.getLocation().getY() + anActivationBarNode.getHeight()) - (getImplicitParameter().getLocationOnGraph().getY() + getLocation().getY());
 					height = Math.max(height, CALL_YGAP  /2 + newHeight + CALL_YGAP  /2);
                 }
 				if (!isActivationBarNode) {
@@ -450,7 +416,7 @@ public class ActivationBarNode extends RectangularNode
                 {
                 	ActivationBarNode anActivationBarNode = (ActivationBarNode) aNode;
                 	double h = anActivationBarNode.getHeight();
-                	double v = anActivationBarNode.getVerticalLocation();
+                	double v = anActivationBarNode.getLocation().getY();
                 	double maxY = v + h;
                     height = Math.max(height, maxY);
                 }
@@ -458,6 +424,21 @@ public class ActivationBarNode extends RectangularNode
             height = height + CALL_YGAP;
         }
         return height;
+    }
+    
+    
+    @Override
+    public Point2D getLocation()
+    {
+        Point2D rawLocation = super.getLocation();
+        double horizontalLocation = getHorizontalLocation();
+        double verticalLocation = rawLocation.getY();
+        INode parentNode = getParent();
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            verticalLocation = Math.max(verticalLocation, CALL_YGAP);
+        }
+        Point2D adjustedLocation = new Point2D.Double(horizontalLocation, verticalLocation);
+        return adjustedLocation;
     }
 
     @Override
@@ -585,8 +566,11 @@ public class ActivationBarNode extends RectangularNode
             if (startingLifeLineNode != endingLifeLineNode && !topRectangle.contains(endingNodePoint))
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
-                int lastNodePos = endingNode.getChildren().size();
-                endingNode.addChild(newActivationBar, lastNodePos);
+                Point2D edgeStartLocation = edge.getStartLocation();
+                double x = edgeStartLocation.getX();
+                double y = edgeStartLocation.getY();
+                Point2D newActivationBarLocation = new Point2D.Double(x, y);
+                endingNode.addChild(newActivationBar, newActivationBarLocation);
                 edge.setEnd(newActivationBar);
                 return true;
             }
@@ -601,8 +585,11 @@ public class ActivationBarNode extends RectangularNode
             if (startingLifeLineNode == endingLifeLineNode && !topRectangle.contains(endingNodePoint))
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
-                int lastNodePos = startingNode.getChildren().size();
-                startingNode.addChild(newActivationBar, lastNodePos);
+                Point2D edgeStartLocation = edge.getStartLocation();
+                double x = edgeStartLocation.getX();
+                double y = edgeStartLocation.getY() + CALL_YGAP / 2;
+                Point2D newActivationBarLocation = new Point2D.Double(x, y);
+                startingNode.addChild(newActivationBar, newActivationBarLocation);
                 edge.setEnd(newActivationBar);
                 return true;
             }
@@ -656,266 +643,10 @@ public class ActivationBarNode extends RectangularNode
         return 0;
     }
 
-    /**
-     * @return y location relative to the parent
-     */
-    private double getVerticalLocation()
-    {
-        double verticalLocationBeforeAdjustment = this.getVerticalLocationBeforeAdjustment();
-        double y = verticalLocationBeforeAdjustment;
-        // If this activation bar is connected to another activation bar, we need to adjust its location
-        List<IEdge> edges = getConnectedEdges();
-        for (IEdge anEdge : edges)
-        {
-            boolean isCallEdge = (anEdge.getClass().isAssignableFrom(CallEdge.class));
-            if (!isCallEdge)
-            {
-                continue;
-            }
-            INode startingNode = anEdge.getStart();
-            INode endingNode = anEdge.getEnd();
-            boolean isActivationBarOnStart = startingNode.getClass().isAssignableFrom(ActivationBarNode.class);
-            boolean isActivationBarOnEnd = endingNode.getClass().isAssignableFrom(ActivationBarNode.class);
-            if (!isActivationBarOnStart)
-            {
-                continue;
-            }
-            if (!isActivationBarOnEnd)
-            {
-                continue;
-            }
-            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
-            LifelineNode startingLifelineNode = startingActivationBarNode.getImplicitParameter();
-            ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
-            LifelineNode endingLifelineNode = endingActivationBarNode.getImplicitParameter();
-            boolean isSameLifeline = (endingLifelineNode == startingLifelineNode);
-            if (isSameLifeline)
-            {
-                continue;
-            }
-            // We want to adjust vertical location between chained activation bars
-            // So, we look for the activation bars which has the higher vertical location and we apply it to all related activation
-            // bars
-            double currentY = this.getParent().getLocationOnGraph().getY() + CALL_YGAP + verticalLocationBeforeAdjustment;
-            List<ActivationBarNode> allLinkedNodes = getAllLinkedNodes();
-            double maxY = 0;
-            Map<LifelineNode, Double> minYPerLifeLine = new HashMap<LifelineNode, Double>();
-            for (ActivationBarNode anActivationBarNode : allLinkedNodes)
-            {
-                if (this.getImplicitParameter().equals(anActivationBarNode.getImplicitParameter())) {
-                	continue;
-                }
-            	// On a lifeline, only the y of the top activation bar is kept. So, we filter maxY to only keep the lowest
-                double linkedNodeMinY = anActivationBarNode.getParent().getLocationOnGraph().getY() + CALL_YGAP
-				        + anActivationBarNode.getVerticalLocationBeforeAdjustment();
-            	LifelineNode linkedLifeLineNode = anActivationBarNode.getImplicitParameter();
-            	if (!minYPerLifeLine.containsKey(linkedLifeLineNode)) {
-            		minYPerLifeLine.put(linkedLifeLineNode, linkedNodeMinY);
-            	}
-            	Double lastLinkedMinY = minYPerLifeLine.get(linkedLifeLineNode);
-            	minYPerLifeLine.put(linkedLifeLineNode, Math.min(lastLinkedMinY, linkedNodeMinY));
-            	double currentMinYOnLifeLine = minYPerLifeLine.get(linkedLifeLineNode);
-				maxY = Math.max(
-                        maxY,
-                        currentMinYOnLifeLine);
-            }
-            if (maxY >= currentY)
-            {
-                y = verticalLocationBeforeAdjustment + Math.abs(currentY - maxY);
-            }
-            // Finally, we adjust location because starting activation bars are lower that ending ones
-            y = y + getPositionBetweenLinkedNodes() * (CALL_YGAP / 2);
-        }
-        return y;
-    }
+ 
+ 
 
-    /**
-     * @return the 'raw' vertical location before any adjustment between activation bars which are linked by call edges
-     */
-    private double getVerticalLocationBeforeAdjustment()
-    {
-        INode parentNode = getParent();
-        if (parentNode == null)
-        {
-            return 0;
-        }
-        boolean isLifeLineParent = parentNode.getClass().isAssignableFrom(LifelineNode.class);
-        boolean isActivationBarParent = parentNode.getClass().isAssignableFrom(ActivationBarNode.class);
-        double y = 0;
-        if (isActivationBarParent)
-        {
-            y = CALL_YGAP;
-            List<INode> brotherNodes = parentNode.getChildren();
-            for (INode aNode : brotherNodes)
-            {
-                if (aNode != this && aNode.getClass().isAssignableFrom(ActivationBarNode.class))
-                {
-                    ActivationBarNode anActivationbarNode = (ActivationBarNode) aNode;
-                	y = y + anActivationbarNode.getHeight() + CALL_YGAP;
-                }
-                if (aNode == this)
-                {
-                    break;
-                }
-            }
-        }
-        if (isLifeLineParent)
-        {
-            Rectangle2D topRectangle = getImplicitParameter().getTopRectangle();
-            y = topRectangle.getHeight() + CALL_YGAP;
-            List<INode> brotherNodes = parentNode.getChildren();
-            for (INode aNode : brotherNodes)
-            {
-                if (aNode != this && aNode.getClass().isAssignableFrom(ActivationBarNode.class))
-                {
-                    ActivationBarNode anActivationbarNode = (ActivationBarNode) aNode;
-                    double maxY = anActivationbarNode.getVerticalLocation() + anActivationbarNode.getHeight();
-                	y = maxY + CALL_YGAP;
-                }
-                if (aNode == this)
-                {
-                    break;
-                }
-            }
-        }
-        return y;
-    }
 
-    /**
-     * @return all the activation bars which are related to this one and chained all together with call edges
-     */
-    private List<ActivationBarNode> getAllLinkedNodes()
-    {
-        List<IEdge> fifo = new ArrayList<IEdge>(getConnectedEdges());
-        List<ActivationBarNode> linkedNodes = new ArrayList<ActivationBarNode>();
-        while (fifo.size() > 0)
-        {
-            IEdge anEdge = fifo.get(0);
-            fifo.remove(0);
-            boolean isCallEdge = (anEdge.getClass().isAssignableFrom(CallEdge.class));
-            if (!isCallEdge)
-            {
-                continue;
-            }
-            INode startingNode = anEdge.getStart();
-            INode endingNode = anEdge.getEnd();
-            boolean isActivationBarOnStart = startingNode.getClass().isAssignableFrom(ActivationBarNode.class);
-            boolean isActivationBarOnEnd = endingNode.getClass().isAssignableFrom(ActivationBarNode.class);
-            if (!isActivationBarOnStart || !isActivationBarOnEnd)
-            {
-                continue;
-            }
-            ActivationBarNode startingActivationBarNode = (ActivationBarNode) startingNode;
-            LifelineNode startingLifelineNode = startingActivationBarNode.getImplicitParameter();
-            ActivationBarNode endingActivationBarNode = (ActivationBarNode) endingNode;
-            LifelineNode endingLifelineNode = endingActivationBarNode.getImplicitParameter();
-            boolean isSameLifeline = (endingLifelineNode == startingLifelineNode);
-            if (isSameLifeline)
-            {
-                continue;
-            }
-            if (!this.equals(startingActivationBarNode))
-            {
-                if (!linkedNodes.contains(startingActivationBarNode))
-                {
-                    linkedNodes.add(startingActivationBarNode);
-                }
-                List<IEdge> connectedEdges = startingActivationBarNode.getConnectedEdges();
-                for (IEdge aConnectedEdge : connectedEdges)
-                {
-                    if (linkedNodes.contains(aConnectedEdge.getStart()) && linkedNodes.contains(aConnectedEdge.getEnd()))
-                    {
-                        continue;
-                    }
-                    if (!anEdge.equals(aConnectedEdge))
-                    {
-                        fifo.add(aConnectedEdge);
-                    }
-                }
-            }
-            if (!this.equals(endingActivationBarNode))
-            {
-                if (!linkedNodes.contains(endingActivationBarNode))
-                {
-                    linkedNodes.add(endingActivationBarNode);
-                }
-                List<IEdge> connectedEdges = endingActivationBarNode.getConnectedEdges();
-                for (IEdge aConnectedEdge : connectedEdges)
-                {
-                    if (linkedNodes.contains(aConnectedEdge.getStart()) && linkedNodes.contains(aConnectedEdge.getEnd()))
-                    {
-                        continue;
-                    }
-                    if (!anEdge.equals(aConnectedEdge))
-                    {
-                        fifo.add(aConnectedEdge);
-                    }
-                }
-            }
-        }
-        return linkedNodes;
-    }
-
-    /**
-     * @return the index of the current activation bar inside the list of all the activation bars which are chained with call edges
-     */
-    private int getPositionBetweenLinkedNodes()
-    {
-        List<ActivationBarNode> linkedNodes = getAllLinkedNodes();
-        linkedNodes.add(this);
-        List<IEdge> linkedEdges = new ArrayList<IEdge>();
-        for (ActivationBarNode aNode : linkedNodes)
-        {
-        	List<IEdge> connectedEdges = aNode.getConnectedEdges();
-            for (IEdge anEdge : connectedEdges)
-            {
-                boolean isCallEdge = (anEdge.getClass().isAssignableFrom(CallEdge.class));
-                if (!isCallEdge)
-                {
-                    continue;
-                }
-                if (!linkedEdges.contains(anEdge))
-                {
-                    linkedEdges.add(anEdge);
-                }
-            }
-        }
-        List<INode> sortedNodes = new ArrayList<INode>();
-        for (IEdge anEdge : linkedEdges)
-        {
-            INode startingNode = anEdge.getStart();
-            INode endingNode = anEdge.getEnd();
-            if (!sortedNodes.contains(startingNode) && !sortedNodes.contains(endingNode))
-            {
-                sortedNodes.add(startingNode);
-                sortedNodes.add(endingNode);
-            }
-            if (sortedNodes.contains(startingNode) && !sortedNodes.contains(endingNode))
-            {
-                int startingNodeIndex = sortedNodes.indexOf(startingNode);
-                int desiredIndexForEndingNode = startingNodeIndex + 1;
-                boolean isDesiredIndexOK = (desiredIndexForEndingNode <= sortedNodes.size());
-                if (isDesiredIndexOK)
-                {
-                    sortedNodes.add(desiredIndexForEndingNode, endingNode);
-                }
-                if (!isDesiredIndexOK)
-                {
-                    sortedNodes.add(endingNode);
-                }
-            }
-            if (!sortedNodes.contains(startingNode) && sortedNodes.contains(endingNode))
-            {
-                int endingNodeIndex = sortedNodes.indexOf(endingNode);
-                int desiredIndexForStartingNode = endingNodeIndex;
-                sortedNodes.add(desiredIndexForStartingNode, startingNode);
-            }
-        }
-        return sortedNodes.indexOf(this);
-    }
-
-    /** Hack to optimize rendering performances */
-    private transient Point2D currentLocation;
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private transient LifelineNode lifeline;
