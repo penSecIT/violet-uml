@@ -426,19 +426,86 @@ public class ActivationBarNode extends RectangularNode
         return height;
     }
     
+    @Override
+    public void setLocation(Point2D aPoint)
+    {
+        INode parentNode = getParent();
+        // Special use case : when this node is connected to another activation bar on another life line,
+        // we adjust its location to keep it relative to the node it is connected to
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
+            LifelineNode lifelineNode = getImplicitParameter();
+            Rectangle2D topRectangle = lifelineNode.getTopRectangle();
+            if (aPoint.getY() <= topRectangle.getHeight() + CALL_YGAP) {
+                aPoint = new Point2D.Double(aPoint.getX(), topRectangle.getHeight() + CALL_YGAP);
+            }
+            for (IEdge edge : getConnectedEdges()) {
+                if (!edge.getClass().isAssignableFrom(CallEdge.class))
+                {
+                    continue;
+                }
+                if (edge.getEnd() == this)
+                {
+                    INode startingNode = edge.getStart();
+                    Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+                    Point2D lifelineLocationOnGraph = getImplicitParameter().getLocationOnGraph();
+                    this.verticalGapBetweenConnectedActivationBars = aPoint.getY() - startingNodeLocationOnGraph.getY() + lifelineLocationOnGraph.getY();
+                    if (this.verticalGapBetweenConnectedActivationBars < CALL_YGAP) {
+                        double minY = startingNodeLocationOnGraph.getY() - lifelineLocationOnGraph.getY() + CALL_YGAP;
+                        aPoint = new Point2D.Double(aPoint.getX(), minY);
+                        this.verticalGapBetweenConnectedActivationBars = CALL_YGAP;
+                    }
+                    break;
+                }
+            }
+        }
+        super.setLocation(aPoint);
+    }
     
     @Override
     public Point2D getLocation()
     {
-        Point2D rawLocation = super.getLocation();
-        double horizontalLocation = getHorizontalLocation();
-        double verticalLocation = rawLocation.getY();
         INode parentNode = getParent();
+        // Case 1 : self call on activation bar
         if (parentNode != null && parentNode.getClass().isAssignableFrom(ActivationBarNode.class)) {
+            Point2D rawLocation = super.getLocation();
+            double horizontalLocation = getHorizontalLocation();
+            double verticalLocation = rawLocation.getY();
             verticalLocation = Math.max(verticalLocation, CALL_YGAP);
+            Point2D adjustedLocation = new Point2D.Double(horizontalLocation, verticalLocation);
+            super.setLocation(adjustedLocation);
+            return adjustedLocation;
         }
-        Point2D adjustedLocation = new Point2D.Double(horizontalLocation, verticalLocation);
-        return adjustedLocation;
+        // Case 2 : connected to another activation bar on another life line
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
+            for (IEdge edge : getConnectedEdges()) {
+                if (!edge.getClass().isAssignableFrom(CallEdge.class))
+                {
+                    continue;
+                }
+                if (edge.getEnd() == this)
+                {
+                    INode startingNode = edge.getStart();
+                    Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
+                    Point2D lifelineLocationOnGraph = getImplicitParameter().getLocationOnGraph();
+                    double x = getHorizontalLocation();
+                    double y = startingNodeLocationOnGraph.getY() - lifelineLocationOnGraph.getY() + this.verticalGapBetweenConnectedActivationBars;
+                    Point2D adjustedLocation = new Point2D.Double(x, y);
+                    super.setLocation(adjustedLocation);
+                    return adjustedLocation;    
+                }
+            }
+        }
+        // Case 3 : just attached to a lifeline
+        if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
+            Point2D rawLocation = super.getLocation();
+            double horizontalLocation = getHorizontalLocation();
+            double verticalLocation = rawLocation.getY();
+            Point2D adjustedLocation = new Point2D.Double(horizontalLocation, verticalLocation);
+            super.setLocation(adjustedLocation);
+            return adjustedLocation;
+        }
+        
+        return super.getLocation();
     }
 
     @Override
@@ -566,7 +633,7 @@ public class ActivationBarNode extends RectangularNode
             if (startingLifeLineNode != endingLifeLineNode && !topRectangle.contains(endingNodePoint))
             {
                 ActivationBarNode newActivationBar = new ActivationBarNode();
-                Point2D edgeStartLocation = edge.getStartLocation();
+                Point2D edgeStartLocation = edge.getEndLocation();
                 double x = edgeStartLocation.getX();
                 double y = edgeStartLocation.getY();
                 Point2D newActivationBarLocation = new Point2D.Double(x, y);
@@ -650,6 +717,9 @@ public class ActivationBarNode extends RectangularNode
 
     /** The lifeline that embeds this activation bar in the sequence diagram */
     private transient LifelineNode lifeline;
+    
+    /** When this node is connected to another activation bar, we keep the vertical gap to be able to have ending node location relative to the starting one */
+    private double verticalGapBetweenConnectedActivationBars = CALL_YGAP;
 
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
