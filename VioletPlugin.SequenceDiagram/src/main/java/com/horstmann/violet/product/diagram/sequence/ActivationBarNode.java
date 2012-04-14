@@ -379,15 +379,10 @@ public class ActivationBarNode extends RectangularNode
                 boolean isActivationBarNode = endingNode instanceof ActivationBarNode;
 				if (isActivationBarNode)
                 {
-					ActivationBarNode anActivationBarNode = (ActivationBarNode) endingNode;
-					LifelineNode lifelineNode = anActivationBarNode.getImplicitParameter();
-					double newHeight = (lifelineNode.getLocationOnGraph().getY() + anActivationBarNode.getLocation().getY() + anActivationBarNode.getHeight()) - (getImplicitParameter().getLocationOnGraph().getY() + getLocation().getY());
-					height = Math.max(height, CALL_YGAP  /2 + newHeight + CALL_YGAP  /2);
-                }
-				if (!isActivationBarNode) {
 					Rectangle2D endingNodeBounds = endingNode.getBounds();
-					height = CALL_YGAP / 2 + endingNodeBounds.getHeight() + CALL_YGAP / 2;
-				}
+					double newHeight = CALL_YGAP / 2 + endingNodeBounds.getHeight() + (endingNode.getLocationOnGraph().getY() - this.getLocationOnGraph().getY()) + CALL_YGAP / 2;
+					height = Math.max(height,  newHeight);
+                }
             }
         }
         return Math.max(DEFAULT_HEIGHT, height);
@@ -435,8 +430,8 @@ public class ActivationBarNode extends RectangularNode
         if (parentNode != null && parentNode.getClass().isAssignableFrom(LifelineNode.class)) {
             LifelineNode lifelineNode = getImplicitParameter();
             Rectangle2D topRectangle = lifelineNode.getTopRectangle();
-            if (aPoint.getY() <= topRectangle.getHeight() + CALL_YGAP) {
-                aPoint = new Point2D.Double(aPoint.getX(), topRectangle.getHeight() + CALL_YGAP);
+            if (aPoint.getY() <= topRectangle.getHeight() + CALL_YGAP / 2) {
+                aPoint = new Point2D.Double(aPoint.getX(), topRectangle.getHeight() + CALL_YGAP / 2);
             }
             for (IEdge edge : getConnectedEdges()) {
                 if (!edge.getClass().isAssignableFrom(CallEdge.class))
@@ -449,10 +444,10 @@ public class ActivationBarNode extends RectangularNode
                     Point2D startingNodeLocationOnGraph = startingNode.getLocationOnGraph();
                     Point2D lifelineLocationOnGraph = getImplicitParameter().getLocationOnGraph();
                     this.verticalGapBetweenConnectedActivationBars = aPoint.getY() - startingNodeLocationOnGraph.getY() + lifelineLocationOnGraph.getY();
-                    if (this.verticalGapBetweenConnectedActivationBars < CALL_YGAP) {
-                        double minY = startingNodeLocationOnGraph.getY() - lifelineLocationOnGraph.getY() + CALL_YGAP;
+                    if (this.verticalGapBetweenConnectedActivationBars < CALL_YGAP / 2) {
+                        double minY = startingNodeLocationOnGraph.getY() - lifelineLocationOnGraph.getY() + CALL_YGAP / 2;
                         aPoint = new Point2D.Double(aPoint.getX(), minY);
-                        this.verticalGapBetweenConnectedActivationBars = CALL_YGAP;
+                        this.verticalGapBetweenConnectedActivationBars = CALL_YGAP / 2;
                     }
                     break;
                 }
@@ -719,7 +714,7 @@ public class ActivationBarNode extends RectangularNode
     private transient LifelineNode lifeline;
     
     /** When this node is connected to another activation bar, we keep the vertical gap to be able to have ending node location relative to the starting one */
-    private double verticalGapBetweenConnectedActivationBars = CALL_YGAP;
+    private double verticalGapBetweenConnectedActivationBars = CALL_YGAP / 2;
 
     /** Default with */
     private static int DEFAULT_WIDTH = 16;
