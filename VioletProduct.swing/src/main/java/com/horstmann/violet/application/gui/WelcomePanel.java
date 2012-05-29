@@ -21,29 +21,40 @@
 
 package com.horstmann.violet.application.gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import com.horstmann.violet.application.menu.FileMenu;
 import com.horstmann.violet.application.swingextension.WelcomeButtonUI;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.theme.ITheme;
@@ -55,30 +66,76 @@ public class WelcomePanel extends JPanel
     public WelcomePanel(FileMenu fileMenu)
     {
         ResourceBundleInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         this.fileMenu = fileMenu;
        
         setOpaque(false);
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+        JPanel panel = new JPanel() {
+             	@Override
+             	protected void paintComponent(Graphics g) {
+             	    int x = 34;
+             	    int y = 34;
+             	    int w = getWidth() - 68;
+             	    int h = getHeight() - 68;
+             	    int arc = 30;
+
+             	    Graphics2D g2 = (Graphics2D) g.create();
+             	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+             	            RenderingHints.VALUE_ANTIALIAS_ON);
+
+             	    g2.setColor(Color.WHITE);
+             	    g2.fillRoundRect(x, y, w, h, arc, arc);
+
+             	    g2.setStroke(new BasicStroke(3f));
+             	    g2.setColor(themeManager.getTheme().getWelcomeBackgroundEndColor());
+             	    g2.drawRoundRect(x, y, w, h, arc, arc); 
+
+             	    g2.dispose();
+             	}
+        };
         panel.setOpaque(false);
+        panel.setLayout(new GridBagLayout());
 
-        JPanel shortcutPanel = new JPanel();
-        shortcutPanel.setOpaque(false);
-        shortcutPanel.setLayout(new GridLayout(2, 2));
-        shortcutPanel.add(getLeftTitlePanel());
-        shortcutPanel.add(getRightTitlePanel());
-        shortcutPanel.add(getLeftPanel());
-        shortcutPanel.add(getRightPanel());
+        
+        JTextPane editorPane = new JTextPane();
+        editorPane.setEditable(false);
+        editorPane.setContentType("text/html");
+        try {
+			editorPane.setPage(this.getClass().getResource("WelcomePanel.html"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        //JEditorPane editorPane = new JEditorPane("text/html", "<a href='#'>Welcome</a>");
+        editorPane.setOpaque(false);
+        editorPane.setBorder(new EmptyBorder(40, 40, 40, 40));
+        editorPane.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (HyperlinkEvent.EventType.ACTIVATED != e.getEventType()) {
+					return;
+				}
+				URL url = e.getURL();
+				System.out.println(e.getDescription());
+				System.out.println(leftPanelIcon);
+			}
+		});
+
         GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTH;
+        c.anchor = GridBagConstraints.CENTER;
         c.weightx = 1;
+        c.weighty = 1;
         c.gridx = 0;
-        c.gridy = 1;
-        panel.add(shortcutPanel, c);
+        c.gridy = 0;
+        c.insets = new Insets(40, 40, 40, 40);
+        c.fill = GridBagConstraints.BOTH;
+        
+        panel.add(editorPane, c);
 
-        add(panel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
         add(getFootTextPanel(), BorderLayout.SOUTH);
 
     }
@@ -87,7 +144,7 @@ public class WelcomePanel extends JPanel
     {
         Graphics2D g2 = (Graphics2D) g;
         Paint currentPaint = g2.getPaint();
-        ITheme cLAF = ThemeManager.getInstance().getTheme();
+        ITheme cLAF = this.themeManager.getTheme();
         GradientPaint paint = new GradientPaint(getWidth() / 2, -getHeight() / 4, cLAF.getWelcomeBackgroundStartColor(),
                 getWidth() / 2, getHeight() + getHeight() / 4, cLAF.getWelcomeBackgroundEndColor());
         g2.setPaint(paint);
@@ -195,7 +252,7 @@ public class WelcomePanel extends JPanel
             icon.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             JLabel title = new JLabel(this.fileMenu.getFileRecentMenu().getText().toLowerCase());
-            ITheme cLAF = ThemeManager.getInstance().getTheme();
+            ITheme cLAF = this.themeManager.getTheme();
             title.setFont(cLAF.getWelcomeBigFont());
             title.setForeground(cLAF.getWelcomeBigForegroundColor());
             title.setBorder(new EmptyBorder(0, 0, 0, 30));
@@ -226,7 +283,7 @@ public class WelcomePanel extends JPanel
             this.footTextPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             JLabel text = new JLabel(this.footText);
-            ITheme cLAF = ThemeManager.getInstance().getTheme();
+            ITheme cLAF = this.themeManager.getTheme();
             text.setFont(cLAF.getWelcomeSmallFont());
             text.setForeground(cLAF.getWelcomeBigForegroundColor());
             text.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -257,6 +314,9 @@ public class WelcomePanel extends JPanel
 
     @ResourceBundleBean(key="welcomepanel.foot_text")
     private String footText;
+    
+    @InjectedBean
+    private ThemeManager themeManager;
 
 
 }
