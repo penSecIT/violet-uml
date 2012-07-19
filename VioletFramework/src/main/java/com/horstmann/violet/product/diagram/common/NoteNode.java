@@ -28,6 +28,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.RectangularNode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
@@ -37,16 +38,8 @@ import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
  * 
  * FIXME : manage Z order
  * 
- *       for (IEdge e : getGraph().getEdges())
- *       {
- *           if (e.getStart() == this)
- *           {
- *               INode end = e.getEnd();
- *               Point2D endPoint = end.getLocation();
- *               INode n = getGraph().findNode(endPoint);
- *               if (n != end) end.setZ(n.getZ() + 1); 
- *           }
- *       }
+ * for (IEdge e : getGraph().getEdges()) { if (e.getStart() == this) { INode end = e.getEnd(); Point2D endPoint = end.getLocation();
+ * INode n = getGraph().findNode(endPoint); if (n != end) end.setZ(n.getZ() + 1); } }
  * 
  */
 public class NoteNode extends RectangularNode
@@ -61,7 +54,6 @@ public class NoteNode extends RectangularNode
         color = DEFAULT_COLOR;
     }
 
-    
     @Override
     public int getZ()
     {
@@ -72,12 +64,12 @@ public class NoteNode extends RectangularNode
     @Override
     public boolean addConnection(IEdge e)
     {
-        if (e.getStart() == e.getEnd()) {
+        if (e.getStart() == e.getEnd())
+        {
             return false;
         }
         return super.addConnection(e);
     }
-
 
     @Override
     public Rectangle2D getBounds()
@@ -86,14 +78,12 @@ public class NoteNode extends RectangularNode
         Point2D currentLocation = getLocation();
         double x = currentLocation.getX();
         double y = currentLocation.getY();
-        double w =  Math.max(b.getWidth(), DEFAULT_WIDTH);
+        double w = Math.max(b.getWidth(), DEFAULT_WIDTH);
         double h = Math.max(b.getHeight(), DEFAULT_HEIGHT);
         Rectangle2D currentBounds = new Rectangle2D.Double(x, y, w, h);
         Rectangle2D snapperBounds = getGraph().getGrid().snap(currentBounds);
         return snapperBounds;
     }
-    
-    
 
     /**
      * Gets the value of the text property.
@@ -139,12 +129,15 @@ public class NoteNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        Color oldColor = g2.getColor();
-        g2.setColor(color);
 
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Perform drawing
+        g2.setColor(color);
         Shape path = getShape();
         g2.fill(path);
-        g2.setColor(oldColor);
+        g2.setColor(getBorderColor());
         g2.draw(path);
 
         Rectangle2D bounds = getBounds();
@@ -153,13 +146,16 @@ public class NoteNode extends RectangularNode
         fold.lineTo((float) bounds.getMaxX() - FOLD_X, (float) bounds.getY() + FOLD_X);
         fold.lineTo((float) bounds.getMaxX(), (float) (bounds.getY() + FOLD_Y));
         fold.closePath();
-        oldColor = g2.getColor();
-        g2.setColor(g2.getBackground());
+        g2.setColor(ThemeManager.getInstance().getTheme().getWhiteColor());
         g2.fill(fold);
-        g2.setColor(oldColor);
+        g2.setColor(getBorderColor());
         g2.draw(fold);
 
+        g2.setColor(getTextColor());
         text.draw(g2, getBounds());
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     @Override
@@ -179,11 +175,11 @@ public class NoteNode extends RectangularNode
     @Override
     public NoteNode clone()
     {
-       NoteNode cloned = (NoteNode)super.clone();
-       cloned.text = text.clone();
-       return cloned;
-    }    
-    
+        NoteNode cloned = (NoteNode) super.clone();
+        cloned.text = text.clone();
+        return cloned;
+    }
+
     private MultiLineString text;
     private Color color;
 

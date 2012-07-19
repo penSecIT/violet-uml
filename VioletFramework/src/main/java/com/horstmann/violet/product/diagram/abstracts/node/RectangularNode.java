@@ -33,13 +33,15 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
+import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
+import com.horstmann.violet.product.diagram.abstracts.IColorable;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 
 /**
  * A node that has a rectangular shape.
  */
-public abstract class RectangularNode extends AbstractNode
+public abstract class RectangularNode extends AbstractNode implements IColorable
 {
 
     public RectangularNode()
@@ -156,20 +158,45 @@ public abstract class RectangularNode extends AbstractNode
         g2.setColor(SHADOW_COLOR);
         g2.fill(shape);
         g2.translate(-SHADOW_GAP, -SHADOW_GAP);
-        g2.setColor(BACKGROUND_COLOR);
+        g2.setColor(backgroundColor);
         g2.fill(shape);
         g2.setColor(oldColor);
     }
 
     
     
+    public void setBackgroundColor(Color bgColor) {
+        this.backgroundColor = bgColor;
+    }
     
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
+    }
+    
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
+    };
+
+    public Color getBorderColor() {
+        return this.borderColor;
+    }
+    
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+    }
+    
+    public Color getTextColor() {
+        return this.textColor;
+    }
 
 
 
 
     private static final Color SHADOW_COLOR = new Color(210,210,210);
-    protected static Color BACKGROUND_COLOR = UIManager.getColor("TextPane.background");
+    private Color backgroundColor = ThemeManager.getInstance().getTheme().getWhiteColor();
+    private Color borderColor =  ThemeManager.getInstance().getTheme().getBlackColor();
+    private Color textColor =  ThemeManager.getInstance().getTheme().getBlackColor();
+    
     public static final double SHADOW_GAP = 4;
 
 }

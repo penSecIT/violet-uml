@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.common;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Shape;
@@ -85,18 +86,19 @@ public class ImageNode extends RectangularNode
         Rectangle2D snapperBounds = getGraph().getGrid().snap(currentBounds);
         return snapperBounds;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
-     * @see com.horstmann.violet.product.diagram.abstracts.AbstractNode#checkRemoveEdge(com.horstmann.violet.product.diagram.abstracts.Edge)
+     * @see
+     * com.horstmann.violet.product.diagram.abstracts.AbstractNode#checkRemoveEdge(com.horstmann.violet.product.diagram.abstracts
+     * .Edge)
      */
     public void removeConnection(IEdge e)
     {
         if (e.getStart() == this) getGraph().removeNode(e.getEnd());
     }
 
-    
     /**
      * Gets the value of the text property.
      * 
@@ -124,13 +126,20 @@ public class ImageNode extends RectangularNode
      */
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
+        // Draw image
         Rectangle2D bounds = getBounds();
         g2.drawImage(this.imageIcon.getImage(), (int) bounds.getCenterX() - this.imageIcon.getIconWidth() / 2, (int) bounds.getY(),
                 this.imageIcon.getImageObserver());
+        // Draw text
+        g2.setColor(getTextColor());
         Rectangle2D b = text.getBounds();
         Rectangle2D textBounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + this.imageIcon.getIconHeight(),
                 b.getWidth(), b.getHeight());
         text.draw(g2, textBounds);
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /*
@@ -173,21 +182,22 @@ public class ImageNode extends RectangularNode
         result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
-    
+
     /**
      * @return current image width
      */
-    public int getImageWidth() {
+    public int getImageWidth()
+    {
         return this.imageIcon.getIconWidth();
     }
 
     /**
      * @return current image height
      */
-    public int getImageHeight() {
+    public int getImageHeight()
+    {
         return this.imageIcon.getIconHeight();
     }
-    
 
     /**
      * This method should be kept as private as long as it is used for serialization purpose. Replaces current imageIcon by a new
@@ -227,8 +237,6 @@ public class ImageNode extends RectangularNode
         cloned.imageIcon = imageIcon;
         return cloned;
     }
-
-    
 
     private MultiLineString text;
     private ImageIcon imageIcon;
