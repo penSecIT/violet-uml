@@ -48,6 +48,7 @@ import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjecto
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.plugin.PluginLoader;
 import com.horstmann.violet.framework.theme.ClassicMetalTheme;
+import com.horstmann.violet.framework.theme.DarkAmbianceTheme;
 import com.horstmann.violet.framework.theme.ITheme;
 import com.horstmann.violet.framework.theme.ThemeManager;
 import com.horstmann.violet.framework.theme.VistaBlueTheme;
@@ -116,9 +117,11 @@ public class UMLEditorApplication
         ThemeManager themeManager = new ThemeManager();
         ITheme theme1 = new ClassicMetalTheme();
         ITheme theme2 = new VistaBlueTheme();
+        ITheme theme3 = new DarkAmbianceTheme();
         List<ITheme> themeList = new ArrayList<ITheme>();
         themeList.add(theme1);
         themeList.add(theme2);
+        themeList.add(theme3);
         themeManager.setInstalledThemes(themeList);
         themeManager.applyPreferedTheme();
         BeanFactory.getFactory().register(ThemeManager.class, themeManager);
