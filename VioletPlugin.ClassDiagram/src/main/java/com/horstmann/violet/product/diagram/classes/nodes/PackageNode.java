@@ -1,5 +1,6 @@
 package com.horstmann.violet.product.diagram.classes.nodes;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
@@ -32,14 +33,15 @@ public class PackageNode extends RectangularNode implements IResizableNode
     public Point2D getConnectionPoint(IEdge e)
     {
         Point2D connectionPoint = super.getConnectionPoint(e);
-        
+
         // Fix location to stick to shape (because of the top rectangle)
         Direction d = e.getDirection(this);
         Direction nearestCardinalDirection = d.getNearestCardinalDirection();
         if (Direction.SOUTH.equals(nearestCardinalDirection))
         {
             Rectangle2D topRectangleBounds = getTopRectangleBounds();
-            if (!topRectangleBounds.contains(connectionPoint)) {
+            if (!topRectangleBounds.contains(connectionPoint))
+            {
                 double x = connectionPoint.getX();
                 double y = connectionPoint.getY();
                 double h = topRectangleBounds.getHeight();
@@ -110,6 +112,8 @@ public class PackageNode extends RectangularNode implements IResizableNode
     @Override
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
@@ -120,12 +124,19 @@ public class PackageNode extends RectangularNode implements IResizableNode
         super.draw(g2);
         Rectangle2D topBounds = getTopRectangleBounds();
         Rectangle2D bottomBounds = getBottomRectangleBounds();
+        g2.setColor(getBackgroundColor());
+        g2.fill(topBounds);
+        g2.fill(bottomBounds);
+        g2.setColor(getBorderColor());
         g2.draw(topBounds);
         g2.draw(bottomBounds);
+        g2.setColor(getTextColor());
         name.draw(g2, topBounds);
         content.draw(g2, bottomBounds);
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
+        // Restore first color
+        g2.setColor(oldColor);
         // Draw its children
         for (INode node : getChildren())
         {

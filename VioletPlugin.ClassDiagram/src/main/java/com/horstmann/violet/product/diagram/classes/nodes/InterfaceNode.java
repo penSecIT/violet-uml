@@ -1,6 +1,6 @@
 package com.horstmann.violet.product.diagram.classes.nodes;
 
-
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -27,13 +27,15 @@ public class InterfaceNode extends RectangularNode
         methods.setJustification(MultiLineString.LEFT);
     }
 
-    private Rectangle2D getTopRectangleBounds() {
+    private Rectangle2D getTopRectangleBounds()
+    {
         Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
         Rectangle2D nameBounds = name.getBounds();
         globalBounds.add(nameBounds);
         boolean isMethodsEmpty = (methods.getText().length() == 0);
         double defaultHeight = DEFAULT_HEIGHT;
-        if (!isMethodsEmpty) {
+        if (!isMethodsEmpty)
+        {
             defaultHeight = DEFAULT_COMPARTMENT_HEIGHT;
         }
         globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, defaultHeight));
@@ -46,13 +48,14 @@ public class InterfaceNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
         return snappedBounds;
     }
-    
-    
-    private Rectangle2D getBottomRectangleBounds() {
+
+    private Rectangle2D getBottomRectangleBounds()
+    {
         Rectangle2D globalBounds = new Rectangle2D.Double(0, 0, 0, 0);
         Rectangle2D methodsBounds = methods.getBounds();
         globalBounds.add(methodsBounds);
-        if (methodsBounds.getHeight() > 0) {
+        if (methodsBounds.getHeight() > 0)
+        {
             globalBounds.add(new Rectangle2D.Double(0, 0, DEFAULT_WIDTH, DEFAULT_COMPARTMENT_HEIGHT));
         }
         Rectangle2D topBounds = getTopRectangleBounds();
@@ -64,7 +67,7 @@ public class InterfaceNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(globalBounds);
         return snappedBounds;
     }
-    
+
     @Override
     public Rectangle2D getBounds()
     {
@@ -74,33 +77,42 @@ public class InterfaceNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(top);
         return snappedBounds;
     }
-    
+
     @Override
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
-        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY()
+                - nodeLocation.getY());
         g2.translate(g2Location.getX(), g2Location.getY());
         // Perform drawing
         super.draw(g2);
         Rectangle2D currentBounds = getBounds();
         Rectangle2D topBounds = getTopRectangleBounds();
         Rectangle2D bottomBounds = getBottomRectangleBounds();
+        g2.setColor(getBackgroundColor());
+        g2.fill(currentBounds);
+        g2.setColor(getBorderColor());
         g2.draw(currentBounds);
+        g2.setColor(getBorderColor());
+        g2.drawLine((int) topBounds.getX(), (int) topBounds.getMaxY(), (int) currentBounds.getMaxX(), (int) topBounds.getMaxY());
+        g2.setColor(getTextColor());
         name.draw(g2, topBounds);
-        g2.drawLine((int) topBounds.getX(),(int) topBounds.getMaxY(),(int) currentBounds.getMaxX(),(int) topBounds.getMaxY());
         methods.draw(g2, bottomBounds);
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
+        // Restore first color
+        g2.setColor(oldColor);
     }
-
 
     @Override
     public boolean addChild(INode n, Point2D p)
     {
-        if (n  instanceof PointNode)
+        if (n instanceof PointNode)
         {
             return true;
         }
@@ -150,14 +162,14 @@ public class InterfaceNode extends RectangularNode
     @Override
     public InterfaceNode clone()
     {
-       InterfaceNode cloned = (InterfaceNode)super.clone();
-       cloned.name = name.clone();
-       cloned.methods = methods.clone();
-       return cloned;
+        InterfaceNode cloned = (InterfaceNode) super.clone();
+        cloned.name = name.clone();
+        cloned.methods = methods.clone();
+        return cloned;
     }
-    
-    //private transient double midHeight;
-    //private transient double botHeight;
+
+    // private transient double midHeight;
+    // private transient double botHeight;
     private MultiLineString name;
     private MultiLineString methods;
 

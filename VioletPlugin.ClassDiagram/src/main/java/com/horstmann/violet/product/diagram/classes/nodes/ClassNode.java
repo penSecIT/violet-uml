@@ -1,5 +1,6 @@
 package com.horstmann.violet.product.diagram.classes.nodes;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -101,6 +102,8 @@ public class ClassNode extends RectangularNode
     @Override
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
@@ -112,14 +115,20 @@ public class ClassNode extends RectangularNode
         Rectangle2D topBounds = getTopRectangleBounds();
         Rectangle2D midBounds = getMiddleRectangleBounds(); 
         Rectangle2D bottomBounds = getBottomRectangleBounds();
+        g2.setColor(getBackgroundColor());
+        g2.fill(currentBounds);
+        g2.setColor(getBorderColor());
         g2.draw(currentBounds);
-        name.draw(g2, topBounds);
         g2.drawLine((int) topBounds.getX(),(int) topBounds.getMaxY(),(int) currentBounds.getMaxX(),(int) topBounds.getMaxY());
-        attributes.draw(g2, midBounds);
         g2.drawLine((int) bottomBounds.getX(),(int) bottomBounds.getY(),(int) currentBounds.getMaxX(),(int) bottomBounds.getY());
+        g2.setColor(getTextColor());
+        name.draw(g2, topBounds);
+        attributes.draw(g2, midBounds);
         methods.draw(g2, bottomBounds);
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /*
