@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.state;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
@@ -61,8 +62,21 @@ public class StateNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        g2.draw(getShape());
+
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Perform drawing
+        Shape shape = getShape();
+        g2.setColor(getBackgroundColor());
+        g2.fill(shape);
+        g2.setColor(getBorderColor());
+        g2.draw(shape);
+        g2.setColor(getTextColor());
         name.draw(g2, getBounds());
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     @Override

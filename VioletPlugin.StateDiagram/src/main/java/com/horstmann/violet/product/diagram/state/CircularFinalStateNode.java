@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.state;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
@@ -55,14 +56,25 @@ public class CircularFinalStateNode extends EllipticalNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
+
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Draw circles
         Ellipse2D circle = new Ellipse2D.Double(getBounds().getX(), getBounds().getY(), getBounds().getWidth(), getBounds()
                 .getHeight());
 
         Rectangle2D bounds = getBounds();
         Ellipse2D inside = new Ellipse2D.Double(bounds.getX() + DEFAULT_GAP, bounds.getY() + DEFAULT_GAP, bounds.getWidth() - 2
                 * DEFAULT_GAP, bounds.getHeight() - 2 * DEFAULT_GAP);
+        g2.setColor(getBackgroundColor());
+        g2.fill(circle);
+        g2.setColor(getBorderColor());
         g2.fill(inside);
         g2.draw(circle);
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /** default node diameter */
