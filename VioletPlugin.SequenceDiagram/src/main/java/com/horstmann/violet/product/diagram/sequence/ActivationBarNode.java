@@ -506,6 +506,8 @@ public class ActivationBarNode extends RectangularNode
     @Override
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
@@ -515,13 +517,14 @@ public class ActivationBarNode extends RectangularNode
         g2.translate(g2Location.getX(), g2Location.getY());
         // Perform painting
         super.draw(g2);
-        Color oldColor = g2.getColor();
-        g2.setColor(Color.WHITE);
+        g2.setColor(getBackgroundColor());
         g2.fill(b);
-        g2.setColor(oldColor);
+        g2.setColor(getBorderColor());
         g2.draw(b);
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
+        // Restore first color
+        g2.setColor(oldColor);
         // Reset location for next draw
         // Draw its children
         for (INode node : getChildren())
