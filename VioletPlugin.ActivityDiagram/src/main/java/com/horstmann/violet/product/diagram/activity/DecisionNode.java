@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.activity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
@@ -49,26 +50,30 @@ public class DecisionNode extends RectangularNode
     public Point2D getConnectionPoint(IEdge e)
     {
         Rectangle2D b = getBounds();
-        
+
         double x = b.getCenterX();
         double y = b.getCenterY();
 
         Direction d = e.getDirection(this);
-        
+
         Direction nearestCardinalDirection = d.getNearestCardinalDirection();
-        if (Direction.NORTH.equals(nearestCardinalDirection)) {
+        if (Direction.NORTH.equals(nearestCardinalDirection))
+        {
             x = b.getMaxX() - (b.getWidth() / 2);
             y = b.getMaxY();
         }
-        if (Direction.SOUTH.equals(nearestCardinalDirection)) {
+        if (Direction.SOUTH.equals(nearestCardinalDirection))
+        {
             x = b.getMaxX() - (b.getWidth() / 2);
             y = b.getMinY();
         }
-        if (Direction.EAST.equals(nearestCardinalDirection)) {
+        if (Direction.EAST.equals(nearestCardinalDirection))
+        {
             x = b.getMinX();
             y = b.getMaxY() - (b.getHeight() / 2);
         }
-        if (Direction.WEST.equals(nearestCardinalDirection)) {
+        if (Direction.WEST.equals(nearestCardinalDirection))
+        {
             x = b.getMaxX();
             y = b.getMaxY() - (b.getHeight() / 2);
         }
@@ -105,13 +110,26 @@ public class DecisionNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Draw shape
+        Shape shape = getShape();
+        g2.setColor(getBackgroundColor());
+        g2.fill(shape);
+        g2.setColor(getBorderColor());
+        g2.draw(shape);
+        
+        // Draw text
         Rectangle2D shapeRect = getBounds();
         Rectangle2D textRect = condition.getBounds();
         textRect.setRect(shapeRect.getCenterX() - textRect.getWidth() / 2, shapeRect.getCenterY() - textRect.getHeight() / 2,
                 textRect.getWidth(), textRect.getHeight());
-
-        g2.draw(getShape());
+        g2.setColor(getTextColor());
         condition.draw(g2, textRect);
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     @Override

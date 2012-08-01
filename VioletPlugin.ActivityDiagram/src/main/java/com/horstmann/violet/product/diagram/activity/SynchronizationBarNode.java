@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.activity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -135,7 +136,16 @@ public class SynchronizationBarNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
+
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Perform drawing
+        g2.setColor(getBorderColor());
         g2.fill(getShape());
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /**

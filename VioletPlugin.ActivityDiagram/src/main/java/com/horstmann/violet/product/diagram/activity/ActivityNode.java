@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.activity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
@@ -50,68 +51,18 @@ public class ActivityNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        g2.draw(getShape());
+        // Backup current color;
+        Color oldColor = g2.getColor();
+        // Draw shape and content
+        Shape shape = getShape();
+        g2.setColor(getBackgroundColor());
+        g2.fill(shape);
+        g2.setColor(getBorderColor());
+        g2.draw(shape);
+        g2.setColor(getTextColor());
         name.draw(g2, getBounds());
-    }
-
-    @Override
-    public Point2D getConnectionPoint(IEdge e)
-    {
-//        if (!ActivityTransitionEdge.class.isInstance(e))
-//        {
-//            return super.getConnectionPoint(e);
-//        }
-//        if (!this.equals(e.getEnd()))
-//        {
-//            return super.getConnectionPoint(e);
-//        }
-//
-//        ActivityTransitionEdge transitionEdge = (ActivityTransitionEdge) e;
-//        BentStyle bentStyle = transitionEdge.getBentStyle();
-//        if (BentStyle.HV.equals(bentStyle))
-//        {
-//            Rectangle2D b = getBounds();
-//            List<IEdge> edgesOnSameSide = getEdgesOnSameSide(e);
-//            int position = edgesOnSameSide.indexOf(e);
-//            int size = edgesOnSameSide.size();
-//            Direction d = e.getDirection(this);
-//            double dY = d.getY();
-//            if (dY >= 0)
-//            {
-//                double x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
-//                double y = b.getMinY();
-//                return new Point2D.Double(x, y);
-//            }
-//            if (dY < 0)
-//            {
-//                double x = b.getMaxX() - (b.getWidth() / (size + 1)) * (position + 1);
-//                double y = b.getMaxY();
-//                return new Point2D.Double(x, y);
-//            }
-//        }
-//        if (BentStyle.VH.equals(bentStyle))
-//        {
-//            Rectangle2D b = getBounds();
-//            List<IEdge> edgesOnSameSide = getEdgesOnSameSide(e);
-//            int position = edgesOnSameSide.indexOf(e);
-//            int size = edgesOnSameSide.size();
-//            Direction d = e.getDirection(this);
-//            double dX = d.getX();
-//            if (dX >= 0)
-//            {
-//                double x = b.getMinX();
-//                double y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
-//                return new Point2D.Double(x, y);
-//            }
-//            if (dX < 0)
-//            {
-//                double x = b.getMaxX();
-//                double y = b.getMaxY() - (b.getHeight() / (size + 1)) * (position + 1);
-//                return new Point2D.Double(x, y);
-//            }
-//        }
-
-        return super.getConnectionPoint(e);
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     @Override
