@@ -21,7 +21,9 @@
 
 package com.horstmann.violet.product.diagram.usecase;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -60,15 +62,16 @@ public class UseCaseNode extends EllipticalNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(currentBounds);
         return snappedBounds;
     }
-    
+
     @Override
     public Point2D getConnectionPoint(IEdge e)
     {
         // if use case node is atatched to an actor node, we force connection point to cardianl points
-        if (e.getStart().getClass().isAssignableFrom(ActorNode.class) || e.getEnd().getClass().isAssignableFrom(ActorNode.class)) {
-            
+        if (e.getStart().getClass().isAssignableFrom(ActorNode.class) || e.getEnd().getClass().isAssignableFrom(ActorNode.class))
+        {
+
         }
-        
+
         return super.getConnectionPoint(e);
     }
 
@@ -76,8 +79,21 @@ public class UseCaseNode extends EllipticalNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
-        g2.draw(getShape());
+
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Draw shape and text
+        Shape shape = getShape();
+        g2.setColor(getBackgroundColor());
+        g2.fill(shape);
+        g2.setColor(getBorderColor());
+        g2.draw(shape);
+        g2.setColor(getTextColor());
         name.draw(g2, getBounds());
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /**

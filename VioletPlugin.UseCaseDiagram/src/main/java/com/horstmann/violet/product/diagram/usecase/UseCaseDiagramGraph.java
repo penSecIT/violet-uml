@@ -32,7 +32,6 @@ import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.ArrowHead;
 import com.horstmann.violet.product.diagram.abstracts.property.BentStyle;
 import com.horstmann.violet.product.diagram.abstracts.property.LineStyle;
-import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
 import com.horstmann.violet.product.diagram.common.NoteNode;
 
@@ -71,10 +70,6 @@ public class UseCaseDiagramGraph extends AbstractGraph
         NoteNode noteNode = new NoteNode();
         noteNode.setToolTip(rs.getString("node2.tooltip"));
         NODE_PROTOTYPES.add(noteNode);
-
-        DiagramLinkNode diagramLinkNode = new DiagramLinkNode();
-        diagramLinkNode.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES.add(diagramLinkNode);
 
         UseCaseRelationshipEdge communication = new UseCaseRelationshipEdge();
         communication.setBentStyle(BentStyle.STRAIGHT);

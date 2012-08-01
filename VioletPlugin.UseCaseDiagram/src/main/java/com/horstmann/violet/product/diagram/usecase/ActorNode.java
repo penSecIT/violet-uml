@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.usecase;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -65,6 +66,9 @@ public class ActorNode extends RectangularNode
     @Override
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
         Rectangle2D bounds = getBounds();
 
         // Draw stick person
@@ -93,13 +97,18 @@ public class ActorNode extends RectangularNode
         path.lineTo(hipX, hipY);
         path.lineTo(feetX2, feetY);
 
+        g2.setColor(getBorderColor());
         g2.draw(path);
 
         // Draw name
         Rectangle2D bot = name.getBounds();
         Rectangle2D namebox = new Rectangle2D.Double(bounds.getX() + (bounds.getWidth() - bot.getWidth()) / 2, bounds.getY()
                 + DEFAULT_HEIGHT, bot.getWidth(), bot.getHeight());
+        g2.setColor(getTextColor());
         name.draw(g2, namebox);
+
+        // Restore first color
+        g2.setColor(oldColor);
     }
 
     /**
