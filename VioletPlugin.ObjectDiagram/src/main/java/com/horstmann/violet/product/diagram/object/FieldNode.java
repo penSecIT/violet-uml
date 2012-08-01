@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.object;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -56,21 +57,23 @@ public class FieldNode extends RectangularNode
         Point2D snappedLocation = getGraph().getGrid().snap(location);
         return snappedLocation;
     }
-    
-    
-    
-    private void adjustVerticalLocation() {
+
+    private void adjustVerticalLocation()
+    {
         this.verticalLocation = 0;
         INode parent = getParent();
-        if (parent == null) {
+        if (parent == null)
+        {
             return;
         }
         List<INode> children = parent.getChildren();
         ObjectNode parentNode = (ObjectNode) parent;
         Rectangle2D topRectangle = parentNode.getTopRectangle();
         this.verticalLocation = topRectangle.getHeight();
-        for (INode node : children) {
-            if (node == this) {
+        for (INode node : children)
+        {
+            if (node == this)
+            {
                 return;
             }
             Rectangle2D bounds = node.getBounds();
@@ -78,19 +81,24 @@ public class FieldNode extends RectangularNode
             this.verticalLocation = this.verticalLocation + nodeHeight + YGAP;
         }
     }
-    
-    private void adjustHorizontalLocation() {
+
+    private void adjustHorizontalLocation()
+    {
         this.horizontalLocation = 0;
         double maxWidth = 0;
         INode parent = getParent();
-        if (parent == null) {
+        if (parent == null)
+        {
             return;
         }
-        for (INode node : parent.getChildren()) {
-            if (node == this) {
+        for (INode node : parent.getChildren())
+        {
+            if (node == this)
+            {
                 continue;
             }
-            if (!node.getClass().isAssignableFrom(FieldNode.class)) {
+            if (!node.getClass().isAssignableFrom(FieldNode.class))
+            {
                 continue;
             }
             Rectangle2D bounds = node.getBounds();
@@ -99,11 +107,12 @@ public class FieldNode extends RectangularNode
         }
         Rectangle2D currentBounds = getBounds();
         double currentWidth = currentBounds.getWidth();
-        if (currentWidth < maxWidth) {
+        if (currentWidth < maxWidth)
+        {
             this.horizontalLocation = (maxWidth - currentWidth) / 2;
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -111,18 +120,24 @@ public class FieldNode extends RectangularNode
      */
     public void draw(Graphics2D g2)
     {
+        // Backup current color;
+        Color oldColor = g2.getColor();
         adjustHorizontalLocation();
         adjustVerticalLocation();
         // Translate g2 if node has parent
         Point2D nodeLocationOnGraph = getLocationOnGraph();
         Point2D nodeLocation = getLocation();
-        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY() - nodeLocation.getY());
+        Point2D g2Location = new Point2D.Double(nodeLocationOnGraph.getX() - nodeLocation.getX(), nodeLocationOnGraph.getY()
+                - nodeLocation.getY());
         g2.translate(g2Location.getX(), g2Location.getY());
         // Perform drawing
         Rectangle2D b = getBounds();
+        g2.setColor(getTextColor());
         name.draw(g2, getNameBounds());
         equalSeparator.draw(g2, getEqualSeparatorBounds());
         value.draw(g2, getValueBounds());
+        // Restore first color
+        g2.setColor(oldColor);
         // Restore g2 original location
         g2.translate(-g2Location.getX(), -g2Location.getY());
     }
@@ -137,13 +152,16 @@ public class FieldNode extends RectangularNode
             return true;
         }
         // Hack to allow drawing relationship edge over fields
-        if (e.getClass().isAssignableFrom(ObjectRelationshipEdge.class)) {
+        if (e.getClass().isAssignableFrom(ObjectRelationshipEdge.class))
+        {
             INode startingNode = e.getStart();
             INode endingNode = e.getEnd();
-            if (startingNode.getClass().isAssignableFrom(FieldNode.class)) {
+            if (startingNode.getClass().isAssignableFrom(FieldNode.class))
+            {
                 startingNode = startingNode.getParent();
             }
-            if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
+            if (endingNode.getClass().isAssignableFrom(FieldNode.class))
+            {
                 endingNode = endingNode.getParent();
             }
             e.setStart(startingNode);
@@ -154,16 +172,16 @@ public class FieldNode extends RectangularNode
     }
 
     /**
-     * Hack to be able to add fields on object when we do a single click on another field
-     * READ THIS : due to this hack, when you dble click to edit this field, the first click
-     * triggers this methods (which is a correct framework behavior). The workaround for end users
-     * is to use right click instead of dble click to edit fields. It is so simple to find it
-     * so we accept to deal with this bug.
+     * Hack to be able to add fields on object when we do a single click on another field READ THIS : due to this hack, when you
+     * dble click to edit this field, the first click triggers this methods (which is a correct framework behavior). The workaround
+     * for end users is to use right click instead of dble click to edit fields. It is so simple to find it so we accept to deal
+     * with this bug.
      */
     @Override
     public boolean addChild(INode n, Point2D p)
     {
-        if (!n.getClass().isAssignableFrom(FieldNode.class)) {
+        if (!n.getClass().isAssignableFrom(FieldNode.class))
+        {
             return false;
         }
         INode parent = getParent();
@@ -172,7 +190,6 @@ public class FieldNode extends RectangularNode
         parent.addChild(n, currentPosition + 1);
         return true;
     }
-
 
     @Override
     public Point2D getConnectionPoint(IEdge edge)
@@ -183,15 +200,17 @@ public class FieldNode extends RectangularNode
         // This node has a location relative to its parent
         // So, we need to take the parent's location in the connection point we return
         INode parentNode = getParent();
-        if (parentNode != null) {
+        if (parentNode != null)
+        {
             Point2D parentLocation = parentNode.getLocation();
             parentX = parentLocation.getX();
             parentY = parentLocation.getY();
         }
         return new Point2D.Double(parentX + (b.getMaxX() + b.getX() + getAxisX()) / 2, parentY + b.getCenterY());
     }
-    
-    private Rectangle2D getNameBounds() {
+
+    private Rectangle2D getNameBounds()
+    {
         Rectangle2D nameBounds = name.getBounds();
         Point2D currentLocation = getLocation();
         double x = currentLocation.getX();
@@ -202,8 +221,9 @@ public class FieldNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(nameBounds);
         return snappedBounds;
     }
-    
-    private Rectangle2D getEqualSeparatorBounds() {
+
+    private Rectangle2D getEqualSeparatorBounds()
+    {
         Rectangle2D equalsSeparatorBounds = equalSeparator.getBounds();
         Rectangle2D nameBounds = getNameBounds();
         double x = nameBounds.getMaxX();
@@ -214,8 +234,9 @@ public class FieldNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(equalsSeparatorBounds);
         return snappedBounds;
     }
-    
-    private Rectangle2D getValueBounds() {
+
+    private Rectangle2D getValueBounds()
+    {
         Rectangle2D valueBounds = value.getBounds();
         Rectangle2D equalSeparatorBounds = getEqualSeparatorBounds();
         double x = equalSeparatorBounds.getMaxX();
@@ -226,7 +247,7 @@ public class FieldNode extends RectangularNode
         Rectangle2D snappedBounds = getGraph().getGrid().snap(valueBounds);
         return snappedBounds;
     }
-    
+
     @Override
     public Rectangle2D getBounds()
     {
@@ -244,7 +265,6 @@ public class FieldNode extends RectangularNode
         return snappedBounds;
     }
 
-    
     /**
      * Sets the name property value.
      * 
@@ -316,9 +336,8 @@ public class FieldNode extends RectangularNode
     private static int DEFAULT_HEIGHT = 20;
     private static int XGAP = 5;
     private static int YGAP = 5;
-    
-    private transient double verticalLocation = 0; 
-    private transient double horizontalLocation = 0; 
-    
-    
+
+    private transient double verticalLocation = 0;
+    private transient double horizontalLocation = 0;
+
 }

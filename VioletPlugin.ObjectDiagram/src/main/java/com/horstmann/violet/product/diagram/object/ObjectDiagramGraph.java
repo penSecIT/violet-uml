@@ -30,7 +30,6 @@ import com.horstmann.violet.product.diagram.abstracts.AbstractGraph;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.abstracts.property.MultiLineString;
-import com.horstmann.violet.product.diagram.common.DiagramLinkNode;
 import com.horstmann.violet.product.diagram.common.NoteEdge;
 import com.horstmann.violet.product.diagram.common.NoteNode;
 
@@ -74,10 +73,6 @@ public class ObjectDiagramGraph extends AbstractGraph
         NoteNode node2 = new NoteNode();
         node2.setToolTip(rs.getString("node2.tooltip"));
         NODE_PROTOTYPES.add(node2);
-
-        DiagramLinkNode node3 = new DiagramLinkNode();
-        node3.setToolTip(rs.getString("node3.tooltip"));
-        NODE_PROTOTYPES.add(node3);
 
         ObjectReferenceEdge reference = new ObjectReferenceEdge();
         reference.setToolTip(rs.getString("edge0.tooltip"));

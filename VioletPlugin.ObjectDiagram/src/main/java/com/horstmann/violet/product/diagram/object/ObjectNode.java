@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.product.diagram.object;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -51,17 +52,32 @@ public class ObjectNode extends RectangularNode
     public void draw(Graphics2D g2)
     {
         super.draw(g2);
+
+        // Backup current color;
+        Color oldColor = g2.getColor();
+
+        // Perform drawing
         Rectangle2D globalBounds = getBounds();
         Rectangle2D topBounds = getTopRectangle();
+        g2.setColor(getBackgroundColor());
+        g2.fill(globalBounds);
+        g2.setColor(getBorderColor());
         g2.draw(globalBounds);
+        g2.setColor(getTextColor());
         name.draw(g2, topBounds);
-        g2.drawLine((int) globalBounds.getX(),(int) topBounds.getMaxY(),(int) globalBounds.getMaxX(),(int) topBounds.getMaxY());
-        for (INode n : getChildren()) {
+        g2.setColor(getBorderColor());
+        g2.drawLine((int) globalBounds.getX(), (int) topBounds.getMaxY(), (int) globalBounds.getMaxX(), (int) topBounds.getMaxY());
+
+        // Restore first color
+        g2.setColor(oldColor);
+
+        // Draw children
+        for (INode n : getChildren())
+        {
             n.draw(g2); // make sure they get drawn on top
         }
     }
 
-        
     /**
      * Returns the rectangle at the top of the object node.
      * 
@@ -72,7 +88,8 @@ public class ObjectNode extends RectangularNode
         Rectangle2D b = name.getBounds();
         double defaultHeight = DEFAULT_HEIGHT;
         boolean hasChildren = (getChildren().size() > 0);
-        if (hasChildren) {
+        if (hasChildren)
+        {
             defaultHeight = defaultHeight - YGAP;
         }
         Point2D currentLocation = getLocation();
@@ -84,12 +101,14 @@ public class ObjectNode extends RectangularNode
         topBounds = getGraph().getGrid().snap(topBounds);
         return topBounds;
     }
-    
-    private Rectangle2D getBottomRectangle() {
+
+    private Rectangle2D getBottomRectangle()
+    {
         Rectangle2D topBounds = getTopRectangle();
         double topHeight = topBounds.getHeight();
         Rectangle2D bottomBounds = new Rectangle2D.Double(0, topHeight, 0, 0);
-        for (INode node : getChildren()) {
+        for (INode node : getChildren())
+        {
             Rectangle2D nodeBounds = node.getBounds();
             bottomBounds.add(nodeBounds);
         }
@@ -101,7 +120,7 @@ public class ObjectNode extends RectangularNode
         bottomBounds = getGraph().getGrid().snap(bottomBounds);
         return bottomBounds;
     }
-    
+
     @Override
     public Rectangle2D getBounds()
     {
@@ -114,15 +133,18 @@ public class ObjectNode extends RectangularNode
 
     public boolean addConnection(IEdge e)
     {
-        if (!e.getClass().isAssignableFrom(ObjectRelationshipEdge.class)) {
+        if (!e.getClass().isAssignableFrom(ObjectRelationshipEdge.class))
+        {
             return false;
         }
         INode startingNode = e.getStart();
         INode endingNode = e.getEnd();
-        if (startingNode.getClass().isAssignableFrom(FieldNode.class)) {
+        if (startingNode.getClass().isAssignableFrom(FieldNode.class))
+        {
             startingNode = startingNode.getParent();
         }
-        if (endingNode.getClass().isAssignableFrom(FieldNode.class)) {
+        if (endingNode.getClass().isAssignableFrom(FieldNode.class))
+        {
             endingNode = endingNode.getParent();
         }
         e.setStart(startingNode);
@@ -134,13 +156,13 @@ public class ObjectNode extends RectangularNode
     {
         Rectangle2D topBounds = getTopRectangle();
         double topHeight = topBounds.getHeight();
-        if (d.getX() > 0) {
+        if (d.getX() > 0)
+        {
             return new Point2D.Double(getBounds().getMaxX(), getBounds().getMinY() + topHeight / 2);
         }
         return new Point2D.Double(getBounds().getX(), getBounds().getMinY() + topHeight / 2);
     }
 
-    
     /**
      * Sets the name property value.
      * 
@@ -176,7 +198,6 @@ public class ObjectNode extends RectangularNode
         return true;
     }
 
-    
     public ObjectNode clone()
     {
         ObjectNode cloned = (ObjectNode) super.clone();
