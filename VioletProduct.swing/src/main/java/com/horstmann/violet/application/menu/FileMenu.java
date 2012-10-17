@@ -29,7 +29,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -246,7 +251,8 @@ public class FileMenu extends JMenu
                         {
                             String filename = fileSaver.getFileDefinition().getFilename();
                             String extension = exportFilter.getExtension();
-                            if (filename.toLowerCase().endsWith(extension.toLowerCase())) {
+                            if (filename.toLowerCase().endsWith(extension.toLowerCase()))
+                            {
                                 String format = extension.replace(".", "");
                                 workspace.getGraphFile().exportImage(out, format);
                             }
@@ -352,15 +358,18 @@ public class FileMenu extends JMenu
                         if (result == JOptionPane.YES_OPTION)
                         {
                             String filename = graphFile.getFilename();
-                            if (filename == null) {
+                            if (filename == null)
+                            {
                                 graphFile.saveToNewLocation();
                             }
-                            if (filename != null) {
+                            if (filename != null)
+                            {
                                 graphFile.save();
                             }
-                            if (!graphFile.isSaveRequired()) {
-                            	mainFrame.removeDiagramPanel(workspace);
-                            	userPreferencesService.removeOpenedFile(graphFile);
+                            if (!graphFile.isSaveRequired())
+                            {
+                                mainFrame.removeDiagramPanel(workspace);
+                                userPreferencesService.removeOpenedFile(graphFile);
                             }
                         }
                         if (result == JOptionPane.NO_OPTION)
@@ -390,10 +399,11 @@ public class FileMenu extends JMenu
             {
                 try
                 {
-                	IFileReader fileOpener = fileChooserService.chooseAndGetFileReader();
-                    if (fileOpener == null) {
+                    IFileReader fileOpener = fileChooserService.chooseAndGetFileReader();
+                    if (fileOpener == null)
+                    {
                         // Action cancelled by user
-                    	return;
+                        return;
                     }
                     IFile selectedFile = fileOpener.getFileDefinition();
                     IGraphFile graphFile = new GraphFile(selectedFile);
@@ -417,20 +427,53 @@ public class FileMenu extends JMenu
     public void initFileNewMenu()
     {
         List<IDiagramPlugin> diagramPlugins = this.pluginRegistry.getDiagramPlugins();
+        
+        // Step 1 : sort diagram plugins by categories and names
+        SortedMap<String, SortedSet<IDiagramPlugin>> diagramPluginsSortedByCategory = new TreeMap<String, SortedSet<IDiagramPlugin>>();
         for (final IDiagramPlugin aDiagramPlugin : diagramPlugins)
         {
-            JMenuItem item = new JMenuItem(aDiagramPlugin.getName());
-            item.addActionListener(new ActionListener()
+            String category = aDiagramPlugin.getCategory();
+            if (!diagramPluginsSortedByCategory.containsKey(category))
             {
-                public void actionPerformed(ActionEvent event)
+                SortedSet<IDiagramPlugin> newSortedSet = new TreeSet<IDiagramPlugin>(new Comparator<IDiagramPlugin>()
                 {
-                    Class<? extends IGraph> graphClass = aDiagramPlugin.getGraphClass();
-                    IGraphFile graphFile = new GraphFile(graphClass);
-                    IWorkspace diagramPanel = new Workspace(graphFile);
-                    mainFrame.addTabbedPane(diagramPanel);
-                }
-            });
-            fileNewMenu.add(item);
+                    @Override
+                    public int compare(IDiagramPlugin o1, IDiagramPlugin o2)
+                    {
+                        String n1 = o1.getName();
+                        String n2 = o2.getName();
+                        return n1.compareTo(n2);
+                    }
+                });
+                diagramPluginsSortedByCategory.put(category, newSortedSet);
+            }
+            SortedSet<IDiagramPlugin> aSortedSet = diagramPluginsSortedByCategory.get(category);
+            aSortedSet.add(aDiagramPlugin);
+        }
+
+        // Step 2 : populate menu entry
+        for (String aCategory : diagramPluginsSortedByCategory.keySet()) {
+            String categoryName = aCategory.replaceFirst("[0-9]*\\.", "");
+            JMenu categoryMenuItem = new JMenu(categoryName);
+            fileNewMenu.add(categoryMenuItem);
+            SortedSet<IDiagramPlugin> diagramPluginsByCategory = diagramPluginsSortedByCategory.get(aCategory);
+            for (final IDiagramPlugin aDiagramPlugin : diagramPluginsByCategory)
+            {
+                String name = aDiagramPlugin.getName();
+                name = name.replaceFirst("[0-9]*\\.", "");
+                JMenuItem item = new JMenuItem(name);
+                item.addActionListener(new ActionListener()
+                {
+                    public void actionPerformed(ActionEvent event)
+                    {
+                        Class<? extends IGraph> graphClass = aDiagramPlugin.getGraphClass();
+                        IGraphFile graphFile = new GraphFile(graphClass);
+                        IWorkspace diagramPanel = new Workspace(graphFile);
+                        mainFrame.addTabbedPane(diagramPanel);
+                    }
+                });
+                categoryMenuItem.add(item);
+            }
         }
     }
 
@@ -444,7 +487,7 @@ public class FileMenu extends JMenu
         // Refresh recent files list each time the global file menu gets the focus
         this.addFocusListener(new FocusListener()
         {
-            
+
             public void focusGained(FocusEvent e)
             {
                 refreshFileRecentMenu();
@@ -477,11 +520,14 @@ public class FileMenu extends JMenu
             {
                 public void actionPerformed(ActionEvent event)
                 {
-                    try {
+                    try
+                    {
                         IGraphFile graphFile = new GraphFile(aFile);
                         IWorkspace workspace = new Workspace(graphFile);
                         mainFrame.addTabbedPane(workspace);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         dialogFactory.showErrorDialog(e.getMessage());
                     }
                 }
@@ -499,22 +545,22 @@ public class FileMenu extends JMenu
     /** Plugin registry */
     @InjectedBean
     private PluginRegistry pluginRegistry;
-    
+
     /** DialogBox handler */
     @InjectedBean
     private DialogFactory dialogFactory;
-    
+
     /** Access to user preferences */
     @InjectedBean
     private UserPreferencesService userPreferencesService;
-    
+
     /** File services */
     @InjectedBean
     private FileNamingService fileNamingService;
 
     /** Application main frame */
     private MainFrame mainFrame;
-    
+
     @ResourceBundleBean(key = "file.new")
     private JMenu fileNewMenu;
 

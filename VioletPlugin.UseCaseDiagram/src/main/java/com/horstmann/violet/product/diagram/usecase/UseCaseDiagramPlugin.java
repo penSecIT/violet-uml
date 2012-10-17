@@ -18,71 +18,48 @@ import com.horstmann.violet.product.diagram.abstracts.IGraph;
 public class UseCaseDiagramPlugin implements IDiagramPlugin, Violet016FileFilterExtensionPoint
 {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.plugin.AbstractPlugin#getDescription()
-     */
+	@Override
     public String getDescription()
     {
         return "Use case UML diagram";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.plugin.AbstractPlugin#getProvider()
-     */
+	@Override
     public String getProvider()
     {
         return "Alexandre de Pellegrin / Cays S. Horstmann";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.framework.plugin.AbstractPlugin#getVersion()
-     */
+	@Override
     public String getVersion()
     {
         return "1.0.0";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getName()
-     */
+	@Override
     public String getName()
     {
-        return this.rs.getString("menu.usecase_diagram.text");
+        return this.rs.getString("menu.usecase_diagram.name");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getFileExtension()
-     */
+	@Override
+	public String getCategory() {
+        return this.rs.getString("menu.usecase_diagram.category");
+	}
+	
+	@Override
     public String getFileExtension()
     {
         return this.rs.getString("files.usecase.extension");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getFileExtensionName()
-     */
+	@Override
     public String getFileExtensionName()
     {
         return this.rs.getString("files.usecase.name");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.horstmann.violet.product.diagram.abstracts.GraphType#getGraphClass()
-     */
+	@Override
     public Class<? extends IGraph> getGraphClass()
     {
         return UseCaseDiagramGraph.class;

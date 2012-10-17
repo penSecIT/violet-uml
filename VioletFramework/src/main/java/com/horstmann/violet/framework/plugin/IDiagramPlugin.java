@@ -15,7 +15,12 @@ public interface IDiagramPlugin extends AbstractPlugin
      * @return graph type name (ex : Class Diagram)
      */
     public abstract String getName();
-
+    
+    /**
+     * @return the category of this diagram (ex : Static diagram)
+     */
+    public abstract String getCategory(); 
+    
     /**
      * @return file extension associated to this graph (ex : .class.violet)
      */

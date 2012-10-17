@@ -39,9 +39,14 @@ public class SequenceDiagramPlugin implements IDiagramPlugin, Violet016FileFilte
     @Override
     public String getName()
     {
-        return this.rs.getString("menu.sequence_diagram.text");
+        return this.rs.getString("menu.sequence_diagram.name");
     }
 
+    @Override
+    public String getCategory() {
+        return this.rs.getString("menu.sequence_diagram.category");
+    }
+    
     @Override
     public String getFileExtension()
     {
