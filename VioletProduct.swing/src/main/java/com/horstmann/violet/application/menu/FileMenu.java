@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.application.menu;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -37,6 +38,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -454,8 +456,11 @@ public class FileMenu extends JMenu
         // Step 2 : populate menu entry
         for (String aCategory : diagramPluginsSortedByCategory.keySet()) {
             String categoryName = aCategory.replaceFirst("[0-9]*\\.", "");
-            JMenu categoryMenuItem = new JMenu(categoryName);
-            fileNewMenu.add(categoryMenuItem);
+            JMenu categorySubMenu = new JMenu(categoryName);
+            Dimension preferredSize = categorySubMenu.getPreferredSize();
+            preferredSize = new Dimension((int) preferredSize.getWidth() + 30, (int) preferredSize.getHeight());
+			categorySubMenu.setPreferredSize(preferredSize);
+            fileNewMenu.add(categorySubMenu);
             SortedSet<IDiagramPlugin> diagramPluginsByCategory = diagramPluginsSortedByCategory.get(aCategory);
             for (final IDiagramPlugin aDiagramPlugin : diagramPluginsByCategory)
             {
@@ -472,7 +477,7 @@ public class FileMenu extends JMenu
                         mainFrame.addTabbedPane(diagramPanel);
                     }
                 });
-                categoryMenuItem.add(item);
+                categorySubMenu.add(item);
             }
         }
     }

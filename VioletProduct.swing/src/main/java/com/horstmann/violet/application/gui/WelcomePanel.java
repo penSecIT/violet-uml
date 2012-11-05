@@ -113,18 +113,47 @@ public class WelcomePanel extends JPanel
             for (int i = 0; i < newMenu.getItemCount(); i++)
             {
                 final JMenuItem item = newMenu.getItem(i);
-                String label = item.getText();
-                JButton newDiagramShortcut = new JButton(label.toLowerCase());
-                newDiagramShortcut.setUI(new WelcomeButtonUI());
-                newDiagramShortcut.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                newDiagramShortcut.addActionListener(new ActionListener()
-                {
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        item.doClick();
-                    }
-                });
-                leftPanel.add(newDiagramShortcut);
+                boolean isSubMenu = JMenu.class.isInstance(item);
+				if (isSubMenu) {
+					JMenu subMenu = (JMenu) item;
+					String label = subMenu.getText();
+					JLabel title = new JLabel(label.toLowerCase());
+		            ITheme cLAF = ThemeManager.getInstance().getTheme();
+		            title.setFont(cLAF.getWelcomeBigFont());
+		            title.setForeground(cLAF.getWelcomeBackgroundEndColor());
+		            title.setBorder(new EmptyBorder(0, 30, 0, 0));
+		            title.setAlignmentX(Component.RIGHT_ALIGNMENT);
+					leftPanel.add(title);
+					for (int j = 0; j < subMenu.getItemCount(); j++) {
+						final JMenuItem subItem = subMenu.getItem(j);
+						String subLabel = subItem.getText();
+						JButton newDiagramShortcut = new JButton(subLabel.toLowerCase());
+						newDiagramShortcut.setUI(new WelcomeButtonUI());
+						newDiagramShortcut.setAlignmentX(Component.RIGHT_ALIGNMENT);
+						newDiagramShortcut.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
+								subItem.doClick();
+							}
+						});
+						leftPanel.add(newDiagramShortcut);
+					}
+                }
+				if (!isSubMenu) {
+					String label = item.getText();
+					JButton newDiagramShortcut = new JButton(label.toLowerCase());
+					newDiagramShortcut.setUI(new WelcomeButtonUI());
+					newDiagramShortcut.setAlignmentX(Component.RIGHT_ALIGNMENT);
+					newDiagramShortcut.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							item.doClick();
+						}
+					});
+					leftPanel.add(newDiagramShortcut);
+				}
             }
         }
         return this.leftPanel;
