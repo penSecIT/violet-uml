@@ -23,6 +23,7 @@ package com.horstmann.violet.application.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -139,6 +140,11 @@ public class WelcomePanel extends JPanel
 						});
 						leftPanel.add(newDiagramShortcut);
 					}
+					JPanel separator = new JPanel();
+					separator.setBorder(new EmptyBorder(0, 0, 0, 0));
+					separator.setPreferredSize(new Dimension(10, 20));
+					separator.setOpaque(false);
+					leftPanel.add(separator);
                 }
 				if (!isSubMenu) {
 					String label = item.getText();
