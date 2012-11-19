@@ -24,6 +24,7 @@ package com.horstmann.violet.product.diagram.abstracts.property;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.horstmann.violet.framework.util.SerializableEnumeration;
 
@@ -56,16 +57,25 @@ public class BentStyle extends SerializableEnumeration
     /**
      * Gets the points at which a line joining two rectangles is bent according to a bent style.
      * 
-     * @param startingRectangle the starting rectangle
-     * @param endingRectangle the ending rectangle
+     * @param connectionPoints the points to use (starting point, optional middle points and ending points merged in an array of
+     *            points)
      * @return an array list of points at which to bend the segmented line joining the two rectangles
      */
-    public ArrayList<Point2D> getPath(Point2D startingPoint, Point2D endingPoint)
+    public ArrayList<Point2D> getPath(Point2D... connectionPoints)
     {
+        if (connectionPoints.length < 2)
+        {
+            throw new RuntimeException("BentStyle need at least two points to process the path of an edge");
+        }
+
+        Point2D startingPoint = connectionPoints[0];
+        Point2D endingPoint = connectionPoints[connectionPoints.length - 1];
+
         ArrayList<Point2D> r = null;
 
         // Try to get current path
         if (this == STRAIGHT) r = getStraightPath(startingPoint, endingPoint);
+        else if (this == FREE) r = getFreePath(connectionPoints);
         else if (this == HV) r = getHVPath(startingPoint, endingPoint);
         else if (this == VH) r = getVHPath(startingPoint, endingPoint);
         else if (this == HVH) r = getHVHPath(startingPoint, endingPoint);
@@ -78,6 +88,7 @@ public class BentStyle extends SerializableEnumeration
         else if (this == VHV) r = getHVHPath(startingPoint, endingPoint);
         else if (this == HV) r = getVHPath(startingPoint, endingPoint);
         else if (this == VH) r = getHVPath(startingPoint, endingPoint);
+        else if (this == FREE) r = getFreePath(connectionPoints);
         if (r != null) return r;
 
         // Return default path
@@ -234,6 +245,19 @@ public class BentStyle extends SerializableEnumeration
     }
 
     /**
+     * Gets a free path
+     * 
+     * @param connectionPoints
+     * @return
+     */
+    private ArrayList<Point2D> getFreePath(Point2D... connectionPoints)
+    {
+        ArrayList<Point2D> r = new ArrayList<Point2D>();
+        r.addAll(Arrays.asList(connectionPoints));
+        return r;
+    }
+
+    /**
      * Gets the points at which a line joining two rectangles is bent according to a bent style.
      * 
      * @param s the starting and ending rectangle
@@ -264,6 +288,8 @@ public class BentStyle extends SerializableEnumeration
 
     /** straight bent style */
     public static final BentStyle STRAIGHT = new BentStyle();
+    /** free bent style */
+    public static final BentStyle FREE = new BentStyle();
     /** Horizontal-Vertical bent style */
     public static final BentStyle HV = new BentStyle();
     /** Vertical-Horizontal bent style */

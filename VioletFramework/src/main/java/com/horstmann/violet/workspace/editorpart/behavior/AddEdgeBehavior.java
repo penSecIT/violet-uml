@@ -41,7 +41,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
             startAction(event);
             return;
         }
-        if (this.isLinkingInProgress && this.isLinkByTwoClicks)
+        if (this.isLinkingInProgress && this.isLinkBySeparatedClicks)
         {
             endAction(event);
             return;
@@ -65,14 +65,14 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         {
             return;
         }
-        this.isLinkByTwoClicks = true;
+        this.isLinkBySeparatedClicks = true;
         repaintOnMouseMoved(event);
     }
 
     @Override
     public void onMouseReleased(MouseEvent event)
     {
-        if (this.isLinkByTwoClicks)
+        if (this.isLinkBySeparatedClicks)
         {
             return;
         }
@@ -123,6 +123,10 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         firstMousePoint = mousePoint;
         lastMousePoint = mousePoint;
     }
+    
+    private void freePathAction(MouseEvent event) {
+        
+    }
 
     private void endAction(MouseEvent event)
     {
@@ -136,14 +140,14 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         {
             selectionHandler.setSelectedElement(newEdge);
             isLinkingInProgress = false;
-            isLinkByTwoClicks = false;
+            isLinkBySeparatedClicks = false;
         }
     }
 
     private void cancel()
     {
         this.isLinkingInProgress = false;
-        this.isLinkByTwoClicks = false;
+        this.isLinkBySeparatedClicks = false;
     }
 
     /**
@@ -228,6 +232,6 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
 
     private boolean isLinkingInProgress = false;
 
-    private boolean isLinkByTwoClicks = false;
+    private boolean isLinkBySeparatedClicks = false;
 
 }

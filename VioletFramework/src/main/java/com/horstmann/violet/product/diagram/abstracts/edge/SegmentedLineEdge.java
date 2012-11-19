@@ -31,6 +31,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 
@@ -53,6 +54,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         startLabel = "";
         middleLabel = "";
         endLabel = "";
+        freePoints = new ArrayList<Point2D>();
     }
 
     /**
@@ -374,6 +376,16 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     }
 
     /**
+     * Allows to specify free segment points for custom path
+     * 
+     * @param freePoint
+     */
+    public void addFreePoint(Point2D freePoint)
+    {
+        this.freePoints.add(freePoint);
+    }
+
+    /**
      * Gets the corner points of this segmented line edge
      * 
      * @return an array list of Point2D objects, containing the corner points
@@ -383,11 +395,20 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         Line2D connectionPoints = getConnectionPoints();
         Point2D startingPoint = connectionPoints.getP1();
         Point2D endingPoint = connectionPoints.getP2();
+
+        // Automatic based path
         if (!BentStyle.AUTO.equals(getBentStyle()))
         {
-            return getBentStyle().getPath(startingPoint, endingPoint);
+            List<Point2D> bentStylePoints = new ArrayList<Point2D>();
+            bentStylePoints.add(startingPoint);
+            bentStylePoints.addAll(this.freePoints);
+            bentStylePoints.add(endingPoint);
+
+            Point2D[] bentStylePointsAsArray = bentStylePoints.toArray(new Point2D[bentStylePoints.size()]);
+            return getBentStyle().getPath(bentStylePointsAsArray);
         }
 
+        // User choice based path
         Direction startingCardinalDirection = getDirection(getStart()).getNearestCardinalDirection();
         Direction endingCardinalDirection = getDirection(getEnd()).getNearestCardinalDirection();
         if ((Direction.NORTH.equals(startingCardinalDirection) || Direction.SOUTH.equals(startingCardinalDirection))
@@ -451,6 +472,7 @@ public abstract class SegmentedLineEdge extends ShapeEdge
     private String startLabel;
     private String middleLabel;
     private String endLabel;
+    private List<Point2D> freePoints;
 
     private static JLabel label = new JLabel();
 }

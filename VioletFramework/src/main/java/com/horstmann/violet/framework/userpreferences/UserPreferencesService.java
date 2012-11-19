@@ -7,7 +7,7 @@ import java.util.Set;
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.ManagedBean;
-import com.horstmann.violet.framework.theme.DarkAmbianceTheme;
+import com.horstmann.violet.framework.theme.VistaBlueTheme;
 
 
 /**
@@ -30,7 +30,7 @@ public class UserPreferencesService
     public String getPreferedLookAndFeel()
     {
         IUserPreferencesDao pService = PreferencesServiceFactory.getInstance();
-        String preferedLAF = pService.get(PreferencesConstant.LOOK_AND_FEEL, DarkAmbianceTheme.class.getName());
+        String preferedLAF = pService.get(PreferencesConstant.LOOK_AND_FEEL, VistaBlueTheme.class.getName());
         return preferedLAF;
     }
     
