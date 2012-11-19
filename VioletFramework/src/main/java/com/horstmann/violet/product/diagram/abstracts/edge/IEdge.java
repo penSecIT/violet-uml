@@ -87,6 +87,22 @@ public interface IEdge extends Serializable, Cloneable, IIdentifiable
      * @return the point where this node ends (relative to the ending node)
      */
     Point2D getEndLocation();
+    
+    /**
+     * Sets transition points for edge which supports free path 
+     * @param transitionPoints
+     */
+    void setTransitionPoints(Point2D[] transitionPoints);
+    
+    /**
+     * @return transition points for edge which supports free path
+     */
+    Point2D[] getTransitionPoints();
+    
+    /**
+     * @return true if the edge supports free path
+     */
+    boolean isTransitionPointsSupported();
 
     /**
      * Gets the points at which this edge is connected to its nodes.

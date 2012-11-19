@@ -87,6 +87,24 @@ public abstract class AbstractEdge implements IEdge
     {
         return this.endLocation;
     }
+    
+    @Override
+    public void setTransitionPoints(Point2D[] transitionPoints)
+    {
+        this.transitionPoints = transitionPoints;
+    }
+    
+    @Override
+    public Point2D[] getTransitionPoints()
+    {
+        return this.transitionPoints;
+    }
+    
+    @Override
+    public boolean isTransitionPointsSupported()
+    {
+        return false;
+    }
 
     @Override
     public Rectangle2D getBounds()
@@ -214,6 +232,9 @@ public abstract class AbstractEdge implements IEdge
 
     /** The point inside the ending node where this edge ends */
     private Point2D endLocation;
+    
+    /** Points for free path */
+    private Point2D[] transitionPoints;
 
     /** Edge's current id (unique in all the graph) */
     private Id id;

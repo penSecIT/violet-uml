@@ -56,6 +56,12 @@ public abstract class SegmentedLineEdge extends ShapeEdge
         endLabel = "";
         freePoints = new ArrayList<Point2D>();
     }
+    
+    @Override
+    public boolean isTransitionPointsSupported()
+    {
+        return true;
+    }
 
     /**
      * Sets the bentStyle property

@@ -3,8 +3,10 @@ package com.horstmann.violet.workspace.editorpart.behavior;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Line2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 import com.horstmann.violet.product.diagram.abstracts.Id;
@@ -43,6 +45,11 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         }
         if (this.isLinkingInProgress && this.isLinkBySeparatedClicks)
         {
+            if (isRecognizedAsTransitionAction())
+            {
+                transitionAction(event);
+                return;
+            }
             endAction(event);
             return;
         }
@@ -114,33 +121,53 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         return true;
     }
 
+    private boolean isRecognizedAsTransitionAction()
+    {
+        if (this.newEdge == null)
+        {
+            return false;
+        }
+        if (!this.newEdge.isTransitionPointsSupported())
+        {
+            return false;
+        }
+        INode aNode = graph.findNode(this.lastMousePoint);
+        if (aNode == null)
+        {
+            return true;
+        }
+        return false;
+    }
+
     private void startAction(MouseEvent event)
     {
         double zoom = editorPart.getZoomFactor();
         final Point2D mousePoint = new Point2D.Double(event.getX() / zoom, event.getY() / zoom);
         INode targetNode = graph.findNode(mousePoint);
         this.isLinkingInProgress = (targetNode != null);
-        firstMousePoint = mousePoint;
-        lastMousePoint = mousePoint;
+        this.firstMousePoint = mousePoint;
+        this.lastMousePoint = mousePoint;
+        GraphTool selectedTool = this.selectionHandler.getSelectedTool();
+        IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
+        this.newEdge = (IEdge) prototype.clone();
+        this.newEdge.setId(new Id());
     }
-    
-    private void freePathAction(MouseEvent event) {
-        
+
+    private void transitionAction(MouseEvent event)
+    {
+        this.transitionPoints.add(this.lastMousePoint);
     }
 
     private void endAction(MouseEvent event)
     {
-        GraphTool selectedTool = this.selectionHandler.getSelectedTool();
-        IEdge prototype = (IEdge) selectedTool.getNodeOrEdge();
-        IEdge newEdge = (IEdge) prototype.clone();
-        newEdge.setId(new Id());
-
-        boolean added = addEdgeAtPoints(newEdge, firstMousePoint, lastMousePoint);
+        boolean added = addEdgeAtPoints(this.newEdge, firstMousePoint, lastMousePoint);
         if (added)
         {
-            selectionHandler.setSelectedElement(newEdge);
-            isLinkingInProgress = false;
-            isLinkBySeparatedClicks = false;
+            this.selectionHandler.setSelectedElement(this.newEdge);
+            this.isLinkingInProgress = false;
+            this.isLinkBySeparatedClicks = false;
+            this.transitionPoints.clear();
+            this.newEdge = null;
         }
     }
 
@@ -148,6 +175,8 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
     {
         this.isLinkingInProgress = false;
         this.isLinkBySeparatedClicks = false;
+        this.transitionPoints.clear();
+        this.newEdge = null;
     }
 
     /**
@@ -170,6 +199,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
                 INode endNode = graph.findNode(endPoint);
                 Point2D relativeStartPoint = null;
                 Point2D relativeEndPoint = null;
+                Point2D[] transitionPointsAsArray = this.transitionPoints.toArray(new Point2D[this.transitionPoints.size()]);
                 if (startNode != null)
                 {
                     Point2D startNodeLocationOnGraph = startNode.getLocationOnGraph();
@@ -184,7 +214,7 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
                     double relativeEndY = endPoint.getY() - endNodeLocationOnGraph.getY();
                     relativeEndPoint = new Point2D.Double(relativeEndX, relativeEndY);
                 }
-                if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint))
+                if (graph.connect(newEdge, startNode, relativeStartPoint, endNode, relativeEndPoint, transitionPointsAsArray))
                 ;
                 {
                     newEdge.incrementRevision();
@@ -208,7 +238,14 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
         }
         Color oldColor = g2.getColor();
         g2.setColor(PURPLE);
-        g2.draw(new Line2D.Double(firstMousePoint, lastMousePoint));
+        GeneralPath path = new GeneralPath();
+        path.moveTo(this.firstMousePoint.getX(), this.firstMousePoint.getY());
+        for (Point2D aTransitionPoint : this.transitionPoints)
+        {
+            path.lineTo(aTransitionPoint.getX(), aTransitionPoint.getY());
+        }
+        path.lineTo(this.lastMousePoint.getX(), this.lastMousePoint.getY());
+        g2.draw(path);
         g2.setColor(oldColor);
     }
 
@@ -233,5 +270,9 @@ public class AddEdgeBehavior extends AbstractEditorPartBehavior
     private boolean isLinkingInProgress = false;
 
     private boolean isLinkBySeparatedClicks = false;
+
+    private List<Point2D> transitionPoints = new ArrayList<Point2D>();
+
+    private IEdge newEdge = null;
 
 }
