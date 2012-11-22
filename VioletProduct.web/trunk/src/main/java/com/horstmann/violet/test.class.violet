@@ -1,0 +1,127 @@
+<ClassDiagramGraph id="1">
+  <nodes id="2">
+    <ClassNode id="3">
+      <children id="4"/>
+      <location class="Point2D.Double" id="5" x="330.0" y="210.0"/>
+      <id id="6" value="e4b5e088-1dc0-4b2f-82e6-7ea98419c4bd"/>
+      <revision>1</revision>
+      <backgroundColor id="7">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+      <borderColor id="8">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+        <alpha>255</alpha>
+      </borderColor>
+      <textColor reference="8"/>
+      <name id="9" justification="1" size="3" underlined="false">
+        <text></text>
+      </name>
+      <attributes id="10" justification="0" size="4" underlined="false">
+        <text></text>
+      </attributes>
+      <methods id="11" justification="0" size="4" underlined="false">
+        <text></text>
+      </methods>
+    </ClassNode>
+    <ClassNode id="12">
+      <children id="13"/>
+      <location class="Point2D.Double" id="14" x="560.0" y="290.0"/>
+      <id id="15" value="8d3baad4-e7fa-4bf7-8f13-9e9a45201e7a"/>
+      <revision>1</revision>
+      <backgroundColor reference="7"/>
+      <borderColor reference="8"/>
+      <textColor reference="8"/>
+      <name id="16" justification="1" size="3" underlined="false">
+        <text>blabla</text>
+      </name>
+      <attributes id="17" justification="0" size="4" underlined="false">
+        <text></text>
+      </attributes>
+      <methods id="18" justification="0" size="4" underlined="false">
+        <text></text>
+      </methods>
+    </ClassNode>
+    <ClassNode id="19">
+      <children id="20"/>
+      <location class="Point2D.Double" id="21" x="360.0" y="410.0"/>
+      <id id="22" value="1780a5aa-f9dd-4fac-aa5e-5e2056dfd673"/>
+      <revision>1</revision>
+      <backgroundColor reference="7"/>
+      <borderColor reference="8"/>
+      <textColor reference="8"/>
+      <name id="23" justification="1" size="3" underlined="false">
+        <text></text>
+      </name>
+      <attributes id="24" justification="0" size="4" underlined="false">
+        <text></text>
+      </attributes>
+      <methods id="25" justification="0" size="4" underlined="false">
+        <text></text>
+      </methods>
+    </ClassNode>
+    <ClassNode id="26">
+      <children id="27"/>
+      <location class="Point2D.Double" id="28" x="570.0" y="580.0"/>
+      <id id="29" value="b21d0025-68c1-439e-adbd-8309c196dc8d"/>
+      <revision>1</revision>
+      <backgroundColor reference="7"/>
+      <borderColor reference="8"/>
+      <textColor reference="8"/>
+      <name id="30" justification="1" size="3" underlined="false">
+        <text></text>
+      </name>
+      <attributes id="31" justification="0" size="4" underlined="false">
+        <text></text>
+      </attributes>
+      <methods id="32" justification="0" size="4" underlined="false">
+        <text></text>
+      </methods>
+    </ClassNode>
+  </nodes>
+  <edges id="33">
+    <InheritanceEdge id="34">
+      <start class="ClassNode" reference="3"/>
+      <end class="ClassNode" reference="19"/>
+      <startLocation class="Point2D.Double" id="35" x="46.0" y="29.0"/>
+      <endLocation class="Point2D.Double" id="36" x="51.0" y="45.0"/>
+      <id id="37" value="c1c2616b-af22-46d8-9bb7-dbed9680a2ef"/>
+      <revision>1</revision>
+      <bentStyle id="38" name="AUTO"/>
+      <startLabel></startLabel>
+      <middleLabel></middleLabel>
+      <endLabel></endLabel>
+      <freePoints id="39"/>
+    </InheritanceEdge>
+    <InheritanceEdge id="40">
+      <start class="ClassNode" reference="12"/>
+      <end class="ClassNode" reference="19"/>
+      <startLocation class="Point2D.Double" id="41" x="44.0" y="42.0"/>
+      <endLocation class="Point2D.Double" id="42" x="79.0" y="22.0"/>
+      <id id="43" value="bbaac326-1109-4f42-81e6-963c11ffaea0"/>
+      <revision>1</revision>
+      <bentStyle reference="38"/>
+      <startLabel></startLabel>
+      <middleLabel></middleLabel>
+      <endLabel></endLabel>
+      <freePoints reference="39"/>
+    </InheritanceEdge>
+    <AssociationEdge id="44">
+      <start class="ClassNode" reference="26"/>
+      <end class="ClassNode" reference="12"/>
+      <startLocation class="Point2D.Double" id="45" x="64.0" y="14.0"/>
+      <endLocation class="Point2D.Double" id="46" x="64.0" y="44.0"/>
+      <id id="47" value="783cacfd-3001-463f-a9eb-1979225f2129"/>
+      <revision>1</revision>
+      <bentStyle reference="38"/>
+      <startLabel></startLabel>
+      <middleLabel></middleLabel>
+      <endLabel></endLabel>
+      <freePoints id="48"/>
+    </AssociationEdge>
+  </edges>
+</ClassDiagramGraph>

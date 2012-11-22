@@ -20,6 +20,7 @@
 
 package com.horstmann.violet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +59,15 @@ public class UMLEditorWebApplication extends WApplication
      * Default constructor
      * 
      * @param filesToOpen
+     * @throws IOException 
      */
-    public UMLEditorWebApplication(WEnvironment env)
+    public UMLEditorWebApplication(WEnvironment env) throws IOException
     {
     	super(env);
-    	initBeanFactory();
+    	if (!FACTORY_INITIALIZED) {
+    		initBeanFactory();
+    		FACTORY_INITIALIZED = true;
+    	}
         BeanInjector.getInjector().inject(this);
         String[] filesToOpen = new String[0];
         createDefaultWorkspace(filesToOpen);
@@ -103,13 +108,17 @@ public class UMLEditorWebApplication extends WApplication
      * + jvm checking<br>
      * + command line args<br>
      * + last workspace restore<br>
+     * @throws IOException 
      */
-    private void createDefaultWorkspace(String[] filesToOpen)
+    private void createDefaultWorkspace(String[] filesToOpen) throws IOException
     {
         installPlugins();
         this.versionChecker.check();
-        WVBoxLayout layout = new WVBoxLayout(getRoot());
-        layout.addWidget(new WorkspaceWidget());
+        WVBoxLayout layout = new WVBoxLayout();
+        WorkspaceWidget widget = new WorkspaceWidget();
+        widget.resize(1024, 768);
+		layout.addWidget(widget);
+		getRoot().setLayout(layout);
     }
 
     /**
@@ -130,6 +139,8 @@ public class UMLEditorWebApplication extends WApplication
 
     @InjectedBean
     private UserPreferencesService userPreferencesService;
+    
+    private static boolean FACTORY_INITIALIZED = false;
 
 
 }
