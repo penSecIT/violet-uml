@@ -3,6 +3,7 @@ package com.horstmann.violet;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -33,9 +34,8 @@ public class WorkspaceWidget extends WPaintedWidget {
 	
 
 	public WorkspaceWidget() throws IOException {
-		URL resource = this.getClass().getResource("test.class.violet");
-		IFile aFile = new LocalFile(new File(resource.getFile()));
-		GraphFile graphFile = new GraphFile(aFile);
+		IFile aFile = new LocalFile(new File("//home/depellegrin/test.class.violet"));
+        GraphFile graphFile = new GraphFile(aFile);
 		this.workspace = new Workspace(graphFile);
 		final IEditorPart editorPart = workspace.getEditorPart();
 		final IEditorPartBehaviorManager behaviorManager = editorPart.getBehaviorManager();
@@ -80,6 +80,14 @@ public class WorkspaceWidget extends WPaintedWidget {
 				update();
 			}
 		});
+		mouseWheel().addListener(this, new Signal1.Listener<WMouseEvent>() {
+			@Override
+			public void trigger(WMouseEvent event) {
+				MouseWheelEvent mouseWheelEvent = convertMouseWheelEvent(event, MouseEvent.MOUSE_WHEEL, editorPart.getSwingComponent());
+				behaviorManager.fireOnMouseWheelMoved(mouseWheelEvent);
+				update();
+			}
+		});
 	}
 
 	private MouseEvent convertMouseEvent(WMouseEvent event, int type, Component c) {
@@ -108,6 +116,24 @@ public class WorkspaceWidget extends WPaintedWidget {
 		}
 
 		return new MouseEvent(c, type, System.currentTimeMillis(), modifiers, event.getWidget().x, event.getWidget().y, 1, event.getButton() == Button.RightButton, button);
+	}
+	
+	
+	private MouseWheelEvent convertMouseWheelEvent(WMouseEvent event, int type, Component c) {
+		int modifiers = 0;
+
+		if (event.getModifiers().contains(KeyboardModifier.AltModifier))
+			modifiers |= MouseEvent.ALT_DOWN_MASK;
+		if (event.getModifiers().contains(KeyboardModifier.ShiftModifier))
+			modifiers |= MouseEvent.SHIFT_DOWN_MASK;
+		if (event.getModifiers().contains(KeyboardModifier.ControlModifier))
+			modifiers |= MouseEvent.CTRL_DOWN_MASK;
+		if (event.getModifiers().contains(KeyboardModifier.MetaModifier))
+			modifiers |= MouseEvent.META_DOWN_MASK;
+
+		int wheelDelta = event.getWheelDelta();
+		
+		return new MouseWheelEvent(c, type, System.currentTimeMillis(), modifiers, event.getWidget().x, event.getWidget().y, 1, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, -wheelDelta);
 	}
 
 	@Override
