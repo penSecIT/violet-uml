@@ -124,10 +124,20 @@ public abstract class AbstractEdge implements IEdge
         Point2D startCenter = new Point2D.Double(startLocationOnGraph.getX() + startBounds.getWidth() / 2, startLocationOnGraph.getY() + startBounds.getHeight() / 2);
         Point2D endCenter = new Point2D.Double(endLocationOnGraph.getX() + endBounds.getWidth() / 2, endLocationOnGraph.getY() + endBounds.getHeight() / 2);
         if (node.equals(start)) {
+            if (isTransitionPointsSupported() && this.transitionPoints != null && this.transitionPoints.length > 0) {
+                Point2D firstTransitionPoint = this.transitionPoints[0];
+                Direction fromStart = new Direction(firstTransitionPoint, startCenter);
+                return fromStart;
+            }
             Direction fromStart = new Direction(endCenter, startCenter);
             return fromStart;
         }
         if (node.equals(end)) {
+            if (isTransitionPointsSupported() && this.transitionPoints != null && this.transitionPoints.length > 0) {
+                Point2D lastTransitionPoint = this.transitionPoints[this.transitionPoints.length - 1];
+                Direction toEnd = new Direction(lastTransitionPoint, endCenter);
+                return toEnd;
+            }
             Direction toEnd = new Direction(startCenter, endCenter);
             return toEnd;
         }

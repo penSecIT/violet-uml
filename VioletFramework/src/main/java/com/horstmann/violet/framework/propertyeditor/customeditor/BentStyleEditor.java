@@ -44,6 +44,7 @@ public class BentStyleEditor extends CustomPropertyEditorSupport
     {
             "Auto",
             "Straight",
+            "Free",
             "HV",
             "VH",
             "HVH",
@@ -55,6 +56,7 @@ public class BentStyleEditor extends CustomPropertyEditorSupport
     {
             BentStyle.AUTO,
             BentStyle.STRAIGHT,
+            BentStyle.FREE,
             BentStyle.HV,
             BentStyle.VH,
             BentStyle.HVH,
