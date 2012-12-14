@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,11 +72,11 @@ public class WelcomePanel extends JPanel
 
         JPanel shortcutPanel = new JPanel();
         shortcutPanel.setOpaque(false);
-        shortcutPanel.setLayout(new GridLayout(2, 2));
-        shortcutPanel.add(getLeftTitlePanel());
-        shortcutPanel.add(getRightTitlePanel());
-        shortcutPanel.add(getLeftPanel());
-        shortcutPanel.add(getRightPanel());
+        shortcutPanel.setLayout(new GridBagLayout());
+        shortcutPanel.add(getLeftTitlePanel(), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        shortcutPanel.add(getRightTitlePanel(), new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        shortcutPanel.add(getLeftPanel(), new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        shortcutPanel.add(getRightPanel(), new GridBagConstraints(1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         c.weightx = 1;
@@ -83,7 +84,7 @@ public class WelcomePanel extends JPanel
         c.gridy = 1;
         panel.add(shortcutPanel, c);
 
-        add(panel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
         add(getFootTextPanel(), BorderLayout.SOUTH);
 
     }
