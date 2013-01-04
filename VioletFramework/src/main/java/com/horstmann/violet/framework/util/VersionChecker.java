@@ -39,20 +39,37 @@ import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant
 @ManagedBean
 public class VersionChecker
 {
-    
+
     /** Minimum compliant Java version */
     private static final String JAVA_VERSION = "1.6";
-    
+
     /** Needed to display dialog boxes */
     @InjectedBean
     private DialogFactory dialogFactory;
+
+    /**
+     * @return Violet's version number
+     */
+    public String getAppVersionNumber()
+    {
+        ResourceBundle resources = ResourceBundle.getBundle(ResourceBundleConstant.OTHER_STRINGS, Locale.getDefault());
+        return resources.getString("app.version.number");
+    }
     
-    
+    /**
+     * @return Violet's version number
+     */
+    public String getAppReleaseDate()
+    {
+        ResourceBundle resources = ResourceBundle.getBundle(ResourceBundleConstant.OTHER_STRINGS, Locale.getDefault());
+        return resources.getString("app.release.date");
+    }
+
     /**
      * Checks if the current VM has at least the given version, and exits the program with an error dialog if not.
      * 
      */
-    public void check()
+    public void checkJavaVersion()
     {
         String actualVersion = System.getProperty("java.version");
         boolean versionOk;
@@ -71,7 +88,7 @@ public class VersionChecker
             MessageFormat formatter = new MessageFormat(versionError);
             String message = formatter.format(new Object[]
             {
-                 JAVA_VERSION
+                JAVA_VERSION
             });
             String title = resources.getString("dialog.error_version.title");
             JOptionPane optionPane = new JOptionPane();
@@ -81,7 +98,7 @@ public class VersionChecker
         }
     }
 
-    public static int versionCompare(String v1, String v2)
+    private int versionCompare(String v1, String v2)
     {
         StringTokenizer t1 = new StringTokenizer(v1, "._");
         StringTokenizer t2 = new StringTokenizer(v2, "._");
@@ -95,7 +112,5 @@ public class VersionChecker
         }
         return t2.hasMoreTokens() ? -1 : 0;
     }
-
-
 
 }

@@ -42,6 +42,7 @@ import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.chooser.JFileChooserService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
 import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.XHTMLPersistenceService;
 import com.horstmann.violet.framework.file.persistence.XStreamBasedPersistenceService;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanFactory;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
@@ -126,12 +127,12 @@ public class UMLEditorApplication
         themeManager.applyPreferedTheme();
         BeanFactory.getFactory().register(ThemeManager.class, themeManager);
         themeManager.applyPreferedTheme();
-        
-        IFilePersistenceService filePersistenceService = new XStreamBasedPersistenceService();
-        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
-        
+
         DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.INTERNAL);
         BeanFactory.getFactory().register(DialogFactory.class, dialogFactory);
+        
+        IFilePersistenceService filePersistenceService = new XHTMLPersistenceService();
+        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
         
         IFileChooserService fileChooserService = new JFileChooserService();
         BeanFactory.getFactory().register(IFileChooserService.class, fileChooserService);
@@ -151,7 +152,7 @@ public class UMLEditorApplication
         installPlugins();
         SplashScreen splashScreen = new SplashScreen();
         splashScreen.setVisible(true);
-        this.versionChecker.check();
+        this.versionChecker.checkJavaVersion();
         MainFrame mainFrame = new MainFrame();
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         SplashScreen.displayOverEditor(mainFrame, 1000);

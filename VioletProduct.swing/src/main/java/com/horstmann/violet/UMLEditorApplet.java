@@ -34,7 +34,7 @@ import com.horstmann.violet.framework.dialog.DialogFactoryMode;
 import com.horstmann.violet.framework.file.chooser.IFileChooserService;
 import com.horstmann.violet.framework.file.chooser.JFileChooserService;
 import com.horstmann.violet.framework.file.persistence.IFilePersistenceService;
-import com.horstmann.violet.framework.file.persistence.StandardJavaFilePersistenceService;
+import com.horstmann.violet.framework.file.persistence.XHTMLPersistenceService;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanFactory;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
 import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
@@ -78,12 +78,12 @@ public class UMLEditorApplet extends JApplet
         themeManager.setInstalledThemes(themeList);
         BeanFactory.getFactory().register(ThemeManager.class, themeManager);
         themeManager.applyPreferedTheme();
-        
-        IFilePersistenceService filePersistenceService = new StandardJavaFilePersistenceService();
-        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
-        
+
         DialogFactory dialogFactory = new DialogFactory(DialogFactoryMode.INTERNAL);
         BeanFactory.getFactory().register(DialogFactory.class, dialogFactory);
+        
+        IFilePersistenceService filePersistenceService = new XHTMLPersistenceService();
+        BeanFactory.getFactory().register(IFilePersistenceService.class, filePersistenceService);
         
         IFileChooserService fileChooserService = new JFileChooserService();
         BeanFactory.getFactory().register(IFileChooserService.class, fileChooserService);

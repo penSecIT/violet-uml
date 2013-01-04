@@ -48,8 +48,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 
 import com.horstmann.violet.application.swingextension.VerticalAutoScrollPane;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.BeanInjector;
+import com.horstmann.violet.framework.injection.bean.ManiocFramework.InjectedBean;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.framework.util.VersionChecker;
 
 /**
  * The About dialog box of ganttproject
@@ -61,6 +64,7 @@ public class AboutDialog extends JDialog
     {
         super(parent);
         ResourceBundleInjector.getInjector().inject(this);
+        BeanInjector.getInjector().inject(this);
         this.setTitle(this.dialogTitle);
         this.setLocationRelativeTo(null);
         this.setModal(true);
@@ -246,8 +250,11 @@ public class AboutDialog extends JDialog
     {
         if (this.versionPanel == null)
         {
+            String mergedText = this.versionText;
+            mergedText = mergedText.replace("${version}", this.versionChecker.getAppVersionNumber());
+            mergedText = mergedText.replace("${date}", this.versionChecker.getAppReleaseDate());
             JLabel image = new JLabel(this.image);
-            JLabel text = new JLabel(this.versionText);
+            JLabel text = new JLabel(mergedText);
             text.setBorder(new EmptyBorder(0, 0, 0, 4));
             this.versionPanel = new JPanel();
             this.versionPanel.setLayout(new GridBagLayout());
@@ -387,5 +394,8 @@ public class AboutDialog extends JDialog
     @ResourceBundleBean(key="dialog.button.show_authors")
     private String showAuthorsButtonLabel;
 
+    @InjectedBean
+    private VersionChecker versionChecker;
 
+    
 }
