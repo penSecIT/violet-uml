@@ -57,6 +57,7 @@ public class JFileChooserService implements IFileChooserService
     {
         ResourceBundleInjector.getInjector().inject(this);
         BeanInjector.getInjector().inject(this);
+        this.currentDirectory = getLastOpenedDir();
     }
 
     /**
@@ -74,7 +75,7 @@ public class JFileChooserService implements IFileChooserService
 				// File deleted ? Ok, let's take the next one.
 			}
         }
-        File currentDir = new File(".");
+        File currentDir = new File(System.getProperty("user.home"));
         return currentDir;
     }
 
@@ -111,8 +112,7 @@ public class JFileChooserService implements IFileChooserService
     public IFileReader chooseAndGetFileReader() throws FileNotFoundException
     {
     	JFileChooser fileChooser = new JFileChooser();
-        File initialDirectory = getLastOpenedDir();
-        fileChooser.setCurrentDirectory(initialDirectory);
+        fileChooser.setCurrentDirectory(this.currentDirectory);
     	ExtensionFilter[] filters = fileNamingService.getFileFilters();
         for (int i = 0; i < filters.length; i++)
         {
@@ -122,7 +122,12 @@ public class JFileChooserService implements IFileChooserService
         File selectedFile = null;
         if (response == JFileChooser.APPROVE_OPTION)
         {
-            selectedFile = fileChooser.getSelectedFile();
+            this.currentDirectory = fileChooser.getCurrentDirectory();
+        	selectedFile = fileChooser.getSelectedFile();
+        }
+        if (response == JFileChooser.CANCEL_OPTION)
+        {
+        	this.currentDirectory = fileChooser.getCurrentDirectory();
         }
         if (selectedFile == null)
         {
@@ -151,8 +156,7 @@ public class JFileChooserService implements IFileChooserService
     public IFileWriter chooseAndGetFileWriter(ExtensionFilter... filters) throws FileNotFoundException
     {
         JFileChooser fileChooser = new JFileChooser();
-        File initialDirectory = getLastOpenedDir();
-        fileChooser.setCurrentDirectory(initialDirectory);
+        fileChooser.setCurrentDirectory(this.currentDirectory);
         fileChooser.setAcceptAllFileFilterUsed(false);
         for (int i = 0; i < filters.length; i++)
         {
@@ -164,7 +168,8 @@ public class JFileChooserService implements IFileChooserService
         File selectedFile = null;
         if (response == JFileChooser.APPROVE_OPTION)
         {
-            selectedFile = fileChooser.getSelectedFile();
+            this.currentDirectory = fileChooser.getCurrentDirectory();
+        	selectedFile = fileChooser.getSelectedFile();
             ExtensionFilter selectedFilter = (ExtensionFilter) fileChooser.getFileFilter();
             String fullPath = selectedFile.getAbsolutePath();
             String extension = selectedFilter.getExtension();
@@ -191,6 +196,10 @@ public class JFileChooserService implements IFileChooserService
                     selectedFile = null;
                 }
             }
+        }
+        if (response == JFileChooser.CANCEL_OPTION)
+        {
+        	this.currentDirectory = fileChooser.getCurrentDirectory();
         }
         if (selectedFile == null)
         {
@@ -219,6 +228,7 @@ public class JFileChooserService implements IFileChooserService
     @ResourceBundleBean(key="dialog.overwrite.icon")
     private ImageIcon overwriteDialogBoxIcon;
 
-
+    /** Keeps current directory to always place the user to the last directory he worked with  */
+    private File currentDirectory;
 
 }
