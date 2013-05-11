@@ -21,6 +21,7 @@
 
 package com.horstmann.violet.framework.file.naming;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,17 +136,26 @@ public class FileNamingService
     /**
      * @return the extension filter for image export
      */
-    public ExtensionFilter getImageExtensionFilter()
+    public List<ExtensionFilter> getImageExtensionFilter()
     {
-        return new ExtensionFilter(this.imageFileFilterName, this.imageFileExtension);
+        return Arrays.asList(new ExtensionFilter[] {
+            new ExtensionFilter(this.imagePngFileFilterName, this.imagePngFileExtension),
+            new ExtensionFilter(this.imageJpegFileFilterName, this.imageJpegFileExtension),
+        });
     }
 
 
-    @ResourceBundleBean(key="files.image.name")
-    private String imageFileFilterName;
+    @ResourceBundleBean(key="files.image.png.name")
+    private String imagePngFileFilterName;
     
-    @ResourceBundleBean(key="files.image.extension")
-    private String imageFileExtension;
+    @ResourceBundleBean(key="files.image.png.extension")
+    private String imagePngFileExtension;
+    
+    @ResourceBundleBean(key="files.image.jpeg.name")
+    private String imageJpegFileFilterName;
+    
+    @ResourceBundleBean(key="files.image.jpeg.extension")
+    private String imageJpegFileExtension;
     
     @ResourceBundleBean(key="files.global.name")
     private String defaultFileFilterName;

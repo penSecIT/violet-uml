@@ -22,6 +22,7 @@
 package com.horstmann.violet.framework.file.chooser;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.ArrayList;
 
 import javax.jnlp.FileContents;
@@ -138,13 +139,12 @@ public class JNLPFileChooserService implements IFileChooserService
     }
     
     @Override
-    public IFileWriter chooseAndGetFileWriter(final ExtensionFilter... filters) throws IOException
+    public IFileWriter chooseAndGetFileWriter(Collection<ExtensionFilter> filters) throws IOException
     {
         String defaultDirectory = ".";
         ArrayList<String> fileExtensions = new ArrayList<String>();
-        for (int i = 0; i < filters.length; i++)
+        for (ExtensionFilter aFilter : filters)
         {
-            ExtensionFilter aFilter = filters[i];
             String filterExtension = aFilter.getExtension();
             fileExtensions.add(filterExtension);
         }

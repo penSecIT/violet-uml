@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -180,12 +181,11 @@ public class GraphFile implements IGraphFile
         {
             if (isAskedForNewLocation)
             {
-                ExtensionFilter extensionFilter = this.fileNamingService.getExtensionFilter(this.graph);
-                ExtensionFilter[] array =
-                {
-                    extensionFilter
-                };
-                return this.fileChooserService.chooseAndGetFileWriter(array);
+                List<ExtensionFilter> extensions = Arrays.asList(new ExtensionFilter[] {
+                    this.fileNamingService.getExtensionFilter(this.graph)
+                });
+
+                return this.fileChooserService.chooseAndGetFileWriter(extensions);
             }
             return this.fileChooserService.getFileWriter(this);
         }

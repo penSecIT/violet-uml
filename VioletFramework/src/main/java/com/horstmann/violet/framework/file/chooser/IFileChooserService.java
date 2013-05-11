@@ -22,6 +22,7 @@
 package com.horstmann.violet.framework.file.chooser;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import com.horstmann.violet.framework.file.IFile;
 import com.horstmann.violet.framework.file.naming.ExtensionFilter;
@@ -70,7 +71,7 @@ public interface IFileChooserService
      * @return the Save object for the selected file
      * @throws IOException
      */
-    public IFileWriter chooseAndGetFileWriter(ExtensionFilter... extensions) throws IOException;
+    public IFileWriter chooseAndGetFileWriter(Collection<ExtensionFilter> extensions) throws IOException;
     
     /**
      * Returns a file handler to save the given file

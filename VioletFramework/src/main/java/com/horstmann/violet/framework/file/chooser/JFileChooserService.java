@@ -24,6 +24,7 @@ package com.horstmann.violet.framework.file.chooser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -153,14 +154,13 @@ public class JFileChooserService implements IFileChooserService
     }
 
     @Override
-    public IFileWriter chooseAndGetFileWriter(ExtensionFilter... filters) throws FileNotFoundException
+    public IFileWriter chooseAndGetFileWriter(Collection<ExtensionFilter> filters) throws FileNotFoundException
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(this.currentDirectory);
         fileChooser.setAcceptAllFileFilterUsed(false);
-        for (int i = 0; i < filters.length; i++)
+        for (ExtensionFilter aFilter : filters)
         {
-            ExtensionFilter aFilter = filters[i];
             fileChooser.addChoosableFileFilter(aFilter);
             fileChooser.setFileFilter(aFilter);
         }

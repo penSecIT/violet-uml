@@ -246,17 +246,19 @@ public class FileMenu extends JMenu
                 {
                     try
                     {
-                        ExtensionFilter exportFilter = fileNamingService.getImageExtensionFilter();
-                        IFileWriter fileSaver = fileChooserService.chooseAndGetFileWriter(exportFilter);
+                        List<ExtensionFilter> extensions = fileNamingService.getImageExtensionFilter();
+                        IFileWriter fileSaver = fileChooserService.chooseAndGetFileWriter(extensions);
                         OutputStream out = fileSaver.getOutputStream();
                         if (out != null)
                         {
                             String filename = fileSaver.getFileDefinition().getFilename();
-                            String extension = exportFilter.getExtension();
-                            if (filename.toLowerCase().endsWith(extension.toLowerCase()))
-                            {
-                                String format = extension.replace(".", "");
+                            int lastDot = filename.lastIndexOf('.');
+                            
+                            if (lastDot > 0) {
+                                String format = filename.substring(lastDot + 1).toLowerCase();
                                 workspace.getGraphFile().exportImage(out, format);
+                            } else {
+                                // TODO
                             }
                         }
                     }
