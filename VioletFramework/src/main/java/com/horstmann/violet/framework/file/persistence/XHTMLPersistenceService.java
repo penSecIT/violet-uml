@@ -55,7 +55,7 @@ public class XHTMLPersistenceService implements IFilePersistenceService
             xstreamService.write(graph, graphOutputStream);
             String graphString = graphOutputStream.toString();
             ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(FileExportService.getImage(graph), IMAGE_TYPE, new Base64OutputStream(imageOutputStream));
+            ImageIO.write(FileExportService.getRasterImage(graph), IMAGE_TYPE, new Base64OutputStream(imageOutputStream));
             String imageString = HTML_INLINE_IMAGE_PREFIX + imageOutputStream.toString();
             template = template.replace(TEMPLATE_VERSION_KEY, this.versionChecker.getAppVersionNumber());
             template = template.replace(TEMPLATE_XMLCONTENT_KEY, graphString);

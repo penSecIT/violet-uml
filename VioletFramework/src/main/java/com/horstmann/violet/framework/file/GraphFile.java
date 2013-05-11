@@ -3,6 +3,7 @@ package com.horstmann.violet.framework.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -253,7 +254,7 @@ public class GraphFile implements IGraphFile
     @Override
     public void exportImage(OutputStream out, String format)
     {
-        if (!ImageIO.getImageWritersByFormatName(format).hasNext())
+        if (!ImageIO.getImageWritersByFormatName(format).hasNext() && !"svg".equalsIgnoreCase(format))
         {
             MessageFormat formatter = new MessageFormat(this.exportImageErrorMessage);
             String message = formatter.format(new Object[]
@@ -267,10 +268,16 @@ public class GraphFile implements IGraphFile
         }
         try
         {
-
             try
             {
-                ImageIO.write(FileExportService.getImage(this.graph), format, out);
+                if ("svg".equalsIgnoreCase(format))
+                {
+                    FileExportService.getVectorImage(graph).stream(
+                        new OutputStreamWriter(out, "UTF-8"), true, true
+                    );
+                } else {
+                    ImageIO.write(FileExportService.getRasterImage(this.graph), format, out);
+                }
             }
             finally
             {

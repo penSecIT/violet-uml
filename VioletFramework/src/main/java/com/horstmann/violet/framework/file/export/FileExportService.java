@@ -31,18 +31,24 @@ import java.io.OutputStream;
 import com.horstmann.violet.framework.util.ClipboardPipe;
 import com.horstmann.violet.product.diagram.abstracts.IGraph;
 
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.dom.GenericDOMImplementation;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+
 public class FileExportService
 {
 
     /**
-     * Return the image correspondiojng to the graph
+     * Return the rasterized image corresponding to the graph
      * 
      * @param graph
      * @author Alexandre de Pellegrin
      * @return bufferedImage. To convert it into an image, use the syntax :
      *         Toolkit.getDefaultToolkit().createImage(bufferedImage.getSource());
      */
-    public static BufferedImage getImage(IGraph graph)
+    public static BufferedImage getRasterImage(IGraph graph)
     {
         Rectangle2D bounds = graph.getClipBounds();
         BufferedImage image = new BufferedImage((int) bounds.getWidth() + 1, (int) bounds.getHeight() + 1,
@@ -56,6 +62,24 @@ public class FileExportService
         graph.draw(g2);
         return image;
     }
+    
+    /**
+     * Return the vectorized image corresponding to the graph
+     * 
+     * @param graph
+     * @author penSec.IT UG (haftungsbeschränkt)
+     * @return svgGraphics, can be exported to xml with .stream
+     */
+    public static SVGGraphics2D getVectorImage(IGraph graph)
+    {
+        DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
+        Document document = dom.createDocument(
+            "http://www.w3.org/2000/svg", "svg", null
+        );
+        SVGGraphics2D image = new SVGGraphics2D(document);
+        graph.draw(image);
+        return image;
+    }
 
     /**
      * Export graph to clipboard (Do not merge with exportToClipBoard(). Used in Eclipse plugin)
@@ -65,7 +89,7 @@ public class FileExportService
      */
     public static void exportToclipBoard(IGraph graph)
     {
-        BufferedImage bImage = getImage(graph);
+        BufferedImage bImage = getRasterImage(graph);
         ClipboardPipe pipe = new ClipboardPipe(bImage);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(pipe, null);
     }
